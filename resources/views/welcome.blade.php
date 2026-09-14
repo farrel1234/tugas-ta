@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        
+
         .animate-fade-in {
             animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
@@ -29,9 +29,9 @@
     </style>
 </head>
 <body class="bg-[#071124] text-white antialiased select-none h-screen w-screen flex flex-col overflow-hidden">
-    
+
     <div class="w-full h-full flex flex-col justify-between p-3 sm:p-6 relative bg-gradient-to-br from-[#071124] via-[#0B1E3F] to-[#0D234A] overflow-hidden">
-        
+
         <!-- Background Ornaments -->
         <div class="absolute top-0 left-1/4 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-blue-500/15 rounded-full blur-[120px] pointer-events-none"></div>
         <div class="absolute bottom-0 right-1/4 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-cyan-500/15 rounded-full blur-[120px] pointer-events-none"></div>
@@ -74,9 +74,9 @@
 
         <!-- Main Content Area -->
         <div class="flex flex-col gap-3 flex-grow overflow-hidden relative z-10 my-2 sm:my-3">
-            
+
             <main id="spotlight-rotator" class="flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-blue-950/30 backdrop-blur-lg border border-blue-500/25 shadow-2xl p-3 sm:p-5 overflow-hidden transition-all duration-700 flex-grow min-h-0">
-                
+
                 <!-- Title & Description Info -->
                 <div class="mb-2 border-b border-blue-800/50 pb-2 sm:pb-2.5 flex-shrink-0">
                     <div class="flex items-start sm:items-center justify-between mb-1 gap-2">
@@ -251,20 +251,20 @@
                     title: "Layanan Disabilitas",
                     desc: "Ruang privasi nyaman dan edukatif bagi pemustaka berkebutuhan khusus.",
                     steps: [
-                        { 
-                            text: "Layanan disabilitas dilengkapi quiet room (ruang tenang) privat, perangkat akses literasi digital, serta panduan Abjad Isyarat SIBI.", 
-                            img: "{{ asset('templating/img/disabilitas.jpeg') }}" 
+                        {
+                            text: "Layanan disabilitas dilengkapi quiet room (ruang tenang) privat, perangkat akses literasi digital, serta panduan Abjad Isyarat SIBI.",
+                            img: "{{ asset('templating/img/disabilitas.jpeg') }}"
                         }
                     ]
                 },
                 {
-                    num: "09",
+                    num: "menu 09",
                     title: "Kuesioner Layanan",
                     desc: "Masukan Anda sangat berharga untuk peningkatan kualitas layanan perpustakaan.",
                     steps: [
-                        { 
-                            text: "Silakan pindai (scan) QR Code di atas menggunakan kamera HP Anda untuk mengisi survei kepuasan layanan UPA Perpustakaan Polibatam. Terima kasih atas partisipasi Anda!", 
-                            img: "{{ asset('templating/img/kuisioner.png') }}" 
+                        {
+                            text: "Silakan pindai (scan) QR Code di atas menggunakan kamera HP Anda untuk mengisi survei kepuasan layanan UPA Perpustakaan Polibatam. Terima kasih atas partisipasi Anda!",
+                            img: "{{ asset('templating/img/kuisioner.png') }}"
                         }
                     ]
                 },
@@ -273,14 +273,14 @@
             let currentIndex = 0;
             let subIndex = 0;
             let stepIndex = 0;
-            
-            const slideDuration = 8000; 
+
+            const slideDuration = 8000;
             const progressBar = document.getElementById("progress-bar");
             let timerId = null;
 
             function renderSlide() {
                 const item = libraryData[currentIndex];
-                
+
                 document.getElementById("menu-number").innerText = item.num;
 
                 let currentTitle = item.title;
@@ -302,17 +302,17 @@
 
                 const currentStepData = stepsToRender[stepIndex];
                 const stepsContainer = document.getElementById("steps-container");
-                
+
                 // Menata ulang layout menjadi single image presentation
                 // KUNCI PERBAIKAN: Menggunakan "flex-1" pada kotak gambar agar tidak pernah tergencet di HP
                 stepsContainer.innerHTML = `
                     <div class="w-full h-full flex flex-col justify-center items-center py-1 sm:py-2 animate-fade-in gap-3 sm:gap-4">
-                        
+
                         <!-- Gambar Presentasi (flex-1 otomatis mengisi sisa layar) -->
                         <div class="relative w-full max-w-5xl flex-1 min-h-[150px] bg-blue-900/40 rounded-2xl sm:rounded-3xl overflow-hidden border border-blue-500/30 flex items-center justify-center p-2 sm:p-4 shadow-[0_0_40px_rgba(59,130,246,0.15)] backdrop-blur-sm">
-                            
+
                             <img src="${currentStepData.img}" alt="Ilustrasi Langkah ${stepIndex + 1}" class="w-full h-full object-contain drop-shadow-xl rounded-xl">
-                            
+
                             <!-- Indikator Langkah (Disembunyikan khusus untuk menu 08) -->
                             ${item.num !== "08" ? `
                             <div class="absolute top-2 right-2 sm:top-4 sm:right-4 bg-blue-950/80 border border-blue-500/50 text-cyan-300 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[10px] sm:text-sm font-bold shadow-lg backdrop-blur-md">
@@ -337,7 +337,7 @@
                 let stepsToRender = item.isSirkulasiSequence ? item.subSections[subIndex].steps : item.steps;
 
                 stepIndex++;
-                
+
                 if (stepIndex >= stepsToRender.length) {
                     stepIndex = 0;
                     if (item.isSirkulasiSequence) {
@@ -390,10 +390,10 @@
 
             function runSignageLoop() {
                 renderSlide();
-                
+
                 progressBar.style.transition = "none";
                 progressBar.style.width = "0%";
-                
+
                 setTimeout(() => {
                     progressBar.style.transition = `width ${slideDuration}ms linear`;
                     progressBar.style.width = "100%";
