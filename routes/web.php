@@ -1,48 +1,38 @@
 <?php
-use App\Http\Controllers\AuthController;
+
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MenuController;
+use App\Http\Controllers\KioskController;
 
-// 1. Halaman Public Web (Bisa diakses mahasiswa dari HP/Laptop)
-Route::get('/', function () {
-    return view('kiosk.index');
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
+
+// 1. Halaman Public & Digital Signage Kiosk (Data dinamis dari database)
+Route::get('/', [KioskController::class, 'index'])->name('kiosk.index');
+Route::get('/kiosk', [KioskController::class, 'index']);
+
+// 2. Rute Autentikasi (Login untuk guest)
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
 });
 
-// 2. Halaman Digital Signage (Layar TV di Perpustakaan)
-Route::get('/kiosk', function () {
-    return view('kiosk.index');
+// 3. Rute Logout (Khusus user yang terautentikasi)
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+
+// 4. Rute Admin CMS (Dilindungi middleware 'auth')
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [MenuController::class, 'index'])->name('dashboard');
+    Route::post('/menus', [MenuController::class, 'store'])->name('menus.store');
+    Route::get('/menus/{menu}/edit', [MenuController::class, 'edit'])->name('menus.edit');
+    Route::put('/menus/{menu}', [MenuController::class, 'update'])->name('menus.update');
+    Route::delete('/menus/{menu}', [MenuController::class, 'destroy'])->name('menus.destroy');
+
+    // Pengelolaan Langkah / Slide spesifik
+    Route::post('/menus/{menu}/steps', [MenuController::class, 'storeStep'])->name('steps.store');
+    Route::delete('/steps/{step}', [MenuController::class, 'destroyStep'])->name('steps.destroy');
 });
-
-// 3. Halaman Admin CMS (Nanti bisa diamankan dengan login)
-Route::get('/admin', function () {
-    // Data dummy sementara untuk kebutuhan tampilan Front-End
-    $menus = [
-        (object)[
-            'num' => '01',
-            'title' => 'Layanan Sirkulasi Mandiri',
-            'desc' => 'Peminjaman, pengembalian, dan perpanjangan buku...',
-            'steps' => [1, 2, 3, 4, 5]
-        ],
-        (object)[
-            'num' => '02',
-            'title' => 'Dropbox',
-            'desc' => 'Kotak drop pengembalian buku mandiri 24 jam...',
-            'steps' => [1, 2, 3]
-        ],
-        (object)[
-            'num' => '03',
-            'title' => 'Stock Opname',
-            'desc' => 'Proses audit dan pendataan ulang inventaris koleksi buku...',
-            'steps' => [1, 2, 3]
-        ]
-    ];
-
-    // Kirim variabel $menus ke view admin.dashboard
-    return view('admin.dashboard', compact('menus'));
-});
-
-Route::get('/admin', function () {
-    return view('admin.dashboard');
-});
-
-// Tambahkan rute logout
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
