@@ -10,15 +10,16 @@ use Illuminate\Support\Facades\Storage;
 class MenuController extends Controller
 {
     /**
-     * Menampilkan daftar menu pada Dashboard Admin.
+     * Menampilkan daftar menu pada Dashboard Admin (aktif dan sampah).
      */
     public function index()
     {
         $menus = Menu::with('steps')->orderBy('num', 'asc')->get();
+        $trashedMenus = Menu::onlyTrashed()->with('steps')->orderBy('deleted_at', 'desc')->get();
         $totalMenus = $menus->count();
-        $totalSteps = Step::count();
+        $totalSteps = Step::whereHas('menu')->count();
 
-        return view('admin.dashboard', compact('menus', 'totalMenus', 'totalSteps'));
+        return view('admin.dashboard', compact('menus', 'trashedMenus', 'totalMenus', 'totalSteps'));
     }
 
     /**
@@ -103,11 +104,34 @@ class MenuController extends Controller
     }
 
     /**
-     * Menghapus Menu beserta semua slide dan file gambarnya.
+     * Memindahkan Menu ke Tempat Sampah (Soft Delete - Bisa Dipulihkan).
      */
     public function destroy(Menu $menu)
     {
-        // Hapus file fisik gambar yang ada di storage/app/public
+        $title = $menu->title;
+        $menu->delete(); // Soft delete: data tersimpan di Tempat Sampah
+
+        return redirect()->route('admin.dashboard')->with('success', "Menu '{$title}' berhasil dipindahkan ke Tempat Sampah. Anda dapat memulihkannya kembali kapan saja!");
+    }
+
+    /**
+     * Memulihkan Menu dari Tempat Sampah.
+     */
+    public function restore($id)
+    {
+        $menu = Menu::onlyTrashed()->findOrFail($id);
+        $menu->restore();
+
+        return redirect()->route('admin.dashboard')->with('success', "Menu '{$menu->title}' berhasil dipulihkan kembali!");
+    }
+
+    /**
+     * Menghapus Menu secara permanen beserta seluruh file gambarnya.
+     */
+    public function forceDelete($id)
+    {
+        $menu = Menu::onlyTrashed()->with('steps')->findOrFail($id);
+
         foreach ($menu->steps as $step) {
             if ($step->image_path && Storage::disk('public')->exists($step->image_path)) {
                 Storage::disk('public')->delete($step->image_path);
@@ -115,9 +139,9 @@ class MenuController extends Controller
         }
 
         $title = $menu->title;
-        $menu->delete(); // Otomatis cascade delete steps di database
+        $menu->forceDelete();
 
-        return redirect()->route('admin.dashboard')->with('success', "Menu '{$title}' dan seluruh slidenya berhasil dihapus!");
+        return redirect()->route('admin.dashboard')->with('success', "Menu '{$title}' dan seluruh gambarnya telah dihapus secara permanen.");
     }
 
     /**

@@ -92,10 +92,10 @@
             @endif
 
             <!-- Summary Stat Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 <div class="bg-[#0B1E3F]/50 backdrop-blur-lg border border-blue-500/30 p-5 rounded-2xl flex items-center justify-between shadow-lg">
                     <div>
-                        <span class="text-xs text-cyan-300 font-bold uppercase tracking-wider block mb-1">Total Menu Utama</span>
+                        <span class="text-xs text-cyan-300 font-bold uppercase tracking-wider block mb-1">Total Menu Aktif</span>
                         <h3 class="text-2xl font-black text-white">{{ sprintf('%02d', $totalMenus ?? count($menus)) }} Menu</h3>
                     </div>
                     <div class="w-12 h-12 bg-blue-900/50 rounded-xl border border-blue-500/30 flex items-center justify-center text-cyan-400">
@@ -115,6 +115,16 @@
 
                 <div class="bg-[#0B1E3F]/50 backdrop-blur-lg border border-blue-500/30 p-5 rounded-2xl flex items-center justify-between shadow-lg">
                     <div>
+                        <span class="text-xs text-amber-300 font-bold uppercase tracking-wider block mb-1">Tempat Sampah</span>
+                        <h3 class="text-2xl font-black text-white">{{ sprintf('%02d', $trashedMenus->count()) }} Terhapus</h3>
+                    </div>
+                    <div class="w-12 h-12 bg-amber-950/50 rounded-xl border border-amber-500/30 flex items-center justify-center text-amber-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </div>
+                </div>
+
+                <div class="bg-[#0B1E3F]/50 backdrop-blur-lg border border-blue-500/30 p-5 rounded-2xl flex items-center justify-between shadow-lg">
+                    <div>
                         <span class="text-xs text-cyan-300 font-bold uppercase tracking-wider block mb-1">Durasi per Slide</span>
                         <h3 class="text-2xl font-black text-white">8 Detik</h3>
                     </div>
@@ -128,7 +138,7 @@
             <section class="bg-[#0B1E3F]/50 backdrop-blur-lg border border-blue-500/30 rounded-2xl p-5 sm:p-6 shadow-2xl">
                 <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
                     <div>
-                        <h2 class="text-lg font-black text-white tracking-tight">Daftar Menu Signage</h2>
+                        <h2 class="text-lg font-black text-white tracking-tight">Daftar Menu Signage Aktif</h2>
                         <p class="text-xs text-blue-200/70">Atur urutan menu dan gambar slide yang tampil di layar utama Kiosk.</p>
                     </div>
                     <a href="#form-tambah-menu" class="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg flex items-center gap-2 justify-center cursor-pointer">
@@ -168,11 +178,11 @@
                                                 Edit & Slide
                                             </a>
 
-                                            <!-- Tombol Hapus Menu -->
-                                            <form action="{{ route('admin.menus.destroy', $menu) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus Menu \'{{ $menu->title }}\' dan semua slidenya?');">
+                                            <!-- Tombol Hapus Menu (Pindah ke Sampah) -->
+                                            <form action="{{ route('admin.menus.destroy', $menu) }}" method="POST" onsubmit="return confirm('Pindahkan Menu \'{{ $menu->title }}\' ke Tempat Sampah?\n\nCatatan: Menu yang dipindahkan ke Tempat Sampah tidak akan tampil di Kiosk, namun dapat Anda pulihkan kembali sewaktu-waktu.');">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 px-3 py-1.5 rounded-lg border border-rose-500/30 font-semibold transition cursor-pointer flex items-center gap-1">
+                                                <button type="submit" title="Pindahkan ke Tempat Sampah" class="bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 px-3 py-1.5 rounded-lg border border-rose-500/30 font-semibold transition cursor-pointer flex items-center gap-1">
                                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                                     Hapus
                                                 </button>
@@ -182,12 +192,92 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="p-8 text-center text-blue-300/50">Belum ada menu yang tersimpan. Silakan tambahkan menu baru melalui form di bawah.</td>
+                                    <td colspan="5" class="p-8 text-center text-blue-300/50">Belum ada menu aktif. Silakan pulihkan menu dari Tempat Sampah di bawah atau tambahkan menu baru.</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
+            </section>
+
+            <!-- Bagian Tempat Sampah / Menu Terhapus Sementara -->
+            <section class="bg-[#121B35]/60 backdrop-blur-lg border border-amber-500/30 rounded-2xl p-5 sm:p-6 shadow-2xl">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300 flex-shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-base sm:text-lg font-black text-white tracking-tight">Tempat Sampah Menu (Trash)</h2>
+                                <span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $trashedMenus->count() }} Menu</span>
+                            </div>
+                            <p class="text-xs text-blue-200/70">Menu yang dihapus tersimpan di sini secara aman (Soft Delete) dan tidak tampil di Kiosk. Anda dapat memulihkannya kapan saja atau menghapusnya secara permanen.</p>
+                        </div>
+                    </div>
+                </div>
+
+                @if($trashedMenus->count() > 0)
+                    <div class="overflow-x-auto mt-4">
+                        <table class="w-full text-left text-xs text-blue-100">
+                            <thead class="bg-amber-950/50 uppercase text-[10px] tracking-wider text-amber-300 border-b border-amber-500/30">
+                                <tr>
+                                    <th class="p-3.5 rounded-l-xl">No</th>
+                                    <th class="p-3.5">Judul Menu Layanan</th>
+                                    <th class="p-3.5">Waktu Dihapus</th>
+                                    <th class="p-3.5 text-center">Jumlah Slide</th>
+                                    <th class="p-3.5 text-center rounded-r-xl">Aksi Pemulihan</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-amber-900/30">
+                                @foreach($trashedMenus as $trashed)
+                                    <tr class="hover:bg-amber-900/20 transition">
+                                        <td class="p-3.5 font-extrabold text-amber-400 line-through">{{ $trashed->num }}</td>
+                                        <td class="p-3.5 font-bold text-white/90">
+                                            <div class="line-through text-slate-300">{{ $trashed->title }}</div>
+                                            <div class="text-[10px] text-blue-300/60 mt-0.5 max-w-xs truncate">{{ $trashed->desc ?? '-' }}</div>
+                                        </td>
+                                        <td class="p-3.5 text-amber-200/80 text-[11px]">
+                                            {{ $trashed->deleted_at ? $trashed->deleted_at->format('d M Y, H:i') . ' WIB' : '-' }}
+                                            <span class="block text-[10px] text-amber-400/70">({{ $trashed->deleted_at ? $trashed->deleted_at->diffForHumans() : '' }})</span>
+                                        </td>
+                                        <td class="p-3.5 text-center">
+                                            <span class="bg-blue-950/80 border border-blue-500/30 px-2.5 py-1 rounded-md text-[10px] text-blue-300">
+                                                {{ $trashed->steps->count() }} Slide
+                                            </span>
+                                        </td>
+                                        <td class="p-3.5">
+                                            <div class="flex items-center justify-center gap-2">
+                                                <!-- Tombol Pulihkan -->
+                                                <form action="{{ route('admin.menus.restore', $trashed->id) }}" method="POST">
+                                                    @csrf
+                                                    <button type="submit" class="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                                        Pulihkan
+                                                    </button>
+                                                </form>
+
+                                                <!-- Tombol Hapus Permanen -->
+                                                <form action="{{ route('admin.menus.force-delete', $trashed->id) }}" method="POST" onsubmit="return confirm('PERINGATAN: Menu \'{{ $trashed->title }}\' dan seluruh gambar slidenya akan DIHAPUS PERMANEN dari database dan server.\n\nTindakan ini TIDAK DAPAT DIBATALKAN. Yakin ingin melanjutkan?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="bg-rose-600/20 hover:bg-rose-600/40 text-rose-300 border border-rose-600/40 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow">
+                                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                        Hapus Permanen
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="mt-4 p-4 rounded-xl bg-blue-950/40 border border-blue-500/20 text-center text-xs text-blue-300/60">
+                        Tempat sampah kosong. Tidak ada menu yang sedang dihapus.
+                    </div>
+                @endif
             </section>
 
             <!-- Form Tambah Menu & Upload Slide Pertama -->

@@ -102,8 +102,8 @@
                     <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
                 </button>
 
-                <div class="flex-grow sm:w-48 lg:w-72 h-1.5 sm:h-2.5 bg-blue-950/80 rounded-full overflow-hidden border border-blue-500/30 shadow-inner">
-                    <div id="progress-bar" class="h-full bg-gradient-to-r from-cyan-400 to-blue-400 transition-all duration-300 w-0"></div>
+                <div class="flex-grow sm:w-48 lg:w-72 h-2 sm:h-2.5 bg-blue-950/90 rounded-full overflow-hidden border border-blue-400/40 shadow-inner p-[1px]">
+                    <div id="progress-bar" class="h-full bg-white rounded-full shadow-[0_0_10px_#ffffff,0_0_18px_rgba(255,255,255,0.95)]" style="width: 0%;"></div>
                 </div>
 
                 <button id="next-btn" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-blue-900/80 hover:bg-cyan-400 hover:text-slate-950 text-white flex items-center justify-center transition border border-blue-500/30 shadow-lg cursor-pointer active:scale-95 flex-shrink-0" aria-label="Selanjutnya">
@@ -127,7 +127,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    document.addEventListener("DOMContentLoaded", function() {
+    function initSignage() {
         // Data diambil secara dinamis dari database melalui Controller
         const libraryData = @json($libraryData ?? []);
 
@@ -229,11 +229,9 @@
             if (progressBar) {
                 progressBar.style.transition = "none";
                 progressBar.style.width = "0%";
-
-                setTimeout(() => {
-                    progressBar.style.transition = `width ${slideDuration}ms linear`;
-                    progressBar.style.width = "100%";
-                }, 50);
+                void progressBar.offsetWidth; // Force synchronous browser reflow
+                progressBar.style.transition = `width ${slideDuration}ms linear`;
+                progressBar.style.width = "100%";
             }
 
             if (timerId) clearTimeout(timerId);
@@ -243,8 +241,11 @@
             }, slideDuration);
         }
 
-        document.getElementById("prev-btn").addEventListener("click", () => goPrevStep());
-        document.getElementById("next-btn").addEventListener("click", () => goNextStep());
+        const prevBtn = document.getElementById("prev-btn");
+        const nextBtn = document.getElementById("next-btn");
+
+        if (prevBtn) prevBtn.addEventListener("click", () => goPrevStep());
+        if (nextBtn) nextBtn.addEventListener("click", () => goNextStep());
 
         // Keyboard navigasi: tombol panah kiri / kanan
         document.addEventListener("keydown", function(e) {
@@ -256,6 +257,12 @@
         });
 
         runSignageLoop();
-    });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initSignage);
+    } else {
+        initSignage();
+    }
 </script>
 @endsection

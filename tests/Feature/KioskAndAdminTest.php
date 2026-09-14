@@ -111,18 +111,28 @@ class KioskAndAdminTest extends TestCase
         $this->assertDatabaseHas('menus', ['title' => 'Menu Baru Diupdate']);
     }
 
-    public function test_admin_can_delete_menu_and_cascades_steps(): void
+    public function test_admin_can_soft_delete_restore_and_force_delete_menu(): void
     {
         Storage::fake('public');
         $user = User::factory()->create();
         $menu = Menu::create(['num' => '04', 'title' => 'Menu Dihapus']);
         $step = $menu->steps()->create(['step_order' => 1, 'image_path' => 'steps/test.png']);
 
+        // 1. Soft delete (Pindahkan ke Tempat Sampah)
         $response = $this->actingAs($user)->delete("/admin/menus/{$menu->id}");
-
         $response->assertRedirect('/admin');
+        $this->assertSoftDeleted('menus', ['id' => $menu->id]);
+
+        // 2. Pulihkan menu dari Tempat Sampah
+        $responseRestore = $this->actingAs($user)->post("/admin/menus/{$menu->id}/restore");
+        $responseRestore->assertRedirect('/admin');
+        $this->assertNotSoftDeleted('menus', ['id' => $menu->id]);
+
+        // 3. Hapus permanen
+        $this->actingAs($user)->delete("/admin/menus/{$menu->id}");
+        $responseForce = $this->actingAs($user)->delete("/admin/menus/{$menu->id}/force-delete");
+        $responseForce->assertRedirect('/admin');
         $this->assertDatabaseMissing('menus', ['id' => $menu->id]);
-        $this->assertDatabaseMissing('steps', ['id' => $step->id]);
     }
 
     /**

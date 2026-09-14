@@ -31,6 +31,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/menus/{menu}/edit', [MenuController::class, 'edit'])->name('menus.edit');
     Route::put('/menus/{menu}', [MenuController::class, 'update'])->name('menus.update');
     Route::delete('/menus/{menu}', [MenuController::class, 'destroy'])->name('menus.destroy');
+    Route::post('/menus/{id}/restore', [MenuController::class, 'restore'])->name('menus.restore');
+    Route::delete('/menus/{id}/force-delete', [MenuController::class, 'forceDelete'])->name('menus.force-delete');
 
     // Pengelolaan Langkah / Slide spesifik
     Route::post('/menus/{menu}/steps', [MenuController::class, 'storeStep'])->name('steps.store');
