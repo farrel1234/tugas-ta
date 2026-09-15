@@ -3,6 +3,29 @@
 @section('title', 'Dashboard Admin Digital Signage')
 
 @section('content')
+<style>
+    .custom-table-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: rgba(6, 182, 212, 0.7) rgba(11, 30, 63, 0.8);
+        scroll-behavior: smooth;
+    }
+    .custom-table-scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    .custom-table-scrollbar::-webkit-scrollbar-track {
+        background: rgba(9, 23, 49, 0.9);
+        border-radius: 8px;
+    }
+    .custom-table-scrollbar::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, #06b6d4, #2563eb);
+        border-radius: 8px;
+        border: 1px solid rgba(6, 182, 212, 0.4);
+    }
+    .custom-table-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, #22d3ee, #3b82f6);
+    }
+</style>
 <div class="min-h-screen bg-[#071124] text-white flex flex-col font-sans select-none">
 
     <!-- Top Navigation Bar -->
@@ -17,12 +40,7 @@
             </div>
         </div>
 
-        <div class="flex items-center gap-3 sm:gap-4">
-            <!-- Tombol Uji Tap Kartu Quick Access -->
-            <button type="button" id="open-scanner-modal-top-btn" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer">
-                <svg class="w-4 h-4 text-cyan-400 animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-                <span class="hidden md:inline">Tap Kartu</span>
-            </button>
+        <div class="flex items-center gap-4">
 
             <div class="hidden sm:flex items-center gap-2 bg-blue-950/60 px-3 py-1.5 rounded-xl border border-blue-500/30 text-xs">
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -142,9 +160,12 @@
 
             <!-- Tabel Daftar Menu Signage -->
             <section class="bg-[#0B1E3F]/50 backdrop-blur-lg border border-blue-500/30 rounded-2xl p-5 sm:p-6 shadow-2xl">
-                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
                     <div>
-                        <h2 class="text-lg font-black text-white tracking-tight">Daftar Menu Signage Aktif</h2>
+                        <div class="flex items-center gap-2">
+                            <h2 class="text-lg font-black text-white tracking-tight">Daftar Menu Signage Aktif</h2>
+                            <span class="bg-blue-900/60 text-cyan-300 border border-blue-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full">{{ count($menus) }} Menu</span>
+                        </div>
                         <p class="text-xs text-blue-200/70">Atur urutan menu dan gambar slide yang tampil di layar utama Kiosk.</p>
                     </div>
                     <a href="#form-tambah-menu" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-2 justify-center cursor-pointer border border-cyan-400/30" style="background: linear-gradient(135deg, #06b6d4, #2563eb); color: #ffffff;">
@@ -153,16 +174,16 @@
                     </a>
                 </div>
 
-                <!-- Data Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs text-blue-100">
-                        <thead class="bg-blue-950/80 uppercase text-[10px] tracking-wider text-cyan-300 border-b border-blue-500/30">
+                <!-- Data Table with Max Height 520px (10 items) & Smooth Scroll -->
+                <div id="menu-table-scroll" class="max-h-[520px] overflow-y-auto overflow-x-auto rounded-xl border border-blue-500/30 custom-table-scrollbar">
+                    <table class="w-full text-left text-xs text-blue-100 border-collapse">
+                        <thead class="bg-[#091731] uppercase text-[10px] tracking-wider text-cyan-300 border-b border-blue-500/40 sticky top-0 z-10 shadow-md">
                             <tr>
-                                <th class="p-3.5 rounded-l-xl">No</th>
-                                <th class="p-3.5">Judul Menu Layanan</th>
-                                <th class="p-3.5">Deskripsi Singkat</th>
-                                <th class="p-3.5 text-center">Jumlah Langkah</th>
-                                <th class="p-3.5 text-center rounded-r-xl">Aksi</th>
+                                <th class="p-3.5 bg-[#091731] rounded-tl-xl">No</th>
+                                <th class="p-3.5 bg-[#091731]">Judul Menu Layanan</th>
+                                <th class="p-3.5 bg-[#091731]">Deskripsi Singkat</th>
+                                <th class="p-3.5 text-center bg-[#091731]">Jumlah Langkah</th>
+                                <th class="p-3.5 text-center bg-[#091731] rounded-tr-xl">Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-blue-800/40">
@@ -221,18 +242,19 @@
                             <p class="text-xs text-blue-200/70">Menu yang dihapus tersimpan di sini secara aman (Soft Delete) dan tidak tampil di Kiosk. Anda dapat memulihkannya kapan saja atau menghapusnya secara permanen.</p>
                         </div>
                     </div>
+
                 </div>
 
                 @if($trashedMenus->count() > 0)
-                    <div class="overflow-x-auto mt-4">
-                        <table class="w-full text-left text-xs text-blue-100">
-                            <thead class="bg-amber-950/50 uppercase text-[10px] tracking-wider text-amber-300 border-b border-amber-500/30">
+                    <div id="trash-table-scroll" class="max-h-[520px] overflow-y-auto overflow-x-auto rounded-xl border border-amber-500/30 custom-table-scrollbar mt-4">
+                        <table class="w-full text-left text-xs text-blue-100 border-collapse">
+                            <thead class="bg-[#121B35] uppercase text-[10px] tracking-wider text-amber-300 border-b border-amber-500/40 sticky top-0 z-10 shadow-md">
                                 <tr>
-                                    <th class="p-3.5 rounded-l-xl">No</th>
-                                    <th class="p-3.5">Judul Menu Layanan</th>
-                                    <th class="p-3.5">Waktu Dihapus</th>
-                                    <th class="p-3.5 text-center">Jumlah Slide</th>
-                                    <th class="p-3.5 text-center rounded-r-xl">Aksi Pemulihan</th>
+                                    <th class="p-3.5 bg-[#121B35] rounded-tl-xl">No</th>
+                                    <th class="p-3.5 bg-[#121B35]">Judul Menu Layanan</th>
+                                    <th class="p-3.5 bg-[#121B35]">Waktu Dihapus</th>
+                                    <th class="p-3.5 text-center bg-[#121B35]">Jumlah Slide</th>
+                                    <th class="p-3.5 text-center bg-[#121B35] rounded-tr-xl">Aksi Pemulihan</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-amber-900/30">
@@ -302,22 +324,25 @@
                         </div>
                     </div>
 
-                    <!-- Tombol Buka Modal Tap Kartu / Uji Scanner -->
-                    <button type="button" id="open-scanner-modal-btn" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-2 justify-center cursor-pointer border border-cyan-400/30 self-start sm:self-auto" style="background: linear-gradient(135deg, #06b6d4, #2563eb); color: #ffffff;">
-                        <svg class="w-4 h-4 text-white animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-                        <span>Tap Kartu / Uji Scanner</span>
-                    </button>
+                    <div class="self-start sm:self-auto">
+                        <!-- Tombol Buka Modal Uji Scanner -->
+                        <button type="button" id="open-scanner-modal-btn" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-2 justify-center cursor-pointer border border-cyan-400/30" style="background: linear-gradient(135deg, #06b6d4, #2563eb); color: #ffffff;">
+                            <svg class="w-4 h-4 text-white animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                            <span>Uji Scanner</span>
+                        </button>
+                    </div>
                 </div>
 
                 @if(isset($recentLogs) && $recentLogs->count() > 0)
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left text-xs text-blue-100">
-                            <thead class="bg-blue-950/80 uppercase text-[10px] tracking-wider text-cyan-300 border-b border-blue-500/30">
+                    <!-- Data Table Container with Max Height 520px (10 items) & Smooth Scroll -->
+                    <div id="visitor-logs-scroll" class="max-h-[520px] overflow-y-auto overflow-x-auto rounded-xl border border-blue-500/30 custom-table-scrollbar">
+                        <table class="w-full text-left text-xs text-blue-100 border-collapse">
+                            <thead class="bg-[#091731] uppercase text-[10px] tracking-wider text-cyan-300 border-b border-blue-500/40 sticky top-0 z-10 shadow-md">
                                 <tr>
-                                    <th class="p-3.5 rounded-l-xl">Waktu Scan</th>
-                                    <th class="p-3.5">Nama Pengunjung</th>
-                                    <th class="p-3.5">Kode Kartu / NIM</th>
-                                    <th class="p-3.5 text-center rounded-r-xl">Status Akses</th>
+                                    <th class="p-3.5 bg-[#091731] rounded-tl-xl">Waktu Scan</th>
+                                    <th class="p-3.5 bg-[#091731]">Nama Pengunjung</th>
+                                    <th class="p-3.5 bg-[#091731]">Kode Kartu / NIM</th>
+                                    <th class="p-3.5 text-center bg-[#091731] rounded-tr-xl">Status Akses</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-blue-800/40">
@@ -438,7 +463,7 @@
     </div>
 </div>
 
-<!-- Modal Uji Coba Tap Scanner Kartu -->
+<!-- Modal Uji Coba Scanner Gerbang -->
 <div id="scannerTestModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 hidden">
     <div class="bg-[#091731] border border-cyan-500/40 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl shadow-cyan-950/50 flex flex-col transform transition-all">
         <!-- Modal Header -->
@@ -448,7 +473,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
                 </div>
                 <div>
-                    <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wider">Simulasi Tap Kartu / Uji Scanner</h3>
+                    <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wider">Uji Coba Scanner Gerbang</h3>
                     <p class="text-[11px] text-cyan-300/80 font-normal">Uji coba pemindaian kartu gerbang & pencatatan riwayat log</p>
                 </div>
             </div>
@@ -605,7 +630,6 @@
     // 2. Modal Uji Coba Scanner Gerbang (Admin)
     const scannerModal = document.getElementById('scannerTestModal');
     const openScannerModalBtn = document.getElementById('open-scanner-modal-btn');
-    const openScannerModalTopBtn = document.getElementById('open-scanner-modal-top-btn');
     const closeScannerModalBtn = document.getElementById('close-scanner-modal-btn');
     const closeScannerModalFooterBtn = document.getElementById('close-scanner-modal-footer-btn');
     const adminInputScanner = document.getElementById('adminInputScanner');
@@ -635,7 +659,6 @@
     }
 
     if (openScannerModalBtn) openScannerModalBtn.addEventListener('click', openScannerModal);
-    if (openScannerModalTopBtn) openScannerModalTopBtn.addEventListener('click', openScannerModal);
     if (closeScannerModalBtn) closeScannerModalBtn.addEventListener('click', closeScannerModal);
     if (closeScannerModalFooterBtn) closeScannerModalFooterBtn.addEventListener('click', closeScannerModal);
 

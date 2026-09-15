@@ -20,7 +20,7 @@ class MenuController extends Controller
         $trashedMenus = Menu::onlyTrashed()->with('steps')->orderBy('deleted_at', 'desc')->get();
         $totalMenus = $menus->count();
         $totalSteps = Step::whereHas('menu')->count();
-        $recentLogs = VisitorLog::with('user')->latest()->take(10)->get();
+        $recentLogs = VisitorLog::with('user')->latest()->take(100)->get();
         $totalVisitorsToday = VisitorLog::whereDate('created_at', today())->count();
 
         return view('admin.dashboard', compact('menus', 'trashedMenus', 'totalMenus', 'totalSteps', 'recentLogs', 'totalVisitorsToday'));

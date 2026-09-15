@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Menu;
 use App\Models\Step;
 use App\Models\User;
+use App\Models\VisitorLog;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -156,15 +157,36 @@ class KioskAndAdminTest extends TestCase
         $response->assertSee('Digital Signage Kiosk Polibatam');
     }
 
-    public function test_admin_dashboard_has_scanner_modal_and_button(): void
+    public function test_admin_dashboard_has_uji_scanner_modal_and_button(): void
     {
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get('/admin');
         $response->assertStatus(200);
+        $response->assertSee('Riwayat Scan Kunjungan Gerbang');
         $response->assertSee('open-scanner-modal-btn');
+        $response->assertSee('Uji Scanner');
+        $response->assertDontSee('Tap Kartu / Uji Scanner');
         $response->assertSee('scannerTestModal');
         $response->assertSee('3312001001');
+    }
+
+    public function test_admin_dashboard_has_table_scroll_containers_and_no_scroll_buttons(): void
+    {
+        $user = User::factory()->create();
+        VisitorLog::create([
+            'user_id' => $user->id,
+            'scanned_code' => 'TEST_CARD',
+            'status' => 'Bisa Masuk',
+        ]);
+
+        $response = $this->actingAs($user)->get('/admin');
+        $response->assertStatus(200);
+        $response->assertSee('menu-table-scroll');
+        $response->assertSee('custom-table-scrollbar');
+        $response->assertSee('visitor-logs-scroll');
+        $response->assertDontSee('scrollTable');
+        $response->assertDontSee('Scroll:');
     }
 
     public function test_kiosk_does_not_have_manual_test_modal_but_retains_hardware_scan_popup(): void
