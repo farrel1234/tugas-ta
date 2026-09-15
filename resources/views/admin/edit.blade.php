@@ -78,7 +78,8 @@
                             <textarea name="desc" rows="3" class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">{{ old('desc', $menu->desc) }}</textarea>
                         </div>
 
-                        <button type="submit" class="w-full py-2.5 px-4 bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-950 font-bold text-xs rounded-xl hover:from-cyan-300 hover:to-blue-400 transition shadow-lg cursor-pointer">
+                        <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs sm:text-sm rounded-xl transition shadow-lg shadow-cyan-500/20 border border-cyan-400/30 cursor-pointer flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #06b6d4, #2563eb); color: #ffffff;">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
                             Simpan Perubahan Menu
                         </button>
                     </form>
@@ -91,10 +92,33 @@
                     <form action="{{ route('admin.steps.store', $menu) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
                         @csrf
 
-                        <div>
-                            <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Pilih File Gambar Slide *</label>
-                            <input type="file" name="image" required accept="image/*" class="w-full text-xs text-blue-200 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-cyan-500 file:text-slate-950 hover:file:bg-cyan-400">
-                            <span class="text-[10px] text-blue-300/60 block mt-1">Format: JPG, PNG, WEBP (Max 5MB)</span>
+                        <!-- Upload Gambar Slide dengan Live Preview -->
+                        <div class="space-y-2">
+                            <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider">Pilih File Gambar Slide *</label>
+
+                            <label for="step-image-input" class="group flex flex-col items-center justify-center border-2 border-dashed border-cyan-500/40 hover:border-cyan-400 rounded-2xl p-4 text-center bg-blue-950/40 hover:bg-blue-900/20 transition cursor-pointer">
+                                <div id="step-empty-prompt" class="flex flex-col items-center py-2">
+                                    <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-2 group-hover:scale-110 transition">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                    </div>
+                                    <span class="text-xs font-bold text-white block">Klik di sini untuk memilih gambar slide</span>
+                                    <span class="text-[10px] text-blue-300/70 block mt-0.5">Format JPG, PNG, WEBP (Max 5MB)</span>
+                                </div>
+
+                                <!-- Live Image Preview Box -->
+                                <div id="step-preview-wrapper" class="hidden w-full space-y-2">
+                                    <div class="relative w-full h-44 bg-blue-950/80 rounded-xl overflow-hidden border border-cyan-500/50 flex items-center justify-center shadow-inner">
+                                        <img id="step-image-preview" src="" alt="Pratinjau Slide" class="max-w-full max-h-full object-contain">
+                                    </div>
+                                    <div class="flex items-center justify-between text-[11px] bg-blue-900/60 px-3 py-1.5 rounded-lg border border-blue-500/30">
+                                        <span id="step-file-name" class="font-medium text-cyan-200 truncate max-w-[180px]">nama_file.png</span>
+                                        <span id="step-file-size" class="text-blue-300/70 font-mono text-[10px]">0 KB</span>
+                                    </div>
+                                    <span class="text-[10px] text-cyan-400 font-semibold block text-center">✓ Gambar berhasil dipilih! Klik kembali jika ingin mengganti.</span>
+                                </div>
+
+                                <input type="file" id="step-image-input" name="image" required accept="image/*" class="hidden">
+                            </label>
                         </div>
 
                         <div>
@@ -107,8 +131,8 @@
                             <input type="number" name="step_order" value="{{ ($menu->steps->max('step_order') ?? 0) + 1 }}" min="1" class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
                         </div>
 
-                        <button type="submit" class="w-full py-2.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded-xl transition shadow-lg cursor-pointer flex items-center justify-center gap-1.5">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <button type="submit" class="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xs sm:text-sm rounded-xl transition shadow-lg shadow-emerald-500/20 border border-emerald-400/30 cursor-pointer flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #10b981, #0d9488); color: #ffffff;">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                             Unggah Slide Baru
                         </button>
                     </form>
@@ -172,4 +196,30 @@
 
     </div>
 </div>
+
+<script>
+    const stepInput = document.getElementById('step-image-input');
+    const stepEmptyPrompt = document.getElementById('step-empty-prompt');
+    const stepPreviewWrapper = document.getElementById('step-preview-wrapper');
+    const stepImagePreview = document.getElementById('step-image-preview');
+    const stepFileName = document.getElementById('step-file-name');
+    const stepFileSize = document.getElementById('step-file-size');
+
+    if (stepInput) {
+        stepInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    stepImagePreview.src = evt.target.result;
+                    stepFileName.innerText = file.name;
+                    stepFileSize.innerText = (file.size / 1024).toFixed(1) + ' KB';
+                    stepEmptyPrompt.classList.add('hidden');
+                    stepPreviewWrapper.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+</script>
 @endsection

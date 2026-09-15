@@ -155,4 +155,24 @@ class KioskAndAdminTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Digital Signage Kiosk Polibatam');
     }
+
+    public function test_admin_dashboard_has_scanner_modal_and_button(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/admin');
+        $response->assertStatus(200);
+        $response->assertSee('open-scanner-modal-btn');
+        $response->assertSee('scannerTestModal');
+        $response->assertSee('3312001001');
+    }
+
+    public function test_kiosk_does_not_have_manual_test_modal_but_retains_hardware_scan_popup(): void
+    {
+        $response = $this->get('/');
+        $response->assertStatus(200);
+        $response->assertDontSee('open-scanner-modal-btn');
+        $response->assertDontSee('scannerTestModal');
+        $response->assertSee('scanPopup');
+    }
 }

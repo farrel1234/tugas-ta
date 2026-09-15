@@ -8,6 +8,8 @@ use App\Models\Step;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
+use Carbon\Carbon;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -21,6 +23,29 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Admin Perpustakaan',
                 'password' => Hash::make('admin123'),
+            ]
+        );
+
+        // 1.1 Data Sampel Anggota untuk Uji Coba Scanner Gerbang:
+        // Anggota 1: Aktif (Hijau - Bisa Masuk)
+        User::updateOrCreate(
+            ['email' => 'farhan@student.polibatam.ac.id'],
+            [
+                'name' => 'Ahmad Farhan',
+                'kode_kartu' => '3312001001',
+                'expired_at' => Carbon::now()->addYear(),
+                'password' => Hash::make('password123'),
+            ]
+        );
+
+        // Anggota 2: Kedaluwarsa (Abu-abu - Belum Perpanjang)
+        User::updateOrCreate(
+            ['email' => 'budi@student.polibatam.ac.id'],
+            [
+                'name' => 'Budi Santoso',
+                'kode_kartu' => '3312001002',
+                'expired_at' => Carbon::now()->subMonth(),
+                'password' => Hash::make('password123'),
             ]
         );
 

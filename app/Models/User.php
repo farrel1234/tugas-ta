@@ -10,7 +10,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+#[Fillable(['name', 'email', 'password', 'kode_kartu', 'expired_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -26,7 +28,16 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'expired_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Riwayat scan kunjungan user.
+     */
+    public function visitorLogs(): HasMany
+    {
+        return $this->hasMany(VisitorLog::class);
     }
 }

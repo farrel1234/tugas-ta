@@ -50,9 +50,21 @@
 
             <div>
                 <label for="password" class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Kata Sandi</label>
-                <div class="relative">
+                <div class="relative flex items-center">
                     <input type="password" id="password" name="password" required placeholder="••••••••" 
-                        class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-4 py-3 text-xs text-white placeholder-blue-300/40 focus:outline-none focus:border-cyan-400 transition">
+                        class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl pl-4 pr-11 py-3 text-xs text-white placeholder-blue-300/40 focus:outline-none focus:border-cyan-400 transition">
+                    
+                    <button type="button" id="toggle-password" title="Tampilkan / Sembunyikan Kata Sandi" class="absolute right-3 text-blue-300/60 hover:text-cyan-300 transition p-1 cursor-pointer focus:outline-none">
+                        <!-- Ikon Mata Terbuka (saat password bertipe password) -->
+                        <svg id="eye-open-icon" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <!-- Ikon Mata Tertutup / Dicoret (saat password terlihat sebagai teks) -->
+                        <svg id="eye-closed-icon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -64,7 +76,8 @@
             </div>
 
             <button type="submit" 
-                class="w-full py-3 px-4 bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition duration-200 cursor-pointer">
+                class="w-full py-3.5 px-4 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-cyan-500/20 border border-cyan-400/30 transition duration-200 cursor-pointer"
+                style="background: linear-gradient(135deg, #06b6d4, #2563eb); color: #ffffff;">
                 Masuk ke Dashboard
             </button>
         </form>
@@ -78,9 +91,23 @@
 
     </div>
 
-    <div class="text-center mt-6 text-[11px] text-blue-300/50 relative z-10">
-        Default: <span class="text-cyan-300">admin@polibatam.ac.id</span> | Password: <span class="text-cyan-300">admin123</span>
-    </div>
-
 </div>
+
+<script>
+    const passwordInput = document.getElementById('password');
+    const togglePasswordBtn = document.getElementById('toggle-password');
+    const eyeOpenIcon = document.getElementById('eye-open-icon');
+    const eyeClosedIcon = document.getElementById('eye-closed-icon');
+
+    if (togglePasswordBtn && passwordInput) {
+        togglePasswordBtn.addEventListener('click', function () {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            if (eyeOpenIcon && eyeClosedIcon) {
+                eyeOpenIcon.classList.toggle('hidden', isPassword);
+                eyeClosedIcon.classList.toggle('hidden', !isPassword);
+            }
+        });
+    }
+</script>
 @endsection

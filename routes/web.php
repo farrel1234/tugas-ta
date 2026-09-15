@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\KioskController;
+use App\Http\Controllers\GateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,9 @@ use App\Http\Controllers\KioskController;
 // 1. Halaman Public & Digital Signage Kiosk (Data dinamis dari database)
 Route::get('/', [KioskController::class, 'index'])->name('kiosk.index');
 Route::get('/kiosk', [KioskController::class, 'index']);
+
+// 1.1 API Scanner Gerbang Masuk (KTP/QR/RFID Pengunjung)
+Route::post('/api/scan', [GateController::class, 'scan'])->name('api.scan');
 
 // 2. Rute Autentikasi (Login untuk guest)
 Route::middleware('guest')->group(function () {
