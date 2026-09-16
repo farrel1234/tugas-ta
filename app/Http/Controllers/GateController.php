@@ -26,8 +26,11 @@ class GateController extends Controller
             ], 400);
         }
 
-        // Cari user di database berdasarkan kode tersebut
-        $user = User::where('kode_kartu', $scannedCode)->first();
+        // Cari user di database berdasarkan kode kartu (RFID/Barcode) atau NIM
+        $user = User::where('kode_kartu', $scannedCode)
+            ->orWhere('nim', $scannedCode)
+            ->orWhereRaw('LOWER(kode_kartu) = ?', [strtolower($scannedCode)])
+            ->first();
 
         // SKENARIO 1: MERAH (Belum Daftar / Data tidak ditemukan)
         if (!$user) {

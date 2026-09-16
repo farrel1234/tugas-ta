@@ -87,7 +87,7 @@
                 <div class="mb-2 border-b border-blue-800/50 pb-2 sm:pb-2.5 flex-shrink-0">
                     <div class="flex items-start sm:items-center justify-between mb-1 gap-2">
                         <div class="flex items-center gap-2 sm:gap-3">
-                            <span id="menu-number" class="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-tr from-cyan-400 to-blue-500 text-slate-950 font-black text-base sm:text-lg rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                            <span id="menu-number" class="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-tr from-cyan-400 to-blue-500 text-white font-black text-base sm:text-lg rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg flex-shrink-0" style="color: #ffffff !important;">
                                 01
                             </span>
                             <div>

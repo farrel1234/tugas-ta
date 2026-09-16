@@ -26,23 +26,37 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 1.1 Data Sampel Anggota untuk Uji Coba Scanner Gerbang:
-        // Anggota 1: Aktif (Hijau - Bisa Masuk)
+        // 1.1 Data Anggota untuk Uji Coba Scanner Gerbang:
+        // Anggota 1: Farrel Ariq Nadhil (Aktif - Hijau - Bisa Masuk)
+        User::updateOrCreate(
+            ['email' => 'farrelariq3@gmail.com'],
+            [
+                'name' => 'Farrel Ariq Nadhil',
+                'nim' => '4342301035',
+                'kode_kartu' => '058945125E9200',
+                'expired_at' => Carbon::now()->addYears(2),
+                'password' => Hash::make('password123'),
+            ]
+        );
+
+        // Anggota 2: Ahmad Farhan (Aktif - Hijau - Bisa Masuk)
         User::updateOrCreate(
             ['email' => 'farhan@student.polibatam.ac.id'],
             [
                 'name' => 'Ahmad Farhan',
+                'nim' => '3312001001',
                 'kode_kartu' => '3312001001',
                 'expired_at' => Carbon::now()->addYear(),
                 'password' => Hash::make('password123'),
             ]
         );
 
-        // Anggota 2: Kedaluwarsa (Abu-abu - Belum Perpanjang)
+        // Anggota 3: Budi Santoso (Kedaluwarsa - Abu-abu - Belum Perpanjang)
         User::updateOrCreate(
             ['email' => 'budi@student.polibatam.ac.id'],
             [
                 'name' => 'Budi Santoso',
+                'nim' => '3312001002',
                 'kode_kartu' => '3312001002',
                 'expired_at' => Carbon::now()->subMonth(),
                 'password' => Hash::make('password123'),

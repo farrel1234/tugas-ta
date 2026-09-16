@@ -3,6 +3,41 @@
 @section('title', 'Layar Digital Signage - UPA Perpustakaan Polibatam')
 
 @section('content')
+<style>
+    @keyframes popupEntrance {
+        0% {
+            opacity: 0;
+            transform: scale(0.92) translate3d(0, 8px, 0);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1) translate3d(0, 0, 0);
+        }
+    }
+    @keyframes popupDismiss {
+        0% {
+            opacity: 1;
+            transform: scale(1) translate3d(0, 0, 0);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(0.95) translate3d(0, 6px, 0);
+        }
+    }
+    .popup-card-enter {
+        animation: popupEntrance 160ms cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+        will-change: transform, opacity;
+    }
+    .popup-card-exit {
+        animation: popupDismiss 180ms ease-in forwards !important;
+        will-change: transform, opacity;
+    }
+    #popupCountdown {
+        transform-origin: left center;
+        will-change: transform;
+        transform: translate3d(0, 0, 0) scaleX(1);
+    }
+</style>
 <div class="bg-[#071124] text-white antialiased select-none h-screen w-screen flex flex-col overflow-hidden">
 
     <div class="w-full h-full flex flex-col justify-between p-3 sm:p-6 relative bg-gradient-to-br from-[#071124] via-[#0B1E3F] to-[#0D234A] overflow-hidden">
@@ -61,7 +96,7 @@
                 <div class="mb-2 border-b border-blue-800/50 pb-2 sm:pb-2.5 flex-shrink-0">
                     <div class="flex items-start sm:items-center justify-between mb-1 gap-2">
                         <div class="flex items-center gap-2 sm:gap-3">
-                            <span id="menu-number" class="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-tr from-cyan-400 to-blue-500 text-slate-950 font-black text-base sm:text-lg rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                            <span id="menu-number" class="w-9 h-9 sm:w-11 sm:h-11 bg-gradient-to-tr from-cyan-400 to-blue-500 text-white font-black text-base sm:text-lg rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg flex-shrink-0" style="color: #ffffff !important;">
                                 01
                             </span>
                             <div>
@@ -115,14 +150,16 @@
         <!-- ============================================================== -->
         <!-- POPUP SCANNER AKSES PENGUNJUNG (HIJAU / ABU-ABU / MERAH)         -->
         <!-- ============================================================== -->
-        <div id="scanPopup" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-md transition-all duration-300 p-4">
-            <div id="popupCard" class="w-full max-w-md rounded-3xl p-6 sm:p-8 text-center shadow-2xl border-2 transition-all transform duration-300 scale-95 opacity-0 relative overflow-hidden">
+        <div id="scanPopup" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+            <div id="popupCard" class="w-full max-w-md rounded-3xl p-6 sm:p-8 text-center shadow-2xl border-2 relative overflow-hidden">
                 
                 <!-- Glow background ornament -->
                 <div id="popupGlow" class="absolute -top-20 -left-20 w-44 h-44 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
 
                 <!-- Icon Header -->
-                <div id="popupIconContainer" class="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-full flex items-center justify-center mb-4 border-2 shadow-xl transition-all">
+                <div id="popupIconContainer" class="w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-full flex items-center justify-center mb-4 border-2 shadow-xl transition-colors duration-200">
+                    <!-- Instant Scan Radar Icon (Reflex State) -->
+                    <svg id="popupIconScan" class="w-10 h-10 sm:w-12 sm:h-12 hidden animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
                     <!-- Checkmark Icon (Hijau) -->
                     <svg id="popupIconGreen" class="w-10 h-10 sm:w-12 sm:h-12 hidden" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                     <!-- Hourglass/Warning Icon (Abu-abu) -->
@@ -156,9 +193,9 @@
                     Pintu gerbang otomatis dibuka. Selamat datang di perpustakaan.
                 </p>
 
-                <!-- 3-Second Progress Countdown Bar -->
-                <div class="w-full h-1.5 bg-black/50 rounded-full overflow-hidden border border-white/10">
-                    <div id="popupCountdown" class="h-full rounded-full transition-all duration-[3000ms] ease-linear w-full"></div>
+                <!-- 3-Second Progress Countdown Bar (Hardware Accelerated via GPU ScaleX) -->
+                <div class="w-full h-1.5 bg-black/60 rounded-full overflow-hidden border border-white/10 relative">
+                    <div id="popupCountdown" class="h-full w-full rounded-full origin-left"></div>
                 </div>
             </div>
         </div>
@@ -316,44 +353,89 @@
     // LOGIKA SCANNER AKSES PENGUNJUNG GERBANG (GATE ACCESS SCANNER)
     // =========================================================================
     let popupTimer = null;
-    let countdownInterval = null;
+    let countdownAnimation = null;
+    let scanAbortController = null;
 
-    function handleScan(kodeDariScanner) {
-        if (!kodeDariScanner || !kodeDariScanner.trim()) return;
+    // 1. REFLEK INSTAN: Tampilkan visual pop-up SEKETIKA saat kartu terdeteksi (0ms delay)
+    function showInstantScanFeedback(rawCode) {
+        const popup = document.getElementById('scanPopup');
+        const popupCard = document.getElementById('popupCard');
+        const popupNama = document.getElementById('popupNama');
+        const popupPesan = document.getElementById('popupPesan');
+        const popupKode = document.getElementById('popupKode');
+        const popupBadge = document.getElementById('popupBadge');
+        const popupSubtext = document.getElementById('popupSubtext');
+        const popupCountdown = document.getElementById('popupCountdown');
+        const popupIconContainer = document.getElementById('popupIconContainer');
+        const popupGlow = document.getElementById('popupGlow');
 
-        const cleanCode = kodeDariScanner.trim();
+        const iconGreen = document.getElementById('popupIconGreen');
+        const iconGray = document.getElementById('popupIconGray');
+        const iconRed = document.getElementById('popupIconRed');
+        const iconScan = document.getElementById('popupIconScan');
 
-        // Tembak API Backend
-        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        if (!popup || !popupCard) return;
 
-        fetch('/api/scan', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify({ kode_scan: cleanCode })
-        })
-        .then(response => {
-            if (!response.ok && response.status !== 400) {
-                throw new Error('Gagal menghubungi server');
-            }
-            return response.json();
-        })
-        .then(data => {
-            showAccessPopup(data, cleanCode);
-        })
-        .catch(err => {
-            console.error('Scan error:', err);
-            showAccessPopup({
-                color: 'red',
-                name: 'Gangguan Jaringan',
-                message: 'Gagal Scan'
-            }, cleanCode);
+        // Bersihkan timer lama atau animasi countdown yang sedang berjalan
+        if (popupTimer) clearTimeout(popupTimer);
+        if (countdownAnimation) {
+            countdownAnimation.cancel();
+            countdownAnimation = null;
+        }
+
+        // Tampilkan icon radar scan & sembunyikan icon status
+        if (iconGreen) iconGreen.classList.add('hidden');
+        if (iconGray) iconGray.classList.add('hidden');
+        if (iconRed) iconRed.classList.add('hidden');
+        if (iconScan) iconScan.classList.remove('hidden');
+
+        // Reset class card ke tema scanning dengan animasi masuk instan & halus
+        popupCard.classList.remove('popup-card-exit');
+        popupCard.className = 'w-full max-w-md rounded-3xl p-6 sm:p-8 text-center shadow-2xl border-2 relative overflow-hidden bg-[#07152b]/95 border-cyan-400 shadow-[0_0_60px_rgba(6,182,212,0.4)] popup-card-enter';
+        popupGlow.className = 'absolute -top-20 -left-20 w-44 h-44 rounded-full blur-3xl opacity-50 pointer-events-none bg-cyan-500';
+        popupIconContainer.className = 'w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-full flex items-center justify-center mb-4 border-2 shadow-xl bg-cyan-500/20 border-cyan-400 text-cyan-300';
+
+        popupBadge.className = 'text-[10px] sm:text-xs font-black uppercase tracking-widest px-4 py-1 rounded-full border shadow-sm bg-cyan-500/20 text-cyan-300 border-cyan-500/40 animate-pulse';
+        popupBadge.innerText = 'MEMERIKSA KARTU';
+
+        popupPesan.className = 'text-2xl sm:text-3xl font-black tracking-tight mb-2 uppercase text-white';
+        popupPesan.innerText = 'MEMINDAI...';
+
+        popupNama.innerText = 'Memverifikasi Hak Akses...';
+        popupKode.innerText = rawCode ? `ID Kartu: ${rawCode}` : '';
+        popupSubtext.innerText = 'Menghubungkan ke sistem gerbang perpustakaan...';
+
+        // Garis waktu awal: penuh & menyala cyan
+        popupCountdown.className = 'h-full w-full rounded-full origin-left bg-cyan-400';
+        popupCountdown.style.transform = 'scaleX(1)';
+
+        // Tampilkan container modal seketika
+        popup.classList.remove('hidden');
+    }
+
+    // 2. Animasi Garis Waktu Super Smooth (GPU Compositor 60FPS/120FPS tanpa patah/ngefrem)
+    function startSmoothCountdown(durationMs = 3000) {
+        const popupCountdown = document.getElementById('popupCountdown');
+        if (!popupCountdown) return;
+
+        if (countdownAnimation) {
+            countdownAnimation.cancel();
+        }
+
+        popupCountdown.style.transform = 'scaleX(1)';
+
+        // Web Animations API: Berjalan langsung pada hardware thread compositor GPU
+        countdownAnimation = popupCountdown.animate([
+            { transform: 'scaleX(1)' },
+            { transform: 'scaleX(0)' }
+        ], {
+            duration: durationMs,
+            easing: 'linear',
+            fill: 'forwards'
         });
     }
 
+    // 3. Tampilkan Hasil Akhir Akses (Hijau / Abu-abu / Merah) dan Mulai Garis Waktu 3 Detik
     function showAccessPopup(data, rawCode) {
         const popup = document.getElementById('scanPopup');
         const popupCard = document.getElementById('popupCard');
@@ -369,87 +451,132 @@
         const iconGreen = document.getElementById('popupIconGreen');
         const iconGray = document.getElementById('popupIconGray');
         const iconRed = document.getElementById('popupIconRed');
+        const iconScan = document.getElementById('popupIconScan');
 
         if (!popup || !popupCard) return;
 
-        // Reset icon visibility
+        // Sembunyikan icon scan radar
+        if (iconScan) iconScan.classList.add('hidden');
         if (iconGreen) iconGreen.classList.add('hidden');
         if (iconGray) iconGray.classList.add('hidden');
         if (iconRed) iconRed.classList.add('hidden');
 
-        // Reset countdown animation
-        popupCountdown.style.transition = 'none';
-        popupCountdown.style.width = '100%';
+        // Pastikan card tidak dalam mode exit
+        popupCard.classList.remove('popup-card-exit');
+        if (!popupCard.classList.contains('popup-card-enter')) {
+            popupCard.classList.add('popup-card-enter');
+        }
 
-        // Set teks
+        // Update konten teks
         popupNama.innerText = data.name || 'Tidak Dikenal';
         popupPesan.innerText = data.message || 'Status Tidak Diketahui';
         popupKode.innerText = rawCode ? `ID Kartu: ${rawCode}` : '';
 
-        // Reset base classes
-        popupCard.className = 'w-full max-w-md rounded-3xl p-6 sm:p-8 text-center shadow-2xl border-2 transition-all transform duration-300 scale-100 opacity-100 relative overflow-hidden ';
-        popupIconContainer.className = 'w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-full flex items-center justify-center mb-4 border-2 shadow-xl transition-all ';
-
         if (data.color === 'green') {
             // SKENARIO HIJAU: Bisa Masuk (Aktif)
-            popupCard.classList.add('bg-[#032315]/95', 'border-emerald-400', 'shadow-[0_0_60px_rgba(16,185,129,0.35)]');
-            popupGlow.className = 'absolute -top-20 -left-20 w-44 h-44 rounded-full blur-3xl opacity-40 pointer-events-none bg-emerald-500';
-            popupIconContainer.classList.add('bg-emerald-500/20', 'border-emerald-400', 'text-emerald-300');
+            popupCard.className = 'w-full max-w-md rounded-3xl p-6 sm:p-8 text-center shadow-2xl border-2 relative overflow-hidden bg-[#032315]/95 border-emerald-400 shadow-[0_0_60px_rgba(16,185,129,0.4)] popup-card-enter';
+            popupGlow.className = 'absolute -top-20 -left-20 w-44 h-44 rounded-full blur-3xl opacity-50 pointer-events-none bg-emerald-500';
+            popupIconContainer.className = 'w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-full flex items-center justify-center mb-4 border-2 shadow-xl bg-emerald-500/20 border-emerald-400 text-emerald-300';
             if (iconGreen) iconGreen.classList.remove('hidden');
 
             popupBadge.className = 'text-[10px] sm:text-xs font-black uppercase tracking-widest px-4 py-1 rounded-full border shadow-sm bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
             popupBadge.innerText = 'AKSES DIIZINKAN';
             popupPesan.className = 'text-2xl sm:text-3xl font-black tracking-tight mb-2 uppercase text-emerald-300';
             popupSubtext.innerText = 'Pintu gerbang otomatis dibuka. Selamat datang di perpustakaan!';
-            popupCountdown.className = 'h-full rounded-full transition-all duration-[3000ms] ease-linear bg-emerald-400';
+            popupCountdown.className = 'h-full w-full rounded-full origin-left bg-emerald-400';
 
         } else if (data.color === 'gray') {
             // SKENARIO ABU-ABU: Belum Perpanjang (Kedaluwarsa)
-            popupCard.classList.add('bg-[#1a212d]/95', 'border-slate-400', 'shadow-[0_0_60px_rgba(148,163,184,0.3)]');
-            popupGlow.className = 'absolute -top-20 -left-20 w-44 h-44 rounded-full blur-3xl opacity-40 pointer-events-none bg-slate-400';
-            popupIconContainer.classList.add('bg-slate-500/20', 'border-slate-400', 'text-slate-300');
+            popupCard.className = 'w-full max-w-md rounded-3xl p-6 sm:p-8 text-center shadow-2xl border-2 relative overflow-hidden bg-[#1a212d]/95 border-slate-400 shadow-[0_0_60px_rgba(148,163,184,0.35)] popup-card-enter';
+            popupGlow.className = 'absolute -top-20 -left-20 w-44 h-44 rounded-full blur-3xl opacity-50 pointer-events-none bg-slate-400';
+            popupIconContainer.className = 'w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-full flex items-center justify-center mb-4 border-2 shadow-xl bg-slate-500/20 border-slate-400 text-slate-300';
             if (iconGray) iconGray.classList.remove('hidden');
 
             popupBadge.className = 'text-[10px] sm:text-xs font-black uppercase tracking-widest px-4 py-1 rounded-full border shadow-sm bg-slate-500/20 text-slate-300 border-slate-500/40';
             popupBadge.innerText = 'KEANGGOTAAN KEDALUWARSA';
             popupPesan.className = 'text-2xl sm:text-3xl font-black tracking-tight mb-2 uppercase text-slate-200';
             popupSubtext.innerText = 'Masa aktif kartu Anda telah habis. Silakan perpanjang masa pinjam di meja sirkulasi.';
-            popupCountdown.className = 'h-full rounded-full transition-all duration-[3000ms] ease-linear bg-slate-400';
+            popupCountdown.className = 'h-full w-full rounded-full origin-left bg-slate-400';
 
         } else {
             // SKENARIO MERAH: Belum Daftar (Data tidak ditemukan)
-            popupCard.classList.add('bg-[#2d0912]/95', 'border-rose-500', 'shadow-[0_0_60px_rgba(244,63,94,0.35)]');
-            popupGlow.className = 'absolute -top-20 -left-20 w-44 h-44 rounded-full blur-3xl opacity-40 pointer-events-none bg-rose-500';
-            popupIconContainer.classList.add('bg-rose-500/20', 'border-rose-500', 'text-rose-300');
+            popupCard.className = 'w-full max-w-md rounded-3xl p-6 sm:p-8 text-center shadow-2xl border-2 relative overflow-hidden bg-[#2d0912]/95 border-rose-500 shadow-[0_0_60px_rgba(244,63,94,0.4)] popup-card-enter';
+            popupGlow.className = 'absolute -top-20 -left-20 w-44 h-44 rounded-full blur-3xl opacity-50 pointer-events-none bg-rose-500';
+            popupIconContainer.className = 'w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-full flex items-center justify-center mb-4 border-2 shadow-xl bg-rose-500/20 border-rose-500 text-rose-300';
             if (iconRed) iconRed.classList.remove('hidden');
 
             popupBadge.className = 'text-[10px] sm:text-xs font-black uppercase tracking-widest px-4 py-1 rounded-full border shadow-sm bg-rose-500/20 text-rose-300 border-rose-500/40';
             popupBadge.innerText = 'AKSES DITOLAK';
             popupPesan.className = 'text-2xl sm:text-3xl font-black tracking-tight mb-2 uppercase text-rose-400';
             popupSubtext.innerText = 'Kartu belum terdaftar dalam sistem perpustakaan. Silakan hubungi petugas di meja depan.';
-            popupCountdown.className = 'h-full rounded-full transition-all duration-[3000ms] ease-linear bg-rose-500';
+            popupCountdown.className = 'h-full w-full rounded-full origin-left bg-rose-500';
         }
 
-        // Tampilkan popup
+        // Tampilkan modal
         popup.classList.remove('hidden');
 
-        // Mulai animasi bar countdown mengecil ke 0% selama 3000ms
-        setTimeout(() => {
-            popupCountdown.style.transition = 'width 3000ms linear';
-            popupCountdown.style.width = '0%';
-        }, 50);
+        // Jalankan countdown garis waktu super halus via GPU
+        startSmoothCountdown(3000);
 
-        // Bersihkan timer lama jika ada
+        // Bersihkan timer dismiss lama jika ada
         if (popupTimer) clearTimeout(popupTimer);
 
-        // Tutup otomatis setelah tepat 3 detik (3000ms)
+        // Tutup otomatis tepat setelah 3 detik (3000ms) dengan animasi exit halus
         popupTimer = setTimeout(() => {
-            popupCard.classList.remove('scale-100', 'opacity-100');
-            popupCard.classList.add('scale-95', 'opacity-0');
+            popupCard.classList.remove('popup-card-enter');
+            popupCard.classList.add('popup-card-exit');
             setTimeout(() => {
                 popup.classList.add('hidden');
-            }, 250);
+                popupCard.classList.remove('popup-card-exit');
+            }, 180);
         }, 3000);
+    }
+
+    // 4. Eksekusi Scan ke Backend dengan Reflek Instan
+    function handleScan(kodeDariScanner) {
+        if (!kodeDariScanner || !kodeDariScanner.trim()) return;
+
+        const cleanCode = kodeDariScanner.trim();
+
+        // Reflek instan langsung muncul di layar tanpa jeda sedetikpun
+        showInstantScanFeedback(cleanCode);
+
+        // Batalkan request fetch sebelumnya jika masih berjalan
+        if (scanAbortController) {
+            scanAbortController.abort();
+        }
+        scanAbortController = new AbortController();
+
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+        fetch('/api/scan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ kode_scan: cleanCode }),
+            signal: scanAbortController.signal
+        })
+        .then(response => {
+            if (!response.ok && response.status !== 400) {
+                throw new Error('Gagal menghubungi server');
+            }
+            return response.json();
+        })
+        .then(data => {
+            showAccessPopup(data, cleanCode);
+        })
+        .catch(err => {
+            if (err.name === 'AbortError') return;
+            console.error('Scan error:', err);
+            showAccessPopup({
+                color: 'red',
+                name: 'Gangguan Jaringan',
+                message: 'Gagal Scan'
+            }, cleanCode);
+        });
     }
 
     // Hardware Scanner Listener: Mendeteksi input beruntun cepat dari alat scanner USB RFID/Barcode
@@ -463,16 +590,17 @@
 
         const currentTime = new Date().getTime();
 
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' || e.code === 'Enter' || e.code === 'NumpadEnter') {
             if (hardwareBuffer.length >= 3) {
+                e.preventDefault();
                 handleScan(hardwareBuffer);
             }
             hardwareBuffer = '';
             return;
         }
 
-        // Karakter scanner umumnya masuk sangat cepat (< 80ms)
-        if (currentTime - lastKeyTime > 250) {
+        // Karakter scanner umumnya masuk sangat cepat (< 80ms antar karakter)
+        if (currentTime - lastKeyTime > 300) {
             hardwareBuffer = '';
         }
 

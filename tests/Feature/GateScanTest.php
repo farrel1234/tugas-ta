@@ -85,4 +85,37 @@ class GateScanTest extends TestCase
             'status' => 'Belum Daftar',
         ]);
     }
+
+    public function test_scan_user_by_card_id_or_nim(): void
+    {
+        $user = User::factory()->create([
+            'name' => 'Farrel Ariq Nadhil',
+            'nim' => '4342301035',
+            'email' => 'farrelariq3@gmail.com',
+            'kode_kartu' => '058945125E9200',
+            'expired_at' => Carbon::now()->addYear(),
+        ]);
+
+        // Scan dengan kode kartu (RFID)
+        $responseCard = $this->postJson('/api/scan', [
+            'kode_scan' => '058945125E9200',
+        ]);
+        $responseCard->assertStatus(200)
+            ->assertJson([
+                'color' => 'green',
+                'name' => 'Farrel Ariq Nadhil',
+                'message' => 'Silakan Masuk',
+            ]);
+
+        // Scan dengan NIM
+        $responseNim = $this->postJson('/api/scan', [
+            'kode_scan' => '4342301035',
+        ]);
+        $responseNim->assertStatus(200)
+            ->assertJson([
+                'color' => 'green',
+                'name' => 'Farrel Ariq Nadhil',
+                'message' => 'Silakan Masuk',
+            ]);
+    }
 }
