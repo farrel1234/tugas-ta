@@ -77,4 +77,81 @@ class GateController extends Controller
             'message' => 'Silakan Masuk'
         ]);
     }
+
+    /**
+     * Mengambil telemetry data trafik gerbang hari ini / histori secara real-time.
+     */
+    public function liveTraffic(Request $request): JsonResponse
+    {
+        $dateParam = $request->query('date');
+        if ($dateParam) {
+            try {
+                $selectedDate = Carbon::createFromFormat('Y-m-d', $dateParam, 'Asia/Jakarta')->startOfDay();
+            } catch (\Exception $e) {
+                $selectedDate = Carbon::today('Asia/Jakarta');
+            }
+        } else {
+            $selectedDate = Carbon::today('Asia/Jakarta');
+        }
+
+        $bisaMasuk = VisitorLog::whereDate('created_at', $selectedDate)
+            ->where('status', 'Bisa Masuk')
+            ->count();
+
+        $belumPerpanjang = VisitorLog::whereDate('created_at', $selectedDate)
+            ->where('status', 'Belum Perpanjang')
+            ->count();
+
+        $belumDaftar = VisitorLog::whereDate('created_at', $selectedDate)
+            ->where('status', 'Belum Daftar')
+            ->count();
+
+        $total = $bisaMasuk + $belumPerpanjang + $belumDaftar;
+
+        // Skala: 200 mahasiswa = 50% kapasitas, tanpa batas maksimal kunjungan
+        $capacityPercentage = round(($total / 200) * 50, 1);
+
+        // Persentase proporsional dari total untuk susunan layer tabung
+        $pctBisaMasuk = $total > 0 ? round(($bisaMasuk / $total) * 100, 1) : 0;
+        $pctBelumPerpanjang = $total > 0 ? round(($belumPerpanjang / $total) * 100, 1) : 0;
+        $pctBelumDaftar = $total > 0 ? round(($belumDaftar / $total) * 100, 1) : 0;
+
+        // Ambil log pengunjung sesuai tanggal yang dipilih untuk terminal console (Live vs Histori)
+        $recentLogs = VisitorLog::with('user:id,name,nim')
+            ->whereDate('created_at', $selectedDate)
+            ->latest('created_at')
+            ->take(30)
+            ->get()
+            ->map(function ($log) {
+                return [
+                    'id' => $log->id,
+                    'time' => $log->created_at ? $log->created_at->timezone('Asia/Jakarta')->format('H:i:s') : '--:--:--',
+                    'date' => $log->created_at ? $log->created_at->timezone('Asia/Jakarta')->format('d/m/Y') : '',
+                    'name' => $log->user ? $log->user->name : 'Tidak Dikenal',
+                    'nim' => $log->user ? ($log->user->nim ?? '-') : '-',
+                    'scanned_code' => $log->scanned_code,
+                    'status' => $log->status,
+                    'color' => $log->status === 'Bisa Masuk' ? 'green' : ($log->status === 'Belum Perpanjang' ? 'gray' : 'red'),
+                ];
+            });
+
+        return response()->json([
+            'total' => $total,
+            'capacity_percentage' => $capacityPercentage,
+            'selected_date' => $selectedDate->format('Y-m-d'),
+            'formatted_date' => $selectedDate->translatedFormat('d M Y'),
+            'is_today' => $selectedDate->isToday(),
+            'status_counts' => [
+                'bisa_masuk' => $bisaMasuk,
+                'belum_perpanjang' => $belumPerpanjang,
+                'belum_daftar' => $belumDaftar,
+            ],
+            'status_percentages' => [
+                'bisa_masuk' => $pctBisaMasuk,
+                'belum_perpanjang' => $pctBelumPerpanjang,
+                'belum_daftar' => $pctBelumDaftar,
+            ],
+            'recent_logs' => $recentLogs,
+        ]);
+    }
 }

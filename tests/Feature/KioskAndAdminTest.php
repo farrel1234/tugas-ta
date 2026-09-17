@@ -197,4 +197,38 @@ class KioskAndAdminTest extends TestCase
         $response->assertDontSee('scannerTestModal');
         $response->assertSee('scanPopup');
     }
+
+    public function test_admin_dashboard_has_live_gate_traffic_cylinder_and_command_center_console(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/admin');
+        $response->assertStatus(200);
+        $response->assertSee('live-traffic-section');
+        $response->assertSee('Live Gate Traffic');
+        $response->assertSee('Traffic Tank Silinder');
+        $response->assertSee('traffic-tank-liquid');
+        $response->assertSee('terminal-body-container');
+        $response->assertSee('/api/live-traffic');
+        $response->assertDontSee('btn-clear-terminal');
+        $response->assertDontSee('admin@library-gate:~$');
+        $response->assertDontSee('GATE-TELEMETRY-STREAM');
+        $response->assertDontSee('[GATE-01]');
+        $response->assertDontSee('Listening socket');
+        $response->assertDontSee('Belum Terdaftar');
+        $response->assertSee('Belum Daftar');
+        $response->assertDontSee('btn-toggle-autoscroll');
+        $response->assertDontSee('Target Harian:');
+        $response->assertSee('btn-prev-day');
+        $response->assertSee('traffic-date-picker');
+        $response->assertSee('btn-today-live');
+        $response->assertSee('tank-mode-badge');
+        $response->assertSee('terminal-mode-label');
+        $response->assertSee('tank-layer-red');
+        $response->assertSee('tank-layer-gray');
+        $response->assertSee('tank-layer-green');
+        $response->assertSee('traffic-tank-count-hud');
+        $response->assertSee('traffic-tank-percent-hud');
+        $response->assertDontSee('0 / 100 Kunjungan');
+    }
 }

@@ -6,24 +6,170 @@
 <style>
     .custom-table-scrollbar {
         scrollbar-width: thin;
-        scrollbar-color: rgba(6, 182, 212, 0.7) rgba(11, 30, 63, 0.8);
-        scroll-behavior: smooth;
+        scrollbar-color: rgba(6, 182, 212, 0.8) rgba(9, 23, 49, 0.95);
     }
     .custom-table-scrollbar::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+        width: 10px;
+        height: 10px;
     }
     .custom-table-scrollbar::-webkit-scrollbar-track {
-        background: rgba(9, 23, 49, 0.9);
+        background: rgba(9, 23, 49, 0.95);
         border-radius: 8px;
+        border-left: 1px solid rgba(6, 182, 212, 0.2);
     }
     .custom-table-scrollbar::-webkit-scrollbar-thumb {
         background: linear-gradient(180deg, #06b6d4, #2563eb);
         border-radius: 8px;
-        border: 1px solid rgba(6, 182, 212, 0.4);
+        border: 1px solid rgba(6, 182, 212, 0.5);
+        cursor: grab;
     }
     .custom-table-scrollbar::-webkit-scrollbar-thumb:hover {
         background: linear-gradient(180deg, #22d3ee, #3b82f6);
+    }
+    .custom-table-scrollbar::-webkit-scrollbar-thumb:active {
+        background: #38bdf8;
+        cursor: grabbing;
+    }
+    .custom-table-scrollbar::-webkit-scrollbar-button:single-button:vertical:decrement {
+        height: 14px;
+        width: 10px;
+        background-color: rgba(11, 30, 63, 0.95);
+        background-position: center 3px;
+        background-repeat: no-repeat;
+        background-size: 8px;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2306b6d4' viewBox='0 0 16 16'><path d='M8 4l6 8H2z'/></svg>");
+        border-radius: 4px 4px 0 0;
+        cursor: pointer;
+    }
+    .custom-table-scrollbar::-webkit-scrollbar-button:single-button:vertical:decrement:hover {
+        background-color: rgba(6, 182, 212, 0.3);
+    }
+    .custom-table-scrollbar::-webkit-scrollbar-button:single-button:vertical:increment {
+        height: 14px;
+        width: 10px;
+        background-color: rgba(11, 30, 63, 0.95);
+        background-position: center 3px;
+        background-repeat: no-repeat;
+        background-size: 8px;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2306b6d4' viewBox='0 0 16 16'><path d='M8 12L2 4h12z'/></svg>");
+        border-radius: 0 0 4px 4px;
+        cursor: pointer;
+    }
+    .custom-table-scrollbar::-webkit-scrollbar-button:single-button:vertical:increment:hover {
+        background-color: rgba(6, 182, 212, 0.3);
+    }
+
+    /* Database Cylinder Styles & Animations */
+    .db-cylinder-container {
+        perspective: 900px;
+    }
+    .db-cylinder-body {
+        position: relative;
+        background: linear-gradient(180deg, rgba(6, 182, 212, 0.08) 0%, rgba(11, 30, 63, 0.6) 100%);
+        border-left: 2px solid rgba(6, 182, 212, 0.5);
+        border-right: 2px solid rgba(6, 182, 212, 0.5);
+        border-bottom: 2px solid rgba(6, 182, 212, 0.5);
+        border-radius: 0 0 36px 36px;
+        box-shadow: inset 0 0 25px rgba(6, 182, 212, 0.15), 0 10px 30px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+    }
+    .db-cylinder-cap {
+        position: absolute;
+        top: -14px;
+        left: 0;
+        right: 0;
+        height: 28px;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at center, rgba(34, 211, 238, 0.35) 0%, rgba(6, 182, 212, 0.15) 60%, rgba(11, 30, 63, 0.95) 100%);
+        border: 2px solid rgba(6, 182, 212, 0.7);
+        box-shadow: 0 2px 12px rgba(6, 182, 212, 0.35), inset 0 0 8px rgba(34, 211, 238, 0.5);
+        z-index: 10;
+    }
+    .db-cylinder-rib {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 18px;
+        border-radius: 50%;
+        border-bottom: 2px solid rgba(6, 182, 212, 0.3);
+        pointer-events: none;
+        z-index: 8;
+    }
+    .db-cylinder-rib-1 { top: 32%; }
+    .db-cylinder-rib-2 { top: 64%; }
+
+    /* Animated Wave */
+    .db-wave-wrapper {
+        position: absolute;
+        top: -8px;
+        left: 0;
+        width: 200%;
+        height: 12px;
+        overflow: hidden;
+        animation: waveHorizontal 6s linear infinite;
+        z-index: 6;
+        pointer-events: none;
+    }
+    @keyframes waveHorizontal {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+
+    /* Floating Bubbles */
+    .db-bubble {
+        position: absolute;
+        bottom: 0;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: bubbleRise 3.5s infinite ease-in;
+    }
+    @keyframes bubbleRise {
+        0% { transform: translateY(0) scale(0.4); opacity: 0; }
+        20% { opacity: 0.7; }
+        80% { opacity: 0.6; }
+        100% { transform: translateY(-240px) scale(1.1); opacity: 0; }
+    }
+
+    /* Full Capacity Aura */
+    .tank-full-aura {
+        animation: pulseFullAura 2s infinite ease-in-out;
+    }
+    @keyframes pulseFullAura {
+        0%, 100% {
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.4), inset 0 0 15px rgba(6, 182, 212, 0.2);
+            border-color: rgba(6, 182, 212, 0.8);
+        }
+        50% {
+            box-shadow: 0 0 50px rgba(16, 185, 129, 0.7), 0 0 80px rgba(6, 182, 212, 0.5), inset 0 0 30px rgba(16, 185, 129, 0.4);
+            border-color: rgba(52, 211, 153, 1);
+        }
+    }
+
+    /* Terminal Styling */
+    .terminal-scanlines {
+        background-image: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.3) 0px,
+            rgba(0, 0, 0, 0.3) 1px,
+            transparent 1px,
+            transparent 2px
+        );
+    }
+
+    /* Traffic Date Picker Styling */
+    #traffic-date-picker {
+        color-scheme: dark;
+    }
+    #traffic-date-picker::-webkit-calendar-picker-indicator {
+        cursor: pointer;
+        filter: invert(0.8) sepia(100%) saturate(300%) hue-rotate(150deg);
+        opacity: 0.85;
+        transition: opacity 0.2s, transform 0.2s;
+    }
+    #traffic-date-picker:hover::-webkit-calendar-picker-indicator {
+        opacity: 1;
+        transform: scale(1.1);
     }
 </style>
 <div class="min-h-screen bg-[#071124] text-white flex flex-col font-sans select-none">
@@ -46,7 +192,7 @@
                 <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 <span class="text-blue-200">{{ Auth::user()->name ?? 'Administrator' }}</span>
             </div>
-            
+
             <!-- Tombol Logout -->
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
@@ -266,7 +412,7 @@
                                             <div class="text-[10px] text-blue-300/60 mt-0.5 max-w-xs truncate">{{ $trashed->desc ?? '-' }}</div>
                                         </td>
                                         <td class="p-3.5 text-amber-200/80 text-[11px]">
-                                            {{ $trashed->deleted_at ? $trashed->deleted_at->format('d M Y, H:i') . ' WIB' : '-' }}
+                                            {{ $trashed->deleted_at ? $trashed->deleted_at->timezone('Asia/Jakarta')->format('d M Y, H:i') . ' WIB' : '-' }}
                                             <span class="block text-[10px] text-amber-400/70">({{ $trashed->deleted_at ? $trashed->deleted_at->diffForHumans() : '' }})</span>
                                         </td>
                                         <td class="p-3.5 text-center">
@@ -303,7 +449,7 @@
                     </div>
                 @else
                     <div class="mt-4 p-4 rounded-xl bg-blue-950/40 border border-blue-500/20 text-center text-xs text-blue-300/60">
-                        Tempat sampah kosong. Tidak ada menu yang sedang dihapus.
+                        Tempat sampah kosong. Tidak ada menu yang sudah dihapus.
                     </div>
                 @endif
             </section>
@@ -349,7 +495,7 @@
                                 @foreach($recentLogs as $log)
                                     <tr class="hover:bg-blue-900/30 transition">
                                         <td class="p-3.5 text-blue-200/90 font-mono text-[11px]">
-                                            {{ $log->created_at ? $log->created_at->format('d M Y, H:i:s') . ' WIB' : '-' }}
+                                            {{ $log->created_at ? $log->created_at->timezone('Asia/Jakarta')->format('d M Y, H:i:s') . ' WIB' : '-' }}
                                             <span class="block text-[10px] text-blue-300/50">({{ $log->created_at ? $log->created_at->diffForHumans() : '' }})</span>
                                         </td>
                                         <td class="p-3.5 font-bold text-white">
@@ -372,7 +518,7 @@
                                             @else
                                                 <span class="bg-rose-500/20 text-rose-300 border border-rose-500/40 px-3 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1.5">
                                                     <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
-                                                    Belum Terdaftar
+                                                    Belum Daftar
                                                 </span>
                                             @endif
                                         </td>
@@ -386,6 +532,229 @@
                         Belum ada data scan kunjungan hari ini. Silakan uji coba tap kartu pada halaman Kiosk.
                     </div>
                 @endif
+            </section>
+
+            <!-- Live Gate Traffic Tank & Command Center Terminal Console -->
+            <section id="live-traffic-section" class="bg-[#0B1E3F]/50 backdrop-blur-lg border border-blue-500/30 rounded-2xl p-5 sm:p-6 shadow-2xl space-y-5">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-blue-800/50 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 flex-shrink-0 shadow-inner">
+                            <!-- Database Icon -->
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-base sm:text-lg font-black text-white tracking-tight">Live Gate Traffic & Command Center</h2>
+                                <span id="telemetry-live-badge" class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                                    LIVE TELEMETRY
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Date Selector & History Navigation Controls -->
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <button id="btn-prev-day" type="button" class="bg-blue-900/60 hover:bg-blue-800 text-cyan-200 hover:text-white border border-cyan-500/30 px-3 py-1.5 rounded-xl text-xs font-semibold inline-flex items-center gap-1.5 transition shadow-sm active:scale-95 cursor-pointer" title="Cek Hari Sebelumnya">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                            <span>Kemarin</span>
+                        </button>
+                        <input type="date" id="traffic-date-picker" max="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}" class="bg-blue-900/60 hover:bg-blue-800 text-cyan-200 hover:text-white border border-cyan-500/30 hover:border-cyan-400 text-xs rounded-xl px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-cyan-400 font-mono shadow-sm cursor-pointer transition active:scale-95" title="Klik untuk membuka kalender dan melompat ke tanggal langsung" />
+                        <button id="btn-today-live" type="button" class="hidden bg-emerald-600/90 hover:bg-emerald-500 text-white border border-emerald-400/40 px-3 py-1.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 transition shadow-md active:scale-95 cursor-pointer">
+                            <span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
+                            <span>Hari Ini (Live)</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2-Column Layout: Database Cylinder Tank (5 cols) & Terminal Console (7 cols) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+
+                    <!-- Kolom Kiri: Database Cylinder Traffic Tank -->
+                    <div class="lg:col-span-5 flex flex-col justify-between bg-blue-950/40 border border-blue-500/30 rounded-2xl p-5 shadow-inner relative">
+                        <div>
+                            <div class="w-full flex items-center justify-between mb-4 border-b border-blue-800/40 pb-2">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+                                    <h3 class="text-xs font-bold uppercase tracking-wider text-cyan-200">Traffic Tank Silinder</h3>
+                                    <span id="tank-mode-badge" class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                        Live Hari Ini
+                                    </span>
+                                </div>
+                                <span id="tank-capacity-badge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                                    0% Kapasitas
+                                </span>
+                            </div>
+
+                            <!-- 3D Database Cylinder Graphic -->
+                            <div class="relative w-[220px] sm:w-[240px] h-[280px] my-3 db-cylinder-container mx-auto">
+                                <!-- Cylinder Top Oval Cap -->
+                                <div class="db-cylinder-cap"></div>
+
+                                <!-- Cylinder Body -->
+                                <div id="tank-cylinder-element" class="db-cylinder-body w-full h-full relative transition-all duration-500">
+
+                                    <!-- Database Horizontal Segment Ribs -->
+                                    <div class="db-cylinder-rib db-cylinder-rib-1"></div>
+                                    <div class="db-cylinder-rib db-cylinder-rib-2"></div>
+
+                                    <!-- Floating Rising Bubbles -->
+                                    <div class="db-bubble" style="left: 20%; width: 6px; height: 6px; animation-delay: 0s; animation-duration: 3.2s;"></div>
+                                    <div class="db-bubble" style="left: 45%; width: 8px; height: 8px; animation-delay: 1.2s; animation-duration: 4s;"></div>
+                                    <div class="db-bubble" style="left: 70%; width: 5px; height: 5px; animation-delay: 2.1s; animation-duration: 2.8s;"></div>
+                                    <div class="db-bubble" style="left: 85%; width: 7px; height: 7px; animation-delay: 0.7s; animation-duration: 3.6s;"></div>
+
+                                    <!-- The Liquid Level Container (anchored to bottom) -->
+                                    <div id="traffic-tank-liquid" class="absolute bottom-0 left-0 right-0 transition-all duration-1000 ease-out flex flex-col-reverse overflow-visible" style="height: 0%;">
+
+                                        <!-- Stacked Colored Fluid Layers: Bottom is Red, Middle is Gray, Top is Green -->
+                                        <!-- Red Layer (Belum Daftar) -->
+                                        <div id="tank-layer-red" class="w-full bg-gradient-to-t from-rose-700 via-rose-600 to-rose-500 transition-all duration-700 relative border-t border-rose-400/30" style="flex: 0 0 0%; min-height: 0px; display: none;"></div>
+                                        <!-- Gray Layer (Belum Perpanjang) -->
+                                        <div id="tank-layer-gray" class="w-full bg-gradient-to-t from-slate-700 via-slate-600 to-slate-500 transition-all duration-700 relative border-t border-slate-300/30" style="flex: 0 0 0%; min-height: 0px; display: none;"></div>
+                                        <!-- Green Layer (Bisa Masuk) -->
+                                        <div id="tank-layer-green" class="w-full bg-gradient-to-t from-emerald-700 via-emerald-600 to-emerald-400 transition-all duration-700 relative border-t border-emerald-300/30" style="flex: 0 0 0%; min-height: 0px; display: none;"></div>
+
+                                        <!-- Animated Wave on top of fluid -->
+                                        <div class="db-wave-wrapper">
+                                            <svg class="w-full h-full text-emerald-400 fill-current opacity-80" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                                                <path d="M0,0 C150,90 350,-40 500,45 C650,130 900,10 1200,50 L1200,120 L0,120 Z"></path>
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- Total Kunjungan Display (Diletakkan di bawah silinder) -->
+                            <div class="flex items-center justify-center my-2.5">
+                                <div class="bg-[#091731]/85 backdrop-blur-md border border-cyan-500/40 px-5 py-1.5 rounded-xl shadow-xl flex items-center gap-3">
+                                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                                    <span id="traffic-tank-count-hud" class="text-sm font-bold text-white font-mono tracking-wide">
+                                        0 Kunjungan
+                                    </span>
+                                    <span class="text-cyan-400/40 font-mono">|</span>
+                                    <span id="traffic-tank-percent-hud" class="text-xs font-bold text-cyan-300 font-mono">
+                                        0% Kapasitas
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Breakdown Status Pills Below Cylinder -->
+                        <div class="w-full grid grid-cols-3 gap-2 mt-2 pt-3 border-t border-blue-800/40">
+                            <!-- Green Stat -->
+                            <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-2.5 text-center">
+                                <div class="flex items-center justify-center gap-1 mb-1">
+                                    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                    <span class="text-[10px] font-bold text-emerald-300">Bisa Masuk</span>
+                                </div>
+                                <div id="stat-bisa-masuk-count" class="text-base font-black text-white font-mono leading-none">0</div>
+                                <span id="stat-bisa-masuk-pct" class="text-[9px] text-emerald-300/70 font-mono">0%</span>
+                            </div>
+
+                            <!-- Gray Stat -->
+                            <div class="bg-slate-900/50 border border-slate-500/30 rounded-xl p-2.5 text-center">
+                                <div class="flex items-center justify-center gap-1 mb-1">
+                                    <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                                    <span class="text-[10px] font-bold text-slate-300">Expired</span>
+                                </div>
+                                <div id="stat-belum-perpanjang-count" class="text-base font-black text-white font-mono leading-none">0</div>
+                                <span id="stat-belum-perpanjang-pct" class="text-[9px] text-slate-300/70 font-mono">0%</span>
+                            </div>
+
+                            <!-- Red Stat -->
+                            <div class="bg-rose-950/40 border border-rose-500/30 rounded-xl p-2.5 text-center">
+                                <div class="flex items-center justify-center gap-1 mb-1">
+                                    <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+                                    <span class="text-[10px] font-bold text-rose-300">Belum Daftar</span>
+                                </div>
+                                <div id="stat-belum-daftar-count" class="text-base font-black text-white font-mono leading-none">0</div>
+                                <span id="stat-belum-daftar-pct" class="text-[9px] text-rose-300/70 font-mono">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kolom Kanan: Command Center Terminal Console -->
+                    <div class="lg:col-span-7 flex flex-col justify-between bg-[#030712] border border-cyan-500/30 rounded-2xl shadow-2xl overflow-hidden font-mono h-[490px] max-h-[490px]">
+
+                        <!-- Terminal Title Bar -->
+                        <div class="bg-[#0b1426] border-b border-cyan-500/30 px-4 py-2 flex items-center justify-between flex-shrink-0">
+                            <div class="flex items-center gap-1.5">
+                                <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block shadow-sm"></span>
+                                <span class="w-3 h-3 rounded-full bg-amber-500/80 inline-block shadow-sm"></span>
+                                <span class="w-3 h-3 rounded-full bg-emerald-500/80 inline-block shadow-sm"></span>
+                                <span class="ml-2 text-[10px] text-cyan-400/60 font-mono hidden sm:inline">TERMINAL CONSOLE</span>
+                            </div>
+
+                            <!-- Tombol Navigasi Scroll Bar (Atas & Bawah) -->
+                            <div class="flex items-center gap-1.5">
+                                <button id="btn-terminal-scroll-top" type="button" class="px-2 py-1 rounded bg-cyan-950/80 hover:bg-cyan-800 text-cyan-300 hover:text-white border border-cyan-500/40 text-[10px] font-bold flex items-center gap-1 transition shadow-sm active:scale-95 cursor-pointer" title="Scroll ke Paling Atas">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/></svg>
+                                    <span>Atas</span>
+                                </button>
+                                <button id="btn-terminal-scroll-bottom" type="button" class="px-2 py-1 rounded bg-cyan-950/80 hover:bg-cyan-800 text-cyan-300 hover:text-white border border-cyan-500/40 text-[10px] font-bold flex items-center gap-1 transition shadow-sm active:scale-95 cursor-pointer" title="Scroll ke Paling Bawah">
+                                    <span>Bawah</span>
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Terminal Body Logs -->
+                        <div id="terminal-body-container" class="h-[415px] max-h-[415px] p-3 sm:p-4 overflow-y-scroll space-y-1 text-xs terminal-scanlines custom-table-scrollbar">
+                            <!-- Real-time log entries inserted here via Blade & updated via JS -->
+                            <div id="terminal-log-entries" class="space-y-1">
+                                @if(isset($recentLogs) && $recentLogs->count() > 0)
+                                    @foreach($recentLogs->take(15)->reverse() as $log)
+                                        <div class="py-1 px-2 rounded flex flex-wrap items-center gap-2 hover:bg-cyan-950/40 transition border-b border-cyan-950/30 text-[11px]">
+                                            <span class="text-slate-400 font-mono text-[10px]">[{{ $log->created_at ? $log->created_at->timezone('Asia/Jakarta')->format('H:i:s') : '--:--:--' }}]</span>
+                                            <span class="text-amber-300 font-mono font-semibold">{{ $log->scanned_code ?? '-' }}</span>
+                                            <span class="text-white font-medium">{{ $log->user->name ?? 'Tidak Dikenal' }}</span>
+                                            @if(isset($log->user->nim) && $log->user->nim)
+                                                 <span class="text-blue-300/60 text-[10px]">(NIM: {{ $log->user->nim }})</span>
+                                            @endif
+                                            <span class="ml-auto">
+                                                @if($log->status === 'Bisa Masuk')
+                                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 inline-flex items-center gap-1">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>BISA MASUK
+                                                    </span>
+                                                @elseif($log->status === 'Belum Perpanjang')
+                                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/20 text-slate-300 border border-slate-500/40 inline-flex items-center gap-1">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>EXPIRED
+                                                    </span>
+                                                @else
+                                                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 inline-flex items-center gap-1">
+                                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>BELUM DAFTAR
+                                                    </span>
+                                                @endif
+                                            </span>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <div class="text-cyan-400/50 text-[11px] italic py-2">
+                                        Belum ada aktivitas scan hari ini. Menunggu pemindaian kartu KTP / RFID / NIM...
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Terminal Status Bar / Footer -->
+                        <div class="bg-[#070e1c] border-t border-cyan-500/30 px-4 py-2.5 text-[10px] text-cyan-400/70 flex items-center justify-between flex-shrink-0">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span id="terminal-mode-label" class="text-emerald-300 font-medium">Live Stream</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span>Sinkronisasi: <strong id="terminal-last-sync" class="text-white">--:--:--</strong></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </section>
 
             <!-- Form Tambah Menu & Upload Slide Pertama -->
@@ -418,7 +787,7 @@
                     <!-- Upload Gambar Slide Langkah Pertama dengan Live Preview -->
                     <div class="space-y-2">
                         <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider">Unggah Gambar Slide / Ilustrasi Pertama (Opsional)</label>
-                        
+
                         <label for="menu-image-input" class="group flex flex-col items-center justify-center border-2 border-dashed border-cyan-500/40 hover:border-cyan-400 rounded-2xl p-5 text-center bg-blue-950/40 hover:bg-blue-900/20 transition cursor-pointer">
                             <div id="menu-empty-prompt" class="flex flex-col items-center py-2">
                                 <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-2 group-hover:scale-110 transition">
@@ -494,7 +863,7 @@
                             <span id="adminScanAlertBadge" class="text-[10px] font-bold px-2 py-0.5 rounded-full border flex-shrink-0"></span>
                         </div>
                         <p id="adminScanAlertDesc" class="text-xs mt-1 opacity-90"></p>
-                        
+
                         <div class="mt-2.5 pt-2 border-t border-white/10 flex items-center justify-between">
                             <span class="text-[10px] opacity-75">Tersimpan di tabel `visitor_logs`</span>
                             <button type="button" onclick="window.location.reload();" class="text-[10px] font-bold text-cyan-300 hover:text-cyan-200 underline flex items-center gap-1 cursor-pointer">
@@ -558,7 +927,7 @@
                             <span class="w-3 h-3 rounded-full bg-rose-500 flex-shrink-0"></span>
                             <div>
                                 <div class="text-xs font-bold text-white group-hover:text-rose-300 transition">Kode Tidak Dikenal (NIM: 9999999999)</div>
-                                <div class="text-[10px] text-rose-400/80">Status: Belum Terdaftar di Sistem</div>
+                                <div class="text-[10px] text-rose-400/80">Status: Belum Daftar di Sistem</div>
                             </div>
                         </div>
                         <span class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300 text-[10px] font-bold border border-rose-500/30 group-hover:bg-rose-500 group-hover:text-white transition">
@@ -713,6 +1082,8 @@
             if (adminScanLoadingText) adminScanLoadingText.classList.add('hidden');
             needReloadOnClose = true;
             showAdminScanResult(data, code);
+            // Trigger instant update pada live traffic & terminal
+            fetchLiveTraffic();
         })
         .catch(err => {
             console.error('Scan error:', err);
@@ -754,9 +1125,420 @@
             adminScanAlertIcon.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
             adminScanAlertTitle.innerText = data.name || 'Tidak Dikenal';
             adminScanAlertBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full border bg-rose-500/20 text-rose-300 border-rose-500/40';
-            adminScanAlertBadge.innerText = 'BELUM TERDAFTAR (MERAH)';
+            adminScanAlertBadge.innerText = 'BELUM DAFTAR (MERAH)';
             adminScanAlertDesc.innerText = `Kode [${rawCode}]: ${data.message}. Log kunjungan berhasil dicatat ke sistem.`;
         }
     }
+
+    // 3. Engine Live Traffic Tank & Command Center Terminal Console
+    let liveTrafficPollingTimer = null;
+    let autoScrollEnabled = true;
+    let isUserInteractingScroll = false;
+    let lastTerminalLogsSignature = null;
+    let selectedHistoryDate = null; // null = Live mode (hari ini)
+    const todayStr = '{{ date("Y-m-d") }}';
+
+    // DOM Elements - Tank Controls & Badges
+    const btnPrevDay = document.getElementById('btn-prev-day');
+    const trafficDatePicker = document.getElementById('traffic-date-picker');
+    const btnTodayLive = document.getElementById('btn-today-live');
+    const tankModeBadge = document.getElementById('tank-mode-badge');
+    const tankCapacityBadge = document.getElementById('tank-capacity-badge');
+    const trafficTankLiquid = document.getElementById('traffic-tank-liquid');
+    const tankCylinderElement = document.getElementById('tank-cylinder-element');
+    const tankLayerGreen = document.getElementById('tank-layer-green');
+    const tankLayerGray = document.getElementById('tank-layer-gray');
+    const tankLayerRed = document.getElementById('tank-layer-red');
+    const trafficTankPercentHud = document.getElementById('traffic-tank-percent-hud');
+    const trafficTankCountHud = document.getElementById('traffic-tank-count-hud');
+
+    // Stat counts & percentages
+    const statBisaMasukCount = document.getElementById('stat-bisa-masuk-count');
+    const statBisaMasukPct = document.getElementById('stat-bisa-masuk-pct');
+    const statBelumPerpanjangCount = document.getElementById('stat-belum-perpanjang-count');
+    const statBelumPerpanjangPct = document.getElementById('stat-belum-perpanjang-pct');
+    const statBelumDaftarCount = document.getElementById('stat-belum-daftar-count');
+    const statBelumDaftarPct = document.getElementById('stat-belum-daftar-pct');
+
+    // Terminal elements
+    const terminalBodyContainer = document.getElementById('terminal-body-container');
+    const terminalLogEntries = document.getElementById('terminal-log-entries');
+    const terminalLastSync = document.getElementById('terminal-last-sync');
+    const terminalModeLabel = document.getElementById('terminal-mode-label');
+    const btnTerminalScrollTop = document.getElementById('btn-terminal-scroll-top');
+    const btnTerminalScrollBottom = document.getElementById('btn-terminal-scroll-bottom');
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function formatDateIndo(dateStr) {
+        if (!dateStr) return '';
+        const parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        const d = new Date(parts[0], parts[1] - 1, parts[2]);
+        return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    // Polling live telemetry: berjalan di latar belakang setiap 3 detik
+    function fetchLiveTraffic() {
+        // Jika sedang dalam mode histori tanggal lain, jangan menimpa data histori di terminal dan tangki
+        if (selectedHistoryDate && selectedHistoryDate !== todayStr) {
+            return;
+        }
+
+        fetch('/api/live-traffic', {
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Status ' + res.status);
+            return res.json();
+        })
+        .then(data => {
+            // Jika dalam Live mode (hari ini), update tangki & terminal dengan data live hari ini
+            if (!selectedHistoryDate || selectedHistoryDate === todayStr) {
+                updateTrafficTank(data);
+                updateTerminalLogs(data.recent_logs || []);
+                const now = new Date();
+                const timeStr = String(now.getHours()).padStart(2, '0') + ':' +
+                                String(now.getMinutes()).padStart(2, '0') + ':' +
+                                String(now.getSeconds()).padStart(2, '0');
+                if (terminalLastSync) terminalLastSync.innerText = timeStr;
+            }
+        })
+        .catch(err => {
+            console.warn('Gagal sinkronisasi live traffic:', err);
+        });
+    }
+
+    // Mengambil data histori lengkap (tangki silinder + data log terminal console) sesuai tanggal
+    function fetchHistoryTank(dateStr) {
+        fetch(`/api/live-traffic?date=${encodeURIComponent(dateStr)}`, {
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Status ' + res.status);
+            return res.json();
+        })
+        .then(data => {
+            // Update tangki silinder & stat card sesuai data histori tanggal tersebut
+            updateTrafficTank(data);
+
+            // Update log data yang masuk ke command center terminal sesuai dengan tanggal histori!
+            updateTerminalLogs(data.recent_logs || [], dateStr);
+
+            if (terminalLastSync) {
+                terminalLastSync.innerText = formatDateIndo(dateStr);
+            }
+        })
+        .catch(err => {
+            console.warn('Gagal memuat histori data trafik:', err);
+        });
+    }
+
+    // Pergantian mode tanggal (Live vs Histori)
+    function switchDateMode(newDateStr) {
+        lastTerminalLogsSignature = null;
+        autoScrollEnabled = true;
+        if (!newDateStr || newDateStr === todayStr) {
+            selectedHistoryDate = null;
+            if (trafficDatePicker) trafficDatePicker.value = todayStr;
+            if (btnTodayLive) btnTodayLive.classList.add('hidden');
+            if (tankModeBadge) {
+                tankModeBadge.innerText = 'Live Hari Ini';
+                tankModeBadge.className = 'text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+            }
+            if (terminalModeLabel) {
+                terminalModeLabel.innerText = 'Live Stream';
+                terminalModeLabel.className = 'text-emerald-300 font-medium';
+            }
+            fetchLiveTraffic();
+        } else {
+            selectedHistoryDate = newDateStr;
+            if (trafficDatePicker) trafficDatePicker.value = newDateStr;
+            if (btnTodayLive) btnTodayLive.classList.remove('hidden');
+            const formatted = formatDateIndo(newDateStr);
+            if (tankModeBadge) {
+                tankModeBadge.innerText = 'Histori: ' + formatted;
+                tankModeBadge.className = 'text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30';
+            }
+            if (terminalModeLabel) {
+                terminalModeLabel.innerText = 'Histori: ' + formatted;
+                terminalModeLabel.className = 'text-amber-300 font-medium';
+            }
+            fetchHistoryTank(newDateStr);
+        }
+    }
+
+    // Event listener navigasi histori
+    if (btnPrevDay) {
+        btnPrevDay.addEventListener('click', () => {
+            const current = selectedHistoryDate || todayStr;
+            const parts = current.split('-');
+            const d = new Date(parts[0], parts[1] - 1, parts[2]);
+            d.setDate(d.getDate() - 1);
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            switchDateMode(`${yyyy}-${mm}-${dd}`);
+        });
+    }
+
+    if (trafficDatePicker) {
+        // Klik di mana saja pada kotak tanggal langsung membuka kalender pemilih tanggal
+        trafficDatePicker.addEventListener('click', function() {
+            try {
+                if (typeof this.showPicker === 'function') {
+                    this.showPicker();
+                }
+            } catch (err) {
+                // Abaikan jika picker sudah terbuka
+            }
+        });
+
+        // Dukungan aksesibilitas keyboard: tekan Enter atau Spasi untuk membuka kalender
+        trafficDatePicker.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                try {
+                    if (typeof this.showPicker === 'function') {
+                        this.showPicker();
+                    }
+                } catch (err) {}
+            }
+        });
+
+        trafficDatePicker.addEventListener('change', (e) => {
+            if (e.target.value) {
+                switchDateMode(e.target.value);
+            }
+        });
+    }
+
+    if (btnTodayLive) {
+        btnTodayLive.addEventListener('click', () => {
+            switchDateMode(todayStr);
+        });
+    }
+
+    function updateTrafficTank(data) {
+        const total = Number(data.total || 0);
+        const capacityPct = Number(data.capacity_percentage || 0);
+
+        if (tankCapacityBadge) tankCapacityBadge.innerText = capacityPct + '% Kapasitas';
+        if (trafficTankPercentHud) trafficTankPercentHud.innerText = capacityPct + '% Kapasitas';
+        if (trafficTankCountHud) trafficTankCountHud.innerText = `${total} Kunjungan`;
+
+        // Atur proporsi layer warna di dalam liquid
+        const pctGreen = Number(data.status_percentages?.bisa_masuk || 0);
+        const pctGray = Number(data.status_percentages?.belum_perpanjang || 0);
+        const pctRed = Number(data.status_percentages?.belum_daftar || 0);
+
+        // Atur ketinggian silinder liquid menyesuaikan data secara dinamis
+        if (trafficTankLiquid) {
+            const waveWrapper = trafficTankLiquid.querySelector('.db-wave-wrapper');
+            if (total === 0) {
+                trafficTankLiquid.style.height = '0%';
+                if (waveWrapper) waveWrapper.style.opacity = '0';
+            } else {
+                // Skala Ketinggian Tangki:
+                // Base 14% agar cairan tampak di atas lengkungan kaca dasar silinder (36px pada silinder 280px).
+                // 200 mahasiswa (50% kapasitas) pas mengisi 50% ketinggian silinder (14 + 50 * 0.72 = 50%).
+                // 250 mahasiswa (62.5% kapasitas) mengisi ~60% ketinggian silinder (14 + 62.5 * 0.72 = ~59%).
+                const visualHeight = Math.min(100, Math.round(14 + (capacityPct * 0.72)));
+                trafficTankLiquid.style.height = visualHeight + '%';
+                if (waveWrapper) waveWrapper.style.opacity = '1';
+            }
+        }
+
+        // Atur proporsi layer warna di dalam liquid menggunakan flexbox
+        if (tankLayerGreen) {
+            if (pctGreen > 0) {
+                tankLayerGreen.style.display = 'block';
+                tankLayerGreen.style.flex = `${pctGreen} 1 0%`;
+                tankLayerGreen.style.minHeight = '4px';
+            } else {
+                tankLayerGreen.style.display = 'none';
+                tankLayerGreen.style.flex = '0 0 0%';
+                tankLayerGreen.style.minHeight = '0px';
+            }
+        }
+
+        if (tankLayerGray) {
+            if (pctGray > 0) {
+                tankLayerGray.style.display = 'block';
+                tankLayerGray.style.flex = `${pctGray} 1 0%`;
+                tankLayerGray.style.minHeight = '4px';
+            } else {
+                tankLayerGray.style.display = 'none';
+                tankLayerGray.style.flex = '0 0 0%';
+                tankLayerGray.style.minHeight = '0px';
+            }
+        }
+
+        if (tankLayerRed) {
+            if (pctRed > 0) {
+                tankLayerRed.style.display = 'block';
+                tankLayerRed.style.flex = `${pctRed} 1 0%`;
+                tankLayerRed.style.minHeight = '4px';
+            } else {
+                tankLayerRed.style.display = 'none';
+                tankLayerRed.style.flex = '0 0 0%';
+                tankLayerRed.style.minHeight = '0px';
+            }
+        }
+
+        // Sesuaikan warna gelombang (wave SVG) dengan layer status teratas yang aktif
+        // Urutan tumpukan dari bawah ke atas: Red (bawah) -> Gray (tengah) -> Green (atas)
+        const waveSvg = trafficTankLiquid ? trafficTankLiquid.querySelector('.db-wave-wrapper svg') : null;
+        if (waveSvg) {
+            if (pctGreen > 0) {
+                waveSvg.setAttribute('class', 'w-full h-full text-emerald-400 fill-current opacity-85');
+            } else if (pctGray > 0) {
+                waveSvg.setAttribute('class', 'w-full h-full text-slate-400 fill-current opacity-85');
+            } else if (pctRed > 0) {
+                waveSvg.setAttribute('class', 'w-full h-full text-rose-500 fill-current opacity-85');
+            }
+        }
+
+        // Efek Aura Berpendar jika kapasitas mencapai atau melebihi 100%
+        if (tankCylinderElement) {
+            if (capacityPct >= 100) {
+                tankCylinderElement.classList.add('tank-full-aura');
+            } else {
+                tankCylinderElement.classList.remove('tank-full-aura');
+            }
+        }
+
+        // Update Pill Statistik Angka & Persentase
+        if (statBisaMasukCount) statBisaMasukCount.innerText = data.status_counts?.bisa_masuk ?? 0;
+        if (statBisaMasukPct) statBisaMasukPct.innerText = pctGreen + '%';
+
+        if (statBelumPerpanjangCount) statBelumPerpanjangCount.innerText = data.status_counts?.belum_perpanjang ?? 0;
+        if (statBelumPerpanjangPct) statBelumPerpanjangPct.innerText = pctGray + '%';
+
+        if (statBelumDaftarCount) statBelumDaftarCount.innerText = data.status_counts?.belum_daftar ?? 0;
+        if (statBelumDaftarPct) statBelumDaftarPct.innerText = pctRed + '%';
+    }
+
+    let lastLatestLogId = null;
+
+    // Pasang listener interaksi scroll agar scrollbar bisa ditekan tahan dan tidak lari-larian
+    if (terminalBodyContainer) {
+        terminalBodyContainer.addEventListener('scroll', () => {
+            const distanceFromBottom = terminalBodyContainer.scrollHeight - terminalBodyContainer.scrollTop - terminalBodyContainer.clientHeight;
+            // Jika user berada di posisi paling bawah (jarak <= 35px), aktifkan auto-scroll saat ada log baru.
+            // Jika user sengaja scroll ke atas untuk membaca log sebelumnya, matikan auto-scroll agar tidak tersentak ke bawah.
+            autoScrollEnabled = (distanceFromBottom <= 35);
+        }, { passive: true });
+
+        // Deteksi saat user menekan / menahan scrollbar atau area terminal
+        terminalBodyContainer.addEventListener('mousedown', () => {
+            isUserInteractingScroll = true;
+        });
+
+        terminalBodyContainer.addEventListener('touchstart', () => {
+            isUserInteractingScroll = true;
+        }, { passive: true });
+    }
+
+    window.addEventListener('mouseup', () => {
+        setTimeout(() => {
+            isUserInteractingScroll = false;
+        }, 150);
+    });
+
+    window.addEventListener('touchend', () => {
+        setTimeout(() => {
+            isUserInteractingScroll = false;
+        }, 150);
+    });
+
+    // Tombol Navigasi Scroll Cepat ke Atas & Bawah
+    if (btnTerminalScrollTop && terminalBodyContainer) {
+        btnTerminalScrollTop.addEventListener('click', () => {
+            terminalBodyContainer.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
+
+    if (btnTerminalScrollBottom && terminalBodyContainer) {
+        btnTerminalScrollBottom.addEventListener('click', () => {
+            terminalBodyContainer.scrollTo({ top: terminalBodyContainer.scrollHeight, behavior: 'smooth' });
+        });
+    }
+
+    function updateTerminalLogs(logs, historyDateStr = null) {
+        if (!terminalLogEntries || !Array.isArray(logs)) return;
+
+        // Signature unik untuk mendeteksi apakah data log benar-benar berubah
+        const currentSignature = (historyDateStr || 'live') + ':' + logs.map(l => `${l.id || ''}_${l.time || ''}_${l.status || ''}`).join('|');
+        if (currentSignature === lastTerminalLogsSignature) {
+            // Data tidak berubah: jangan render ulang DOM dan jangan ubah posisi scroll sama sekali
+            return;
+        }
+        lastTerminalLogsSignature = currentSignature;
+
+        if (logs.length === 0) {
+            const emptyMsg = historyDateStr
+                ? `Tidak ada catatan scan pengunjung pada tanggal ${escapeHtml(formatDateIndo(historyDateStr))}.`
+                : 'Belum ada aktivitas scan hari ini. Menunggu pemindaian kartu KTP / RFID / NIM...';
+            terminalLogEntries.innerHTML = `
+                <div class="text-cyan-400/50 text-[11px] italic py-6 text-center flex flex-col items-center justify-center gap-1.5">
+                    <svg class="w-6 h-6 text-cyan-400/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span>${emptyMsg}</span>
+                </div>
+            `;
+            return;
+        }
+
+        const newestLogId = logs[0]?.id;
+        lastLatestLogId = newestLogId;
+
+        // Urutkan dari terlama ke terbaru agar data mengalir ke bawah
+        const sortedLogs = [...logs].reverse();
+
+        let html = '';
+        sortedLogs.forEach(log => {
+            let statusBadge = '';
+            if (log.status === 'Bisa Masuk') {
+                statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>BISA MASUK</span>`;
+            } else if (log.status === 'Belum Perpanjang') {
+                statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/20 text-slate-300 border border-slate-500/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>EXPIRED</span>`;
+            } else {
+                statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>BELUM DAFTAR</span>`;
+            }
+
+            html += `
+                <div class="py-1 px-2 rounded flex flex-wrap items-center gap-2 hover:bg-cyan-950/40 transition border-b border-cyan-950/30 text-[11px]">
+                    <span class="text-slate-400 font-mono text-[10px]">[${escapeHtml(log.time)}]</span>
+                    <span class="text-amber-300 font-mono font-semibold">${escapeHtml(log.scanned_code)}</span>
+                    <span class="text-white font-medium">${escapeHtml(log.name)}</span>
+                    ${log.nim && log.nim !== '-' ? `<span class="text-blue-300/60 text-[10px]">(NIM: ${escapeHtml(log.nim)})</span>` : ''}
+                    <span class="ml-auto">${statusBadge}</span>
+                </div>
+            `;
+        });
+
+        terminalLogEntries.innerHTML = html;
+
+        // Hanya auto-scroll ke bawah jika diizinkan dan pengguna sedang tidak menahan scrollbar
+        if (autoScrollEnabled && !isUserInteractingScroll && terminalBodyContainer) {
+            terminalBodyContainer.scrollTop = terminalBodyContainer.scrollHeight;
+        }
+    }
+
+    // Auto-scroll awal saat halaman dimuat
+    if (terminalBodyContainer) {
+        terminalBodyContainer.scrollTop = terminalBodyContainer.scrollHeight;
+    }
+
+    // Mulai Fetch Pertama Kali dan Pasang Polling Setiap 3 Detik
+    fetchLiveTraffic();
+    liveTrafficPollingTimer = setInterval(fetchLiveTraffic, 3000);
 </script>
 @endsection

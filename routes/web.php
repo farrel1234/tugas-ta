@@ -19,6 +19,9 @@ Route::get('/kiosk', [KioskController::class, 'index']);
 // 1.1 API Scanner Gerbang Masuk (KTP/QR/RFID Pengunjung)
 Route::post('/api/scan', [GateController::class, 'scan'])->name('api.scan');
 
+// 1.2 API Live Traffic Gerbang (Dashboard Real-time Telemetry)
+Route::get('/api/live-traffic', [GateController::class, 'liveTraffic'])->name('api.live-traffic');
+
 // 2. Rute Autentikasi (Login untuk guest)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
