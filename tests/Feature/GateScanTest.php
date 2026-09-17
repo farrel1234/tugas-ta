@@ -88,11 +88,19 @@ class GateScanTest extends TestCase
 
     public function test_scan_user_by_card_id_or_nim(): void
     {
-        $user = User::factory()->create([
+        $userCard = User::factory()->create([
             'name' => 'Farrel Ariq Nadhil',
             'nim' => '4342301035',
             'email' => 'farrelariq3@gmail.com',
             'kode_kartu' => '058945125E9200',
+            'expired_at' => Carbon::now()->addYear(),
+        ]);
+
+        $userNim = User::factory()->create([
+            'name' => 'Ahmad Fauzi',
+            'nim' => '4342301099',
+            'email' => 'ahmad@example.com',
+            'kode_kartu' => 'OTHER_CARD_99',
             'expired_at' => Carbon::now()->addYear(),
         ]);
 
@@ -109,12 +117,12 @@ class GateScanTest extends TestCase
 
         // Scan dengan NIM
         $responseNim = $this->postJson('/api/scan', [
-            'kode_scan' => '4342301035',
+            'kode_scan' => '4342301099',
         ]);
         $responseNim->assertStatus(200)
             ->assertJson([
                 'color' => 'green',
-                'name' => 'Farrel Ariq Nadhil',
+                'name' => 'Ahmad Fauzi',
                 'message' => 'Silakan Masuk',
             ]);
     }
@@ -211,5 +219,86 @@ class GateScanTest extends TestCase
                     'belum_daftar' => 50.0,
                 ],
             ]);
+    }
+
+    public function test_scan_cooldown_within_30_seconds_returns_orange_and_saves_cooldown_log(): void
+    {
+        $knownNow = Carbon::create(2026, 9, 17, 10, 0, 0, 'Asia/Jakarta');
+        Carbon::setTestNow($knownNow);
+
+        $user = User::factory()->create([
+            'name' => 'Budi Santoso',
+            'nim' => '12345678',
+            'kode_kartu' => 'KARTU_BUDI_01',
+            'expired_at' => Carbon::now()->addYear(),
+        ]);
+
+        // 1. Scan pertama (berhasil, status: Bisa Masuk, warna: green)
+        $firstResponse = $this->postJson('/api/scan', [
+            'kode_scan' => 'KARTU_BUDI_01',
+        ]);
+
+        $firstResponse->assertStatus(200)
+            ->assertJson([
+                'color' => 'green',
+                'name' => 'Budi Santoso',
+                'message' => 'Silakan Masuk',
+            ]);
+
+        $this->assertDatabaseHas('visitor_logs', [
+            'user_id' => $user->id,
+            'scanned_code' => 'KARTU_BUDI_01',
+            'status' => 'Bisa Masuk',
+        ]);
+
+        // 2. Scan kedua pada detik ke-10 (masih dalam cooldown 30 detik)
+        Carbon::setTestNow($knownNow->copy()->addSeconds(10));
+
+        $secondResponse = $this->postJson('/api/scan', [
+            'kode_scan' => 'KARTU_BUDI_01',
+        ]);
+
+        $secondResponse->assertStatus(200)
+            ->assertJson([
+                'color' => 'orange',
+                'name' => 'Budi Santoso',
+                'message' => 'Kartu baru saja digunakan. Tunggu 30 detik!',
+            ]);
+
+        $this->assertDatabaseHas('visitor_logs', [
+            'user_id' => $user->id,
+            'scanned_code' => 'KARTU_BUDI_01',
+            'status' => 'Ditolak (Cooldown)',
+        ]);
+
+        // 3. Scan ketiga dengan NIM pada detik ke-20 (juga masih dalam cooldown untuk user yang sama)
+        Carbon::setTestNow($knownNow->copy()->addSeconds(20));
+
+        $nimResponse = $this->postJson('/api/scan', [
+            'kode_scan' => '12345678',
+        ]);
+
+        $nimResponse->assertStatus(200)
+            ->assertJson([
+                'color' => 'orange',
+                'name' => 'Budi Santoso',
+                'message' => 'Kartu baru saja digunakan. Tunggu 30 detik!',
+            ]);
+
+        // 4. Scan keempat setelah melewati 30 detik (detik ke-35) -> kembali diizinkan masuk
+        Carbon::setTestNow($knownNow->copy()->addSeconds(35));
+
+        $passResponse = $this->postJson('/api/scan', [
+            'kode_scan' => 'KARTU_BUDI_01',
+        ]);
+
+        $passResponse->assertStatus(200)
+            ->assertJson([
+                'color' => 'green',
+                'name' => 'Budi Santoso',
+                'message' => 'Silakan Masuk',
+            ]);
+
+        Carbon::setTestNow(); // Reset Carbon mock
     }
 }

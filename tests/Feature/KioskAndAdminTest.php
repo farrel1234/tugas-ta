@@ -155,6 +155,11 @@ class KioskAndAdminTest extends TestCase
         $response = $this->get('/');
         $response->assertStatus(200);
         $response->assertSee('Digital Signage Kiosk Polibatam');
+        $response->assertSee('kiosk-traffic-tank');
+        $response->assertSee('Traffic Tank Silinder');
+        $response->assertSee('traffic-tank-liquid');
+        $response->assertSee('Bisa Masuk');
+        $response->assertSee('Belum Daftar');
     }
 
     public function test_admin_dashboard_has_uji_scanner_modal_and_button(): void

@@ -46,6 +46,35 @@ class GateController extends Controller
             ]);
         }
 
+        // SKENARIO COOLDOWN 30 DETIK (Mencegah oper kartu / tap berulang di gerbang)
+        $kunjunganTerakhir = VisitorLog::where(function ($q) use ($user, $scannedCode) {
+                $q->where('user_id', $user->id)
+                  ->orWhere('scanned_code', $scannedCode);
+            })
+            ->where('status', 'Bisa Masuk')
+            ->latest('id')
+            ->first();
+
+        if ($kunjunganTerakhir) {
+            $waktuSekarang = Carbon::now();
+            $waktuTerakhirScan = Carbon::parse($kunjunganTerakhir->created_at);
+            $selisihDetik = $waktuTerakhirScan->diffInSeconds($waktuSekarang);
+
+            if ($selisihDetik < 30) {
+                VisitorLog::create([
+                    'user_id' => $user->id,
+                    'scanned_code' => $scannedCode,
+                    'status' => 'Ditolak (Cooldown)'
+                ]);
+
+                return response()->json([
+                    'color'   => 'orange',
+                    'name'    => $user->name,
+                    'message' => 'Kartu baru saja digunakan. Tunggu 30 detik!'
+                ]);
+            }
+        }
+
         // SKENARIO 2: ABU-ABU (Belum Perpanjang / Expired)
         $sekarang = Carbon::now();
         $isExpired = $user->expired_at ? $sekarang->greaterThan(Carbon::parse($user->expired_at)) : false;
@@ -131,7 +160,7 @@ class GateController extends Controller
                     'nim' => $log->user ? ($log->user->nim ?? '-') : '-',
                     'scanned_code' => $log->scanned_code,
                     'status' => $log->status,
-                    'color' => $log->status === 'Bisa Masuk' ? 'green' : ($log->status === 'Belum Perpanjang' ? 'gray' : 'red'),
+                    'color' => $log->status === 'Bisa Masuk' ? 'green' : ($log->status === 'Belum Perpanjang' ? 'gray' : ($log->status === 'Ditolak (Cooldown)' ? 'orange' : 'red')),
                 ];
             });
 

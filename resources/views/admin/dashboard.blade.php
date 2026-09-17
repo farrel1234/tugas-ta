@@ -510,6 +510,11 @@
                                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
                                                     Bisa Masuk
                                                 </span>
+                                            @elseif($log->status === 'Ditolak (Cooldown)')
+                                                <span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 px-3 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1.5">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                                                    Cooldown
+                                                </span>
                                             @elseif($log->status === 'Belum Perpanjang')
                                                 <span class="bg-slate-500/20 text-slate-300 border border-slate-500/40 px-3 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1.5">
                                                     <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
@@ -1111,6 +1116,14 @@
             adminScanAlertBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full border bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
             adminScanAlertBadge.innerText = 'BISA MASUK (HIJAU)';
             adminScanAlertDesc.innerText = `Kode [${rawCode}]: ${data.message}. Log kunjungan berhasil dicatat ke sistem.`;
+        } else if (data.color === 'orange') {
+            adminScanAlert.classList.add('bg-amber-500/15', 'border-amber-500/40', 'text-amber-200');
+            adminScanAlertIcon.className = 'w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 bg-amber-500/20 text-amber-400';
+            adminScanAlertIcon.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
+            adminScanAlertTitle.innerText = data.name || 'Jeda Akses';
+            adminScanAlertBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full border bg-amber-500/20 text-amber-300 border-amber-500/40';
+            adminScanAlertBadge.innerText = 'JEDA AKSES (COOLDOWN)';
+            adminScanAlertDesc.innerText = `Kode [${rawCode}]: ${data.message}. Percobaan akses tercatat.`;
         } else if (data.color === 'gray') {
             adminScanAlert.classList.add('bg-slate-500/15', 'border-slate-500/40', 'text-slate-200');
             adminScanAlertIcon.className = 'w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 bg-slate-500/20 text-slate-400';
@@ -1507,6 +1520,8 @@
             let statusBadge = '';
             if (log.status === 'Bisa Masuk') {
                 statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>BISA MASUK</span>`;
+            } else if (log.status === 'Ditolak (Cooldown)') {
+                statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>COOLDOWN</span>`;
             } else if (log.status === 'Belum Perpanjang') {
                 statusBadge = `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-500/20 text-slate-300 border border-slate-500/40 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>EXPIRED</span>`;
             } else {

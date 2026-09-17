@@ -57,6 +57,93 @@
     .popup-countdown-running {
         animation: popupCountdownTranslate 3000ms linear forwards !important;
     }
+
+    /* Database Cylinder Styles & Animations */
+    .db-cylinder-container {
+        perspective: 900px;
+    }
+    .db-cylinder-body {
+        position: relative;
+        background: linear-gradient(180deg, rgba(6, 182, 212, 0.08) 0%, rgba(11, 30, 63, 0.6) 100%);
+        border-left: 2px solid rgba(6, 182, 212, 0.5);
+        border-right: 2px solid rgba(6, 182, 212, 0.5);
+        border-bottom: 2px solid rgba(6, 182, 212, 0.5);
+        border-radius: 0 0 36px 36px;
+        box-shadow: inset 0 0 25px rgba(6, 182, 212, 0.15), 0 10px 30px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+    }
+    .db-cylinder-cap {
+        position: absolute;
+        top: -14px;
+        left: 0;
+        right: 0;
+        height: 28px;
+        border-radius: 50%;
+        background: radial-gradient(ellipse at center, rgba(34, 211, 238, 0.35) 0%, rgba(6, 182, 212, 0.15) 60%, rgba(11, 30, 63, 0.95) 100%);
+        border: 2px solid rgba(6, 182, 212, 0.7);
+        box-shadow: 0 2px 12px rgba(6, 182, 212, 0.35), inset 0 0 8px rgba(34, 211, 238, 0.5);
+        z-index: 10;
+    }
+    .db-cylinder-rib {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 18px;
+        border-radius: 50%;
+        border-bottom: 2px solid rgba(6, 182, 212, 0.3);
+        pointer-events: none;
+        z-index: 8;
+    }
+    .db-cylinder-rib-1 { top: 32%; }
+    .db-cylinder-rib-2 { top: 64%; }
+
+    /* Animated Wave */
+    .db-wave-wrapper {
+        position: absolute;
+        top: -8px;
+        left: 0;
+        width: 200%;
+        height: 12px;
+        overflow: hidden;
+        animation: waveHorizontal 6s linear infinite;
+        z-index: 6;
+        pointer-events: none;
+    }
+    @keyframes waveHorizontal {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+    }
+
+    /* Floating Bubbles */
+    .db-bubble {
+        position: absolute;
+        bottom: 0;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: bubbleRise 3.5s infinite ease-in;
+    }
+    @keyframes bubbleRise {
+        0% { transform: translateY(0) scale(0.4); opacity: 0; }
+        20% { opacity: 0.7; }
+        80% { opacity: 0.6; }
+        100% { transform: translateY(-300px) scale(1.1); opacity: 0; }
+    }
+
+    /* Full Capacity Aura */
+    .tank-full-aura {
+        animation: pulseFullAura 2s infinite ease-in-out;
+    }
+    @keyframes pulseFullAura {
+        0%, 100% {
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.4), inset 0 0 15px rgba(6, 182, 212, 0.2);
+            border-color: rgba(6, 182, 212, 0.8);
+        }
+        50% {
+            box-shadow: 0 0 50px rgba(16, 185, 129, 0.7), 0 0 80px rgba(6, 182, 212, 0.5), inset 0 0 30px rgba(16, 185, 129, 0.4);
+            border-color: rgba(52, 211, 153, 1);
+        }
+    }
 </style>
 <div class="bg-[#071124] text-white antialiased select-none h-screen w-screen flex flex-col overflow-hidden">
 
@@ -108,9 +195,11 @@
             </div>
         </header>
 
-        <!-- Main Content Area -->
-        <div class="flex flex-col gap-3 flex-grow overflow-hidden relative z-10 my-2 sm:my-3">
-            <main id="spotlight-rotator" class="flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-blue-950/30 backdrop-blur-lg border border-blue-500/25 shadow-2xl p-3 sm:p-5 overflow-hidden transition-all duration-700 flex-grow min-h-0">
+        <!-- Main Content Area: Bersebelahan Panduan Layanan & Traffic Tank Silinder -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 flex-grow min-h-0 overflow-hidden relative z-10 my-1 sm:my-2">
+
+            <!-- Kolom Kiri: Panduan Layanan (Rotator Signage) -->
+            <main id="spotlight-rotator" class="lg:col-span-7 xl:col-span-8 flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-blue-950/30 backdrop-blur-lg border border-blue-500/25 shadow-2xl p-3 sm:p-5 overflow-hidden transition-all duration-700 h-full min-h-0">
 
                 <!-- Title & Description Info -->
                 <div class="mb-2 border-b border-blue-800/50 pb-2 sm:pb-2.5 flex-shrink-0">
@@ -141,6 +230,126 @@
                 </div>
 
             </main>
+
+            <!-- Kolom Kanan: Box Card Traffic Tank Silinder -->
+            <section id="kiosk-traffic-tank" class="lg:col-span-5 xl:col-span-4 flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-blue-950/40 backdrop-blur-lg border border-blue-500/30 shadow-2xl p-3.5 sm:p-5 overflow-hidden h-full min-h-0 relative">
+                <!-- Header Box Card Tangki (Atas) -->
+                <div class="w-full flex items-center justify-between border-b border-blue-800/40 pb-2.5 flex-shrink-0">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                        <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-200">Traffic Tank Silinder</h3>
+                        <span id="tank-mode-badge" class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            Live Hari Ini
+                        </span>
+                    </div>
+                    <span id="tank-capacity-badge" class="text-[10px] sm:text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                        {{ $trafficData['capacity_percentage'] ?? 0 }}% Kapasitas
+                    </span>
+                </div>
+
+                <!-- Area Tengah: Silinder 3D & HUD Total Kunjungan (Tepat di Tengah / Centered Vertikal) -->
+                <div class="flex-1 flex flex-col justify-center items-center my-auto py-2 sm:py-4 min-h-0 w-full">
+                    <!-- 3D Database Cylinder Graphic -->
+                    <div class="relative w-[210px] sm:w-[240px] xl:w-[270px] h-[230px] sm:h-[260px] xl:h-[300px] db-cylinder-container mx-auto">
+                        <!-- Cylinder Top Oval Cap -->
+                        <div class="db-cylinder-cap"></div>
+
+                        <!-- Cylinder Body -->
+                        <div id="tank-cylinder-element" class="db-cylinder-body w-full h-full relative transition-all duration-500">
+
+                            <!-- Database Horizontal Segment Ribs -->
+                            <div class="db-cylinder-rib db-cylinder-rib-1"></div>
+                            <div class="db-cylinder-rib db-cylinder-rib-2"></div>
+
+                            <!-- Floating Rising Bubbles -->
+                            <div class="db-bubble" style="left: 20%; width: 6px; height: 6px; animation-delay: 0s; animation-duration: 3.2s;"></div>
+                            <div class="db-bubble" style="left: 45%; width: 8px; height: 8px; animation-delay: 1.2s; animation-duration: 4s;"></div>
+                            <div class="db-bubble" style="left: 70%; width: 5px; height: 5px; animation-delay: 2.1s; animation-duration: 2.8s;"></div>
+                            <div class="db-bubble" style="left: 85%; width: 7px; height: 7px; animation-delay: 0.7s; animation-duration: 3.6s;"></div>
+
+                            <!-- The Liquid Level Container (anchored to bottom) -->
+                            <div id="traffic-tank-liquid" class="absolute bottom-0 left-0 right-0 transition-all duration-1000 ease-out flex flex-col-reverse overflow-visible" style="height: {{ ($trafficData['total'] ?? 0) > 0 ? min(100, round(14 + (($trafficData['capacity_percentage'] ?? 0) * 0.72))) : 0 }}%;">
+
+                                <!-- Stacked Colored Fluid Layers: Bottom is Red, Middle is Gray, Top is Green -->
+                                <!-- Red Layer (Belum Daftar) -->
+                                <div id="tank-layer-red" class="w-full bg-gradient-to-t from-rose-700 via-rose-600 to-rose-500 transition-all duration-700 relative border-t border-rose-400/30" style="flex: {{ $trafficData['status_percentages']['belum_daftar'] ?? 0 }} 1 0%; min-height: {{ ($trafficData['status_percentages']['belum_daftar'] ?? 0) > 0 ? '4px' : '0px' }}; display: {{ ($trafficData['status_percentages']['belum_daftar'] ?? 0) > 0 ? 'block' : 'none' }};"></div>
+                                <!-- Gray Layer (Belum Perpanjang) -->
+                                <div id="tank-layer-gray" class="w-full bg-gradient-to-t from-slate-700 via-slate-600 to-slate-500 transition-all duration-700 relative border-t border-slate-300/30" style="flex: {{ $trafficData['status_percentages']['belum_perpanjang'] ?? 0 }} 1 0%; min-height: {{ ($trafficData['status_percentages']['belum_perpanjang'] ?? 0) > 0 ? '4px' : '0px' }}; display: {{ ($trafficData['status_percentages']['belum_perpanjang'] ?? 0) > 0 ? 'block' : 'none' }};"></div>
+                                <!-- Green Layer (Bisa Masuk) -->
+                                <div id="tank-layer-green" class="w-full bg-gradient-to-t from-emerald-700 via-emerald-600 to-emerald-400 transition-all duration-700 relative border-t border-emerald-300/30" style="flex: {{ $trafficData['status_percentages']['bisa_masuk'] ?? 0 }} 1 0%; min-height: {{ ($trafficData['status_percentages']['bisa_masuk'] ?? 0) > 0 ? '4px' : '0px' }}; display: {{ ($trafficData['status_percentages']['bisa_masuk'] ?? 0) > 0 ? 'block' : 'none' }};"></div>
+
+                                <!-- Animated Wave on top of fluid -->
+                                <div class="db-wave-wrapper" style="opacity: {{ ($trafficData['total'] ?? 0) > 0 ? '1' : '0' }};">
+                                    <svg class="w-full h-full text-emerald-400 fill-current opacity-80" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                                        <path d="M0,0 C150,90 350,-40 500,45 C650,130 900,10 1200,50 L1200,120 L0,120 Z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Total Kunjungan Display HUD (Di bawah silinder) -->
+                    <div class="flex items-center justify-center mt-3 sm:mt-4 flex-shrink-0">
+                        <div class="bg-[#091731]/85 backdrop-blur-md border border-cyan-500/40 px-4 sm:px-5 py-1.5 rounded-xl shadow-xl flex items-center gap-3">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                            <span id="traffic-tank-count-hud" class="text-xs sm:text-sm font-bold text-white font-mono tracking-wide">
+                                {{ $trafficData['total'] ?? 0 }} Kunjungan
+                            </span>
+                            <span class="text-cyan-400/40 font-mono">|</span>
+                            <span id="traffic-tank-percent-hud" class="text-[11px] sm:text-xs font-bold text-cyan-300 font-mono">
+                                {{ $trafficData['capacity_percentage'] ?? 0 }}% Kapasitas
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Breakdown Status Pills Below Cylinder (Bawah) -->
+                <div class="w-full grid grid-cols-3 gap-2 border-t border-blue-800/40 pt-2.5 sm:pt-3 flex-shrink-0">
+                    <!-- Green Stat -->
+                    <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-2 sm:p-2.5 text-center">
+                        <div class="flex items-center justify-center gap-1 mb-0.5 sm:mb-1">
+                            <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400"></span>
+                            <span class="text-[9px] sm:text-[10px] font-bold text-emerald-300">Bisa Masuk</span>
+                        </div>
+                        <div id="stat-bisa-masuk-count" class="text-sm sm:text-base font-black text-white font-mono leading-none">
+                            {{ $trafficData['status_counts']['bisa_masuk'] ?? 0 }}
+                        </div>
+                        <span id="stat-bisa-masuk-pct" class="text-[8px] sm:text-[9px] text-emerald-300/70 font-mono">
+                            {{ $trafficData['status_percentages']['bisa_masuk'] ?? 0 }}%
+                        </span>
+                    </div>
+
+                    <!-- Gray Stat -->
+                    <div class="bg-slate-900/50 border border-slate-500/30 rounded-xl p-2 sm:p-2.5 text-center">
+                        <div class="flex items-center justify-center gap-1 mb-0.5 sm:mb-1">
+                            <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-slate-400"></span>
+                            <span class="text-[9px] sm:text-[10px] font-bold text-slate-300">Expired</span>
+                        </div>
+                        <div id="stat-belum-perpanjang-count" class="text-sm sm:text-base font-black text-white font-mono leading-none">
+                            {{ $trafficData['status_counts']['belum_perpanjang'] ?? 0 }}
+                        </div>
+                        <span id="stat-belum-perpanjang-pct" class="text-[8px] sm:text-[9px] text-slate-300/70 font-mono">
+                            {{ $trafficData['status_percentages']['belum_perpanjang'] ?? 0 }}%
+                        </span>
+                    </div>
+
+                    <!-- Red Stat -->
+                    <div class="bg-rose-950/40 border border-rose-500/30 rounded-xl p-2 sm:p-2.5 text-center">
+                        <div class="flex items-center justify-center gap-1 mb-0.5 sm:mb-1">
+                            <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-400"></span>
+                            <span class="text-[9px] sm:text-[10px] font-bold text-rose-300">Belum Daftar</span>
+                        </div>
+                        <div id="stat-belum-daftar-count" class="text-sm sm:text-base font-black text-white font-mono leading-none">
+                            {{ $trafficData['status_counts']['belum_daftar'] ?? 0 }}
+                        </div>
+                        <span id="stat-belum-daftar-pct" class="text-[8px] sm:text-[9px] text-rose-300/70 font-mono">
+                            {{ $trafficData['status_percentages']['belum_daftar'] ?? 0 }}%
+                        </span>
+                    </div>
+                </div>
+
+            </section>
         </div>
 
         <!-- Footer & Controls -->
@@ -183,6 +392,8 @@
                         <svg id="popupIconScan" class="w-10 h-10 sm:w-12 sm:h-12 hidden animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
                         <!-- Checkmark Icon (Hijau) -->
                         <svg id="popupIconGreen" class="w-10 h-10 sm:w-12 sm:h-12 hidden" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        <!-- Warning Exclamation Icon (Orange / Cooldown) -->
+                        <svg id="popupIconOrange" class="w-10 h-10 sm:w-12 sm:h-12 hidden" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                         <!-- Hourglass/Warning Icon (Abu-abu) -->
                         <svg id="popupIconGray" class="w-10 h-10 sm:w-12 sm:h-12 hidden" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         <!-- Cross/X Icon (Merah) -->
@@ -392,6 +603,7 @@
         const popupGlow = document.getElementById('popupGlow');
 
         const iconGreen = document.getElementById('popupIconGreen');
+        const iconOrange = document.getElementById('popupIconOrange');
         const iconGray = document.getElementById('popupIconGray');
         const iconRed = document.getElementById('popupIconRed');
         const iconScan = document.getElementById('popupIconScan');
@@ -407,6 +619,7 @@
         // Sembunyikan semua icon terlebih dahulu
         if (iconScan) iconScan.classList.add('hidden');
         if (iconGreen) iconGreen.classList.add('hidden');
+        if (iconOrange) iconOrange.classList.add('hidden');
         if (iconGray) iconGray.classList.add('hidden');
         if (iconRed) iconRed.classList.add('hidden');
 
@@ -448,6 +661,19 @@
             popupPesan.className = 'text-2xl sm:text-3xl font-black tracking-tight mb-2 uppercase text-emerald-300';
             popupSubtext.innerText = 'Pintu gerbang otomatis dibuka. Selamat datang di perpustakaan!';
             popupCountdown.className = 'h-full w-full rounded-full bg-emerald-400';
+
+        } else if (data.color === 'orange') {
+            // SKENARIO ORANGE: Jeda Akses / Cooldown 30 Detik
+            popupCard.className = 'w-full rounded-3xl p-6 sm:p-8 text-center shadow-2xl border-2 relative overflow-hidden bg-[#241705]/95 border-amber-400 shadow-[0_0_40px_rgba(245,158,11,0.3)]';
+            popupGlow.className = 'absolute -top-20 -left-20 w-44 h-44 rounded-full blur-2xl opacity-40 pointer-events-none bg-amber-500';
+            popupIconContainer.className = 'w-20 h-20 sm:w-24 sm:h-24 mx-auto rounded-full flex items-center justify-center mb-4 border-2 shadow-xl bg-amber-500/20 border-amber-400 text-amber-300';
+            if (iconOrange) iconOrange.classList.remove('hidden');
+
+            popupBadge.className = 'text-[10px] sm:text-xs font-black uppercase tracking-widest px-4 py-1 rounded-full border shadow-sm bg-amber-500/20 text-amber-300 border-amber-500/40';
+            popupBadge.innerText = 'JEDA AKSES (COOLDOWN)';
+            popupPesan.className = 'text-2xl sm:text-3xl font-black tracking-tight mb-2 uppercase text-amber-300';
+            popupSubtext.innerText = data.message || 'Kartu baru saja digunakan. Tunggu 30 detik sebelum scan kembali.';
+            popupCountdown.className = 'h-full w-full rounded-full bg-amber-400';
 
         } else if (data.color === 'gray') {
             // SKENARIO ABU-ABU: Belum Perpanjang (Kedaluwarsa)
@@ -532,6 +758,8 @@
         })
         .then(data => {
             showAccessPopup(data, cleanCode);
+            // Refresh data tangki segera setelah scan berhasil tercatat
+            setTimeout(fetchKioskLiveTraffic, 400);
         })
         .catch(err => {
             if (err.name === 'AbortError') return;
@@ -574,6 +802,134 @@
             lastKeyTime = currentTime;
         }
     });
+
+    // 4. Engine Live Traffic Tank Silinder di Kiosk
+    const tankModeBadge = document.getElementById('tank-mode-badge');
+    const tankCapacityBadge = document.getElementById('tank-capacity-badge');
+    const trafficTankLiquid = document.getElementById('traffic-tank-liquid');
+    const tankCylinderElement = document.getElementById('tank-cylinder-element');
+    const tankLayerGreen = document.getElementById('tank-layer-green');
+    const tankLayerGray = document.getElementById('tank-layer-gray');
+    const tankLayerRed = document.getElementById('tank-layer-red');
+    const trafficTankPercentHud = document.getElementById('traffic-tank-percent-hud');
+    const trafficTankCountHud = document.getElementById('traffic-tank-count-hud');
+
+    const statBisaMasukCount = document.getElementById('stat-bisa-masuk-count');
+    const statBisaMasukPct = document.getElementById('stat-bisa-masuk-pct');
+    const statBelumPerpanjangCount = document.getElementById('stat-belum-perpanjang-count');
+    const statBelumPerpanjangPct = document.getElementById('stat-belum-perpanjang-pct');
+    const statBelumDaftarCount = document.getElementById('stat-belum-daftar-count');
+    const statBelumDaftarPct = document.getElementById('stat-belum-daftar-pct');
+
+    function updateTrafficTank(data) {
+        if (!data) return;
+        const total = Number(data.total || 0);
+        const capacityPct = Number(data.capacity_percentage || 0);
+
+        if (tankCapacityBadge) tankCapacityBadge.innerText = capacityPct + '% Kapasitas';
+        if (trafficTankPercentHud) trafficTankPercentHud.innerText = capacityPct + '% Kapasitas';
+        if (trafficTankCountHud) trafficTankCountHud.innerText = `${total} Kunjungan`;
+
+        const pctGreen = Number(data.status_percentages?.bisa_masuk || 0);
+        const pctGray = Number(data.status_percentages?.belum_perpanjang || 0);
+        const pctRed = Number(data.status_percentages?.belum_daftar || 0);
+
+        if (trafficTankLiquid) {
+            const waveWrapper = trafficTankLiquid.querySelector('.db-wave-wrapper');
+            if (total === 0) {
+                trafficTankLiquid.style.height = '0%';
+                if (waveWrapper) waveWrapper.style.opacity = '0';
+            } else {
+                const visualHeight = Math.min(100, Math.round(14 + (capacityPct * 0.72)));
+                trafficTankLiquid.style.height = visualHeight + '%';
+                if (waveWrapper) waveWrapper.style.opacity = '1';
+            }
+        }
+
+        if (tankLayerGreen) {
+            if (pctGreen > 0) {
+                tankLayerGreen.style.display = 'block';
+                tankLayerGreen.style.flex = `${pctGreen} 1 0%`;
+                tankLayerGreen.style.minHeight = '4px';
+            } else {
+                tankLayerGreen.style.display = 'none';
+                tankLayerGreen.style.flex = '0 0 0%';
+                tankLayerGreen.style.minHeight = '0px';
+            }
+        }
+
+        if (tankLayerGray) {
+            if (pctGray > 0) {
+                tankLayerGray.style.display = 'block';
+                tankLayerGray.style.flex = `${pctGray} 1 0%`;
+                tankLayerGray.style.minHeight = '4px';
+            } else {
+                tankLayerGray.style.display = 'none';
+                tankLayerGray.style.flex = '0 0 0%';
+                tankLayerGray.style.minHeight = '0px';
+            }
+        }
+
+        if (tankLayerRed) {
+            if (pctRed > 0) {
+                tankLayerRed.style.display = 'block';
+                tankLayerRed.style.flex = `${pctRed} 1 0%`;
+                tankLayerRed.style.minHeight = '4px';
+            } else {
+                tankLayerRed.style.display = 'none';
+                tankLayerRed.style.flex = '0 0 0%';
+                tankLayerRed.style.minHeight = '0px';
+            }
+        }
+
+        const waveSvg = trafficTankLiquid ? trafficTankLiquid.querySelector('.db-wave-wrapper svg') : null;
+        if (waveSvg) {
+            if (pctGreen > 0) {
+                waveSvg.setAttribute('class', 'w-full h-full text-emerald-400 fill-current opacity-85');
+            } else if (pctGray > 0) {
+                waveSvg.setAttribute('class', 'w-full h-full text-slate-400 fill-current opacity-85');
+            } else if (pctRed > 0) {
+                waveSvg.setAttribute('class', 'w-full h-full text-rose-500 fill-current opacity-85');
+            }
+        }
+
+        if (tankCylinderElement) {
+            if (capacityPct >= 100) {
+                tankCylinderElement.classList.add('tank-full-aura');
+            } else {
+                tankCylinderElement.classList.remove('tank-full-aura');
+            }
+        }
+
+        if (statBisaMasukCount) statBisaMasukCount.innerText = data.status_counts?.bisa_masuk ?? 0;
+        if (statBisaMasukPct) statBisaMasukPct.innerText = pctGreen + '%';
+
+        if (statBelumPerpanjangCount) statBelumPerpanjangCount.innerText = data.status_counts?.belum_perpanjang ?? 0;
+        if (statBelumPerpanjangPct) statBelumPerpanjangPct.innerText = pctGray + '%';
+
+        if (statBelumDaftarCount) statBelumDaftarCount.innerText = data.status_counts?.belum_daftar ?? 0;
+        if (statBelumDaftarPct) statBelumDaftarPct.innerText = pctRed + '%';
+    }
+
+    function fetchKioskLiveTraffic() {
+        fetch('/api/live-traffic', {
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(res => {
+            if (!res.ok) throw new Error('Status ' + res.status);
+            return res.json();
+        })
+        .then(data => {
+            updateTrafficTank(data);
+        })
+        .catch(err => {
+            console.warn('Gagal sinkronisasi live traffic kiosk:', err);
+        });
+    }
+
+    // Polling background setiap 3 detik di Kiosk
+    fetchKioskLiveTraffic();
+    setInterval(fetchKioskLiveTraffic, 3000);
 
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initSignage);
