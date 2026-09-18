@@ -898,6 +898,20 @@
                         </span>
                     </button>
 
+                    <!-- Skenario KTP: Kartu Pengunjung KTP (Hijau - Aktif) -->
+                    <button type="button" onclick="adminQuickScan('0452490A926C80')" class="w-full text-left p-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 transition flex items-center justify-between cursor-pointer group">
+                        <div class="flex items-center gap-3">
+                            <span class="w-3 h-3 rounded-full bg-cyan-400 flex-shrink-0 animate-pulse"></span>
+                            <div>
+                                <div class="text-xs font-bold text-white group-hover:text-cyan-300 transition">Pengunjung KTP (0452490A926C80)</div>
+                                <div class="text-[10px] text-cyan-400/80">Kode: 0452490A926C80 | Status: Aktif (Bisa Masuk)</div>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-lg bg-cyan-500/20 text-cyan-300 text-[10px] font-bold border border-cyan-500/30 group-hover:bg-cyan-500 group-hover:text-slate-950 transition">
+                            Uji KTP
+                        </span>
+                    </button>
+
                     <!-- Skenario 1: Aktif (Hijau) -->
                     <button type="button" onclick="adminQuickScan('3312001001')" class="w-full text-left p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 transition flex items-center justify-between cursor-pointer group">
                         <div class="flex items-center gap-3">

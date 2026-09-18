@@ -63,6 +63,18 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
+        // Anggota 4: Pengunjung KTP (Aktif - Hijau - Bisa Masuk)
+        User::updateOrCreate(
+            ['kode_kartu' => '0452490A926C80'],
+            [
+                'name' => 'Pengunjung KTP',
+                'email' => 'ktp.0452490a926c80@polibatam.ac.id',
+                'kode_kartu' => '0452490A926C80',
+                'expired_at' => Carbon::now()->addYears(3),
+                'password' => Hash::make('password123'),
+            ]
+        );
+
         // 2. Data Menu dan Step Awal
         $menusData = [
             [

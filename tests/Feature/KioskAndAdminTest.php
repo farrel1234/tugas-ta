@@ -6,6 +6,7 @@ use App\Models\Menu;
 use App\Models\Step;
 use App\Models\User;
 use App\Models\VisitorLog;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -235,5 +236,45 @@ class KioskAndAdminTest extends TestCase
         $response->assertSee('traffic-tank-count-hud');
         $response->assertSee('traffic-tank-percent-hud');
         $response->assertDontSee('0 / 100 Kunjungan');
+    }
+
+    public function test_kiosk_has_carousel_with_traffic_tank_and_leaderboard(): void
+    {
+        $champion = User::factory()->create([
+            'name' => 'Siti Nurhaliza',
+            'nim' => '3312001005',
+        ]);
+
+        VisitorLog::create([
+            'user_id' => $champion->id,
+            'scanned_code' => 'RFID_SITI',
+            'status' => 'Bisa Masuk',
+            'created_at' => Carbon::now('Asia/Jakarta'),
+        ]);
+
+        $response = $this->get('/');
+        $response->assertStatus(200);
+
+        // Memastikan kedua widget dan dot navigator hadir di DOM
+        $response->assertSee('widgetTank');
+        $response->assertSee('widgetLeaderboard');
+        $response->assertSee('Pahlawan Literasi');
+        $response->assertSee('dot-widget-tank');
+        $response->assertSee('dot-widget-leaderboard');
+        $response->assertSee('Siti Nurhaliza');
+        $response->assertSee('3312001005');
+
+        // Memastikan /api/live-traffic menyertakan data leaderboard top_visitors
+        $apiResponse = $this->getJson('/api/live-traffic');
+        $apiResponse->assertStatus(200)
+            ->assertJsonStructure([
+                'top_visitors',
+                'month_name',
+            ]);
+
+        $topVisitors = $apiResponse->json('top_visitors');
+        $this->assertNotEmpty($topVisitors);
+        $this->assertEquals('Siti Nurhaliza', $topVisitors[0]['name']);
+        $this->assertEquals(1, $topVisitors[0]['total']);
     }
 }

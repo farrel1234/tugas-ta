@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\VisitorLog;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class GateController extends Controller
 {
@@ -164,6 +165,28 @@ class GateController extends Controller
                 ];
             });
 
+        // Top 3 Pengunjung Bulan Ini untuk Leaderboard Pahlawan Literasi
+        $currentMonth = Carbon::now('Asia/Jakarta');
+        $topVisitors = VisitorLog::select('user_id', DB::raw('count(*) as total_kunjungan'))
+            ->whereNotNull('user_id')
+            ->whereMonth('created_at', $currentMonth->month)
+            ->whereYear('created_at', $currentMonth->year)
+            ->where('status', 'Bisa Masuk')
+            ->groupBy('user_id')
+            ->orderByDesc('total_kunjungan')
+            ->take(3)
+            ->with('user:id,name,nim')
+            ->get()
+            ->map(function ($log, $idx) {
+                return [
+                    'rank' => $idx + 1,
+                    'user_id' => $log->user_id,
+                    'name' => $log->user ? $log->user->name : 'Mahasiswa',
+                    'nim' => $log->user ? ($log->user->nim ?? '-') : '-',
+                    'total' => (int) $log->total_kunjungan,
+                ];
+            });
+
         return response()->json([
             'total' => $total,
             'capacity_percentage' => $capacityPercentage,
@@ -181,6 +204,8 @@ class GateController extends Controller
                 'belum_daftar' => $pctBelumDaftar,
             ],
             'recent_logs' => $recentLogs,
+            'month_name' => $currentMonth->translatedFormat('F Y'),
+            'top_visitors' => $topVisitors,
         ]);
     }
 }

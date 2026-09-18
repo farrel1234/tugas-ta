@@ -144,6 +144,23 @@
             border-color: rgba(52, 211, 153, 1);
         }
     }
+
+    /* Dynamic Kiosk Carousel Widgets (Traffic Tank & Leaderboard) */
+    .dynamic-kiosk-widget {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.5s ease-in-out;
+        pointer-events: none;
+    }
+    .dynamic-kiosk-widget.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
 </style>
 <div class="bg-[#071124] text-white antialiased select-none h-screen w-screen flex flex-col overflow-hidden">
 
@@ -231,122 +248,286 @@
 
             </main>
 
-            <!-- Kolom Kanan: Box Card Traffic Tank Silinder -->
-            <section id="kiosk-traffic-tank" class="lg:col-span-5 xl:col-span-4 flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-blue-950/40 backdrop-blur-lg border border-blue-500/30 shadow-2xl p-3.5 sm:p-5 overflow-hidden h-full min-h-0 relative">
-                <!-- Header Box Card Tangki (Atas) -->
-                <div class="w-full flex items-center justify-between border-b border-blue-800/40 pb-2.5 flex-shrink-0">
-                    <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                        <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-200">Traffic Tank Silinder</h3>
-                        <span id="tank-mode-badge" class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                            Live Hari Ini
+            <!-- Kolom Kanan: Container Carousel Dinamis (Traffic Tank Silinder & Leaderboard Gamifikasi) -->
+            <section id="kiosk-traffic-tank" class="lg:col-span-5 xl:col-span-4 rounded-2xl sm:rounded-3xl bg-blue-950/40 backdrop-blur-lg border border-blue-500/30 shadow-2xl overflow-hidden h-full min-h-0 relative">
+
+                @php
+                    $kioskTopList = collect($leaderboardData['top_visitors'] ?? []);
+                    $top1 = $kioskTopList->firstWhere('rank', 1);
+                    $top2 = $kioskTopList->firstWhere('rank', 2);
+                    $top3 = $kioskTopList->firstWhere('rank', 3);
+                @endphp
+
+                <!-- WIDGET 1: Traffic Tank Silinder (Aktif Default) -->
+                <div id="widgetTank" class="dynamic-kiosk-widget active p-3.5 sm:p-5 flex flex-col justify-between">
+                    <!-- Header Box Card Tangki (Atas) -->
+                    <div class="w-full flex items-center justify-between border-b border-blue-800/40 pb-2.5 flex-shrink-0">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                            <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-200">Traffic Tank Silinder</h3>
+                            <span id="tank-mode-badge" class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                                Live Hari Ini
+                            </span>
+                        </div>
+                        <span id="tank-capacity-badge" class="text-[10px] sm:text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                            {{ $trafficData['capacity_percentage'] ?? 0 }}% Kapasitas
                         </span>
                     </div>
-                    <span id="tank-capacity-badge" class="text-[10px] sm:text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
-                        {{ $trafficData['capacity_percentage'] ?? 0 }}% Kapasitas
-                    </span>
+
+                    <!-- Area Tengah: Silinder 3D & HUD Total Kunjungan (Tepat di Tengah / Centered Vertikal) -->
+                    <div class="flex-1 flex flex-col justify-center items-center my-auto py-2 sm:py-4 min-h-0 w-full">
+                        <!-- 3D Database Cylinder Graphic -->
+                        <div class="relative w-[210px] sm:w-[240px] xl:w-[270px] h-[230px] sm:h-[260px] xl:h-[300px] db-cylinder-container mx-auto">
+                            <!-- Cylinder Top Oval Cap -->
+                            <div class="db-cylinder-cap"></div>
+
+                            <!-- Cylinder Body -->
+                            <div id="tank-cylinder-element" class="db-cylinder-body w-full h-full relative transition-all duration-500">
+
+                                <!-- Database Horizontal Segment Ribs -->
+                                <div class="db-cylinder-rib db-cylinder-rib-1"></div>
+                                <div class="db-cylinder-rib db-cylinder-rib-2"></div>
+
+                                <!-- Floating Rising Bubbles -->
+                                <div class="db-bubble" style="left: 20%; width: 6px; height: 6px; animation-delay: 0s; animation-duration: 3.2s;"></div>
+                                <div class="db-bubble" style="left: 45%; width: 8px; height: 8px; animation-delay: 1.2s; animation-duration: 4s;"></div>
+                                <div class="db-bubble" style="left: 70%; width: 5px; height: 5px; animation-delay: 2.1s; animation-duration: 2.8s;"></div>
+                                <div class="db-bubble" style="left: 85%; width: 7px; height: 7px; animation-delay: 0.7s; animation-duration: 3.6s;"></div>
+
+                                <!-- The Liquid Level Container (anchored to bottom) -->
+                                <div id="traffic-tank-liquid" class="absolute bottom-0 left-0 right-0 transition-all duration-1000 ease-out flex flex-col-reverse overflow-visible" style="height: {{ ($trafficData['total'] ?? 0) > 0 ? min(100, round(14 + (($trafficData['capacity_percentage'] ?? 0) * 0.72))) : 0 }}%;">
+
+                                    <!-- Stacked Colored Fluid Layers: Bottom is Red, Middle is Gray, Top is Green -->
+                                    <!-- Red Layer (Belum Daftar) -->
+                                    <div id="tank-layer-red" class="w-full bg-gradient-to-t from-rose-700 via-rose-600 to-rose-500 transition-all duration-700 relative border-t border-rose-400/30" style="flex: {{ $trafficData['status_percentages']['belum_daftar'] ?? 0 }} 1 0%; min-height: {{ ($trafficData['status_percentages']['belum_daftar'] ?? 0) > 0 ? '4px' : '0px' }}; display: {{ ($trafficData['status_percentages']['belum_daftar'] ?? 0) > 0 ? 'block' : 'none' }};"></div>
+                                    <!-- Gray Layer (Belum Perpanjang) -->
+                                    <div id="tank-layer-gray" class="w-full bg-gradient-to-t from-slate-700 via-slate-600 to-slate-500 transition-all duration-700 relative border-t border-slate-300/30" style="flex: {{ $trafficData['status_percentages']['belum_perpanjang'] ?? 0 }} 1 0%; min-height: {{ ($trafficData['status_percentages']['belum_perpanjang'] ?? 0) > 0 ? '4px' : '0px' }}; display: {{ ($trafficData['status_percentages']['belum_perpanjang'] ?? 0) > 0 ? 'block' : 'none' }};"></div>
+                                    <!-- Green Layer (Bisa Masuk) -->
+                                    <div id="tank-layer-green" class="w-full bg-gradient-to-t from-emerald-700 via-emerald-600 to-emerald-400 transition-all duration-700 relative border-t border-emerald-300/30" style="flex: {{ $trafficData['status_percentages']['bisa_masuk'] ?? 0 }} 1 0%; min-height: {{ ($trafficData['status_percentages']['bisa_masuk'] ?? 0) > 0 ? '4px' : '0px' }}; display: {{ ($trafficData['status_percentages']['bisa_masuk'] ?? 0) > 0 ? 'block' : 'none' }};"></div>
+
+                                    <!-- Animated Wave on top of fluid -->
+                                    <div class="db-wave-wrapper" style="opacity: {{ ($trafficData['total'] ?? 0) > 0 ? '1' : '0' }};">
+                                        <svg class="w-full h-full text-emerald-400 fill-current opacity-80" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                                            <path d="M0,0 C150,90 350,-40 500,45 C650,130 900,10 1200,50 L1200,120 L0,120 Z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Total Kunjungan Display HUD (Di bawah silinder) -->
+                        <div class="flex items-center justify-center mt-3 sm:mt-4 flex-shrink-0">
+                            <div class="bg-[#091731]/85 backdrop-blur-md border border-cyan-500/40 px-4 sm:px-5 py-1.5 rounded-xl shadow-xl flex items-center gap-3">
+                                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                                <span id="traffic-tank-count-hud" class="text-xs sm:text-sm font-bold text-white font-mono tracking-wide">
+                                    {{ $trafficData['total'] ?? 0 }} Kunjungan
+                                </span>
+                                <span class="text-cyan-400/40 font-mono">|</span>
+                                <span id="traffic-tank-percent-hud" class="text-[11px] sm:text-xs font-bold text-cyan-300 font-mono">
+                                    {{ $trafficData['capacity_percentage'] ?? 0 }}% Kapasitas
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Breakdown Status Pills Below Cylinder (Bawah) -->
+                    <div class="w-full grid grid-cols-3 gap-2 border-t border-blue-800/40 pt-2.5 sm:pt-3 flex-shrink-0">
+                        <!-- Green Stat -->
+                        <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-2 sm:p-2.5 text-center">
+                            <div class="flex items-center justify-center gap-1 mb-0.5 sm:mb-1">
+                                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400"></span>
+                                <span class="text-[9px] sm:text-[10px] font-bold text-emerald-300">Bisa Masuk</span>
+                            </div>
+                            <div id="stat-bisa-masuk-count" class="text-sm sm:text-base font-black text-white font-mono leading-none">
+                                {{ $trafficData['status_counts']['bisa_masuk'] ?? 0 }}
+                            </div>
+                            <span id="stat-bisa-masuk-pct" class="text-[8px] sm:text-[9px] text-emerald-300/70 font-mono">
+                                {{ $trafficData['status_percentages']['bisa_masuk'] ?? 0 }}%
+                            </span>
+                        </div>
+
+                        <!-- Gray Stat -->
+                        <div class="bg-slate-900/50 border border-slate-500/30 rounded-xl p-2 sm:p-2.5 text-center">
+                            <div class="flex items-center justify-center gap-1 mb-0.5 sm:mb-1">
+                                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-slate-400"></span>
+                                <span class="text-[9px] sm:text-[10px] font-bold text-slate-300">Expired</span>
+                            </div>
+                            <div id="stat-belum-perpanjang-count" class="text-sm sm:text-base font-black text-white font-mono leading-none">
+                                {{ $trafficData['status_counts']['belum_perpanjang'] ?? 0 }}
+                            </div>
+                            <span id="stat-belum-perpanjang-pct" class="text-[8px] sm:text-[9px] text-slate-300/70 font-mono">
+                                {{ $trafficData['status_percentages']['belum_perpanjang'] ?? 0 }}%
+                            </span>
+                        </div>
+
+                        <!-- Red Stat -->
+                        <div class="bg-rose-950/40 border border-rose-500/30 rounded-xl p-2 sm:p-2.5 text-center">
+                            <div class="flex items-center justify-center gap-1 mb-0.5 sm:mb-1">
+                                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-400"></span>
+                                <span class="text-[9px] sm:text-[10px] font-bold text-rose-300">Belum Daftar</span>
+                            </div>
+                            <div id="stat-belum-daftar-count" class="text-sm sm:text-base font-black text-white font-mono leading-none">
+                                {{ $trafficData['status_counts']['belum_daftar'] ?? 0 }}
+                            </div>
+                            <span id="stat-belum-daftar-pct" class="text-[8px] sm:text-[9px] text-rose-300/70 font-mono">
+                                {{ $trafficData['status_percentages']['belum_daftar'] ?? 0 }}%
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Area Tengah: Silinder 3D & HUD Total Kunjungan (Tepat di Tengah / Centered Vertikal) -->
-                <div class="flex-1 flex flex-col justify-center items-center my-auto py-2 sm:py-4 min-h-0 w-full">
-                    <!-- 3D Database Cylinder Graphic -->
-                    <div class="relative w-[210px] sm:w-[240px] xl:w-[270px] h-[230px] sm:h-[260px] xl:h-[300px] db-cylinder-container mx-auto">
-                        <!-- Cylinder Top Oval Cap -->
-                        <div class="db-cylinder-cap"></div>
+                <!-- WIDGET 2: Leaderboard Gamifikasi ("Leaderboard kunjungan Bulan Ini") -->
+                <div id="widgetLeaderboard" class="dynamic-kiosk-widget p-3.5 sm:p-5 flex flex-col justify-between">
+                    <!-- Header Leaderboard (Atas) -->
+                    <div class="w-full flex items-center justify-between border-b border-amber-500/30 pb-2.5 flex-shrink-0">
+                        <div class="flex items-center gap-2 sm:gap-2.5">
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 text-sm sm:text-base shadow-[0_0_15px_rgba(245,158,11,0.4)] flex-shrink-0">
+                                🏆
+                            </div>
+                            <div>
+                                <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                                    Leaderboard Kunjungan
+                                </h3>
+                                <span class="text-[8px] sm:text-[9px] text-amber-200/70 font-medium block">Top 3 Pahlawan Literasi Bulan Ini</span>
+                            </div>
+                        </div>
+                        <span id="leaderboard-month-badge" class="text-[9px] sm:text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                            {{ $leaderboardData['month_name'] ?? date('F Y') }}
+                        </span>
+                    </div>
 
-                        <!-- Cylinder Body -->
-                        <div id="tank-cylinder-element" class="db-cylinder-body w-full h-full relative transition-all duration-500">
+                    <!-- Area Tengah: Podium 3D Olimpiade (Juara 2 - Juara 1 - Juara 3) -->
+                    <div class="flex-1 flex flex-col min-h-0 w-full pt-3 sm:pt-4 pb-0 relative overflow-hidden">
+                        <!-- Decorative Golden Ambient Glow behind Champion -->
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-56 sm:w-72 h-56 sm:h-72 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
 
-                            <!-- Database Horizontal Segment Ribs -->
-                            <div class="db-cylinder-rib db-cylinder-rib-1"></div>
-                            <div class="db-cylinder-rib db-cylinder-rib-2"></div>
+                        <div id="leaderboard-podium-wrapper" class="w-full flex-1 flex items-end justify-center gap-2.5 sm:gap-4 xl:gap-5 px-1 sm:px-3 min-h-0 relative z-10">
 
-                            <!-- Floating Rising Bubbles -->
-                            <div class="db-bubble" style="left: 20%; width: 6px; height: 6px; animation-delay: 0s; animation-duration: 3.2s;"></div>
-                            <div class="db-bubble" style="left: 45%; width: 8px; height: 8px; animation-delay: 1.2s; animation-duration: 4s;"></div>
-                            <div class="db-bubble" style="left: 70%; width: 5px; height: 5px; animation-delay: 2.1s; animation-duration: 2.8s;"></div>
-                            <div class="db-bubble" style="left: 85%; width: 7px; height: 7px; animation-delay: 0.7s; animation-duration: 3.6s;"></div>
+                            <!-- PODIUM JUARA 2 (PERAK / KIRI) -->
+                            <div class="flex-1 flex flex-col items-center justify-end max-w-[130px] sm:max-w-[155px] xl:max-w-[185px] text-center" style="height: 85%;">
+                                <div class="w-full flex flex-col items-center mb-2 flex-shrink-0">
+                                    <div class="relative mb-1 sm:mb-1.5">
+                                        <div class="w-13 h-13 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-slate-500 via-slate-200 to-slate-400 p-[2px] shadow-[0_0_20px_rgba(148,163,184,0.45)] flex items-center justify-center">
+                                            <div class="w-full h-full rounded-full bg-[#0d1726] flex items-center justify-center font-black text-slate-200 text-sm sm:text-base">
+                                                2
+                                            </div>
+                                        </div>
+                                        <span class="absolute -top-2.5 -right-1 text-base sm:text-lg filter drop-shadow">🥈</span>
+                                    </div>
+                                    <h4 id="podium-name-2" class="text-[11px] sm:text-xs font-bold text-white truncate w-full px-1" title="{{ $top2['name'] ?? 'Belum Ada' }}">
+                                        {{ $top2['name'] ?? 'Belum Ada' }}
+                                    </h4>
+                                    <span id="podium-nim-2" class="text-[8px] sm:text-[9px] text-cyan-300/70 font-mono block">
+                                        {{ $top2['nim'] ?? '-' }}
+                                    </span>
+                                    <div class="mt-1 px-2.5 py-0.5 rounded-full bg-slate-500/20 border border-slate-400/40 text-[9px] sm:text-[10px] font-bold text-slate-200 font-mono">
+                                        <span id="podium-count-2">{{ $top2['total'] ?? 0 }}</span> <span class="text-[8px] font-sans font-normal opacity-75">Kunjungan</span>
+                                    </div>
+                                </div>
+                                <!-- Pedestal Step 2 (Stretches to bottom) -->
+                                <div class="w-full flex-1 min-h-[110px] rounded-t-xl bg-gradient-to-t from-slate-900/95 via-slate-800/60 to-slate-700/60 border-t-2 border-x border-slate-400/50 flex flex-col items-center justify-between py-2 shadow-inner">
+                                    <div class="flex flex-col items-center pt-0.5">
+                                        <span class="text-sm sm:text-lg font-black text-slate-300 font-mono tracking-wider leading-none">#2</span>
+                                        <span class="text-[7px] sm:text-[8px] uppercase tracking-widest text-slate-400 font-bold mt-0.5 px-1.5 py-0.5 rounded bg-slate-700/30 border border-slate-500/30">SILVER</span>
+                                    </div>
+                                    <div class="w-full flex flex-col items-center justify-center my-auto py-1 opacity-50 pointer-events-none">
+                                        <span class="text-[10px] sm:text-xs tracking-[0.2em] font-mono text-slate-400">★ ★</span>
+                                    </div>
+                                    <div class="w-full border-t border-slate-700/30 pt-1 text-center flex-shrink-0">
+                                        <span class="text-[7px] sm:text-[8px] font-mono text-slate-400/60 uppercase tracking-widest">Peringkat 2</span>
+                                    </div>
+                                </div>
+                            </div>
 
-                            <!-- The Liquid Level Container (anchored to bottom) -->
-                            <div id="traffic-tank-liquid" class="absolute bottom-0 left-0 right-0 transition-all duration-1000 ease-out flex flex-col-reverse overflow-visible" style="height: {{ ($trafficData['total'] ?? 0) > 0 ? min(100, round(14 + (($trafficData['capacity_percentage'] ?? 0) * 0.72))) : 0 }}%;">
+                            <!-- PODIUM JUARA 1 (EMAS / TENGAH - SELF-STRETCH FILL MAX & LEBIH TINGGI) -->
+                            <div class="flex-1 flex flex-col items-center justify-end self-stretch max-w-[150px] sm:max-w-[185px] xl:max-w-[215px] text-center z-10">
+                                <div class="w-full flex flex-col items-center mb-2.5 flex-shrink-0">
+                                    <div class="relative mb-1.5 sm:mb-2">
+                                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-yellow-600 via-amber-300 to-yellow-100 p-[2.5px] shadow-[0_0_30px_rgba(245,158,11,0.7)] flex items-center justify-center">
+                                            <div class="w-full h-full rounded-full bg-[#1b1506] flex items-center justify-center font-black text-amber-300 text-base sm:text-lg">
+                                                1
+                                            </div>
+                                        </div>
+                                        <span class="absolute -top-4 sm:-top-5 left-1/2 -translate-x-1/2 text-xl sm:text-2xl filter drop-shadow-md animate-bounce" style="animation-duration: 2.5s;">👑</span>
+                                    </div>
+                                    <h4 id="podium-name-1" class="text-xs sm:text-sm font-black text-amber-200 truncate w-full px-1 tracking-tight" title="{{ $top1['name'] ?? 'Belum Ada' }}">
+                                        {{ $top1['name'] ?? 'Belum Ada' }}
+                                    </h4>
+                                    <span id="podium-nim-1" class="text-[9px] sm:text-[10px] text-amber-400/85 font-mono block font-bold">
+                                        {{ $top1['nim'] ?? '-' }}
+                                    </span>
+                                    <div class="mt-1 px-3 py-0.5 rounded-full bg-amber-500/25 border border-amber-400/60 text-[10px] sm:text-xs font-black text-amber-300 font-mono shadow-[0_0_15px_rgba(245,158,11,0.35)]">
+                                        <span id="podium-count-1">{{ $top1['total'] ?? 0 }}</span> <span class="text-[8px] sm:text-[9px] font-sans font-normal opacity-85">Kunjungan</span>
+                                    </div>
+                                </div>
+                                <!-- Pedestal Step 1 (Tall & Stretched to the Bottom) -->
+                                <div class="w-full flex-1 min-h-[160px] rounded-t-2xl bg-gradient-to-t from-amber-950/95 via-amber-900/60 to-amber-700/60 border-t-2 border-x border-amber-400 flex flex-col items-center justify-between py-2.5 shadow-[0_-8px_25px_rgba(245,158,11,0.3)]">
+                                    <div class="flex flex-col items-center pt-0.5">
+                                        <span class="text-base sm:text-xl font-black text-amber-300 font-mono tracking-wider leading-none">#1</span>
+                                        <span class="text-[8px] sm:text-[9px] uppercase tracking-widest text-amber-300 font-black mt-0.5 px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30">CHAMPION</span>
+                                    </div>
+                                    <div class="w-full flex flex-col items-center justify-center my-auto py-1 opacity-70 pointer-events-none">
+                                        <span class="text-xs sm:text-sm tracking-[0.25em] font-mono font-bold text-amber-400/70">★ ★ ★</span>
+                                    </div>
+                                    <div class="w-full border-t border-amber-500/20 pt-1 text-center flex-shrink-0">
+                                        <span class="text-[7px] sm:text-[8px] font-mono text-amber-300/60 uppercase tracking-widest">Peringkat 1</span>
+                                    </div>
+                                </div>
+                            </div>
 
-                                <!-- Stacked Colored Fluid Layers: Bottom is Red, Middle is Gray, Top is Green -->
-                                <!-- Red Layer (Belum Daftar) -->
-                                <div id="tank-layer-red" class="w-full bg-gradient-to-t from-rose-700 via-rose-600 to-rose-500 transition-all duration-700 relative border-t border-rose-400/30" style="flex: {{ $trafficData['status_percentages']['belum_daftar'] ?? 0 }} 1 0%; min-height: {{ ($trafficData['status_percentages']['belum_daftar'] ?? 0) > 0 ? '4px' : '0px' }}; display: {{ ($trafficData['status_percentages']['belum_daftar'] ?? 0) > 0 ? 'block' : 'none' }};"></div>
-                                <!-- Gray Layer (Belum Perpanjang) -->
-                                <div id="tank-layer-gray" class="w-full bg-gradient-to-t from-slate-700 via-slate-600 to-slate-500 transition-all duration-700 relative border-t border-slate-300/30" style="flex: {{ $trafficData['status_percentages']['belum_perpanjang'] ?? 0 }} 1 0%; min-height: {{ ($trafficData['status_percentages']['belum_perpanjang'] ?? 0) > 0 ? '4px' : '0px' }}; display: {{ ($trafficData['status_percentages']['belum_perpanjang'] ?? 0) > 0 ? 'block' : 'none' }};"></div>
-                                <!-- Green Layer (Bisa Masuk) -->
-                                <div id="tank-layer-green" class="w-full bg-gradient-to-t from-emerald-700 via-emerald-600 to-emerald-400 transition-all duration-700 relative border-t border-emerald-300/30" style="flex: {{ $trafficData['status_percentages']['bisa_masuk'] ?? 0 }} 1 0%; min-height: {{ ($trafficData['status_percentages']['bisa_masuk'] ?? 0) > 0 ? '4px' : '0px' }}; display: {{ ($trafficData['status_percentages']['bisa_masuk'] ?? 0) > 0 ? 'block' : 'none' }};"></div>
-
-                                <!-- Animated Wave on top of fluid -->
-                                <div class="db-wave-wrapper" style="opacity: {{ ($trafficData['total'] ?? 0) > 0 ? '1' : '0' }};">
-                                    <svg class="w-full h-full text-emerald-400 fill-current opacity-80" viewBox="0 0 1200 120" preserveAspectRatio="none">
-                                        <path d="M0,0 C150,90 350,-40 500,45 C650,130 900,10 1200,50 L1200,120 L0,120 Z"></path>
-                                    </svg>
+                            <!-- PODIUM JUARA 3 (PERUNGGU / KANAN) -->
+                            <div class="flex-1 flex flex-col items-center justify-end max-w-[130px] sm:max-w-[155px] xl:max-w-[185px] text-center" style="height: 72%;">
+                                <div class="w-full flex flex-col items-center mb-2 flex-shrink-0">
+                                    <div class="relative mb-1 sm:mb-1.5">
+                                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-orange-800 via-amber-600 to-amber-400 p-[2px] shadow-[0_0_20px_rgba(217,119,6,0.45)] flex items-center justify-center">
+                                            <div class="w-full h-full rounded-full bg-[#1b1006] flex items-center justify-center font-black text-amber-400 text-xs sm:text-sm">
+                                                3
+                                            </div>
+                                        </div>
+                                        <span class="absolute -top-2.5 -right-1 text-base sm:text-lg filter drop-shadow">🥉</span>
+                                    </div>
+                                    <h4 id="podium-name-3" class="text-[11px] sm:text-xs font-bold text-white truncate w-full px-1" title="{{ $top3['name'] ?? 'Belum Ada' }}">
+                                        {{ $top3['name'] ?? 'Belum Ada' }}
+                                    </h4>
+                                    <span id="podium-nim-3" class="text-[8px] sm:text-[9px] text-cyan-300/70 font-mono block">
+                                        {{ $top3['nim'] ?? '-' }}
+                                    </span>
+                                    <div class="mt-1 px-2 py-0.5 rounded-full bg-amber-800/20 border border-amber-600/40 text-[9px] sm:text-[10px] font-bold text-amber-300 font-mono">
+                                        <span id="podium-count-3">{{ $top3['total'] ?? 0 }}</span> <span class="text-[8px] font-sans font-normal opacity-75">Kunjungan</span>
+                                    </div>
+                                </div>
+                                <!-- Pedestal Step 3 -->
+                                <div class="w-full flex-1 min-h-[85px] rounded-t-xl bg-gradient-to-t from-orange-950/95 via-amber-950/60 to-amber-900/60 border-t-2 border-x border-amber-600/50 flex flex-col items-center justify-between py-2 shadow-inner">
+                                    <div class="flex flex-col items-center pt-0.5">
+                                        <span class="text-sm sm:text-lg font-black text-amber-400 font-mono tracking-wider leading-none">#3</span>
+                                        <span class="text-[7px] sm:text-[8px] uppercase tracking-widest text-amber-500 font-bold mt-0.5 px-1.5 py-0.5 rounded bg-amber-900/30 border border-amber-600/30">BRONZE</span>
+                                    </div>
+                                    <div class="w-full flex flex-col items-center justify-center my-auto py-1 opacity-50 pointer-events-none">
+                                        <span class="text-[10px] sm:text-xs tracking-[0.2em] font-mono text-amber-600">★</span>
+                                    </div>
+                                    <div class="w-full border-t border-amber-800/30 pt-1 text-center flex-shrink-0">
+                                        <span class="text-[7px] sm:text-[8px] font-mono text-amber-500/60 uppercase tracking-widest">Peringkat 3</span>
+                                    </div>
                                 </div>
                             </div>
 
                         </div>
                     </div>
 
-                    <!-- Total Kunjungan Display HUD (Di bawah silinder) -->
-                    <div class="flex items-center justify-center mt-3 sm:mt-4 flex-shrink-0">
-                        <div class="bg-[#091731]/85 backdrop-blur-md border border-cyan-500/40 px-4 sm:px-5 py-1.5 rounded-xl shadow-xl flex items-center gap-3">
-                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                            <span id="traffic-tank-count-hud" class="text-xs sm:text-sm font-bold text-white font-mono tracking-wide">
-                                {{ $trafficData['total'] ?? 0 }} Kunjungan
-                            </span>
-                            <span class="text-cyan-400/40 font-mono">|</span>
-                            <span id="traffic-tank-percent-hud" class="text-[11px] sm:text-xs font-bold text-cyan-300 font-mono">
-                                {{ $trafficData['capacity_percentage'] ?? 0 }}% Kapasitas
-                            </span>
+                    <!-- Footer Leaderboard: Pesan Motivasi & Gamifikasi -->
+                    <div class="w-full border-t border-amber-500/30 pt-2 sm:pt-2.5 flex items-center justify-between gap-2 flex-shrink-0">
+                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] text-amber-200/80">
+                            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0"></span>
+                            <span class="font-medium truncate pr-16">Tingkatkan kunjunganmu untuk raih predikat Leaderboard Kunjungan!</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Breakdown Status Pills Below Cylinder (Bawah) -->
-                <div class="w-full grid grid-cols-3 gap-2 border-t border-blue-800/40 pt-2.5 sm:pt-3 flex-shrink-0">
-                    <!-- Green Stat -->
-                    <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-2 sm:p-2.5 text-center">
-                        <div class="flex items-center justify-center gap-1 mb-0.5 sm:mb-1">
-                            <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400"></span>
-                            <span class="text-[9px] sm:text-[10px] font-bold text-emerald-300">Bisa Masuk</span>
-                        </div>
-                        <div id="stat-bisa-masuk-count" class="text-sm sm:text-base font-black text-white font-mono leading-none">
-                            {{ $trafficData['status_counts']['bisa_masuk'] ?? 0 }}
-                        </div>
-                        <span id="stat-bisa-masuk-pct" class="text-[8px] sm:text-[9px] text-emerald-300/70 font-mono">
-                            {{ $trafficData['status_percentages']['bisa_masuk'] ?? 0 }}%
-                        </span>
-                    </div>
-
-                    <!-- Gray Stat -->
-                    <div class="bg-slate-900/50 border border-slate-500/30 rounded-xl p-2 sm:p-2.5 text-center">
-                        <div class="flex items-center justify-center gap-1 mb-0.5 sm:mb-1">
-                            <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-slate-400"></span>
-                            <span class="text-[9px] sm:text-[10px] font-bold text-slate-300">Expired</span>
-                        </div>
-                        <div id="stat-belum-perpanjang-count" class="text-sm sm:text-base font-black text-white font-mono leading-none">
-                            {{ $trafficData['status_counts']['belum_perpanjang'] ?? 0 }}
-                        </div>
-                        <span id="stat-belum-perpanjang-pct" class="text-[8px] sm:text-[9px] text-slate-300/70 font-mono">
-                            {{ $trafficData['status_percentages']['belum_perpanjang'] ?? 0 }}%
-                        </span>
-                    </div>
-
-                    <!-- Red Stat -->
-                    <div class="bg-rose-950/40 border border-rose-500/30 rounded-xl p-2 sm:p-2.5 text-center">
-                        <div class="flex items-center justify-center gap-1 mb-0.5 sm:mb-1">
-                            <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-400"></span>
-                            <span class="text-[9px] sm:text-[10px] font-bold text-rose-300">Belum Daftar</span>
-                        </div>
-                        <div id="stat-belum-daftar-count" class="text-sm sm:text-base font-black text-white font-mono leading-none">
-                            {{ $trafficData['status_counts']['belum_daftar'] ?? 0 }}
-                        </div>
-                        <span id="stat-belum-daftar-pct" class="text-[8px] sm:text-[9px] text-rose-300/70 font-mono">
-                            {{ $trafficData['status_percentages']['belum_daftar'] ?? 0 }}%
-                        </span>
-                    </div>
+                <!-- Floating Carousel Mini Navigator Dots -->
+                <div class="absolute bottom-2 right-3 sm:right-4 z-20 flex items-center gap-1.5 bg-blue-950/85 px-2 py-1 rounded-full border border-blue-500/30 backdrop-blur-md shadow-lg">
+                    <button id="dot-widget-tank" type="button" class="w-2 h-2 rounded-full transition-all duration-300 bg-cyan-400 ring-2 ring-cyan-400/40 cursor-pointer" title="Traffic Tank Silinder"></button>
+                    <button id="dot-widget-leaderboard" type="button" class="w-2 h-2 rounded-full transition-all duration-300 bg-slate-500 hover:bg-amber-400 cursor-pointer" title="Leaderboard Kunjungan"></button>
                 </div>
 
             </section>
@@ -382,7 +563,7 @@
         <div id="scanPopup" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/85 backdrop-blur-[2px] p-4 transition-opacity duration-200" style="opacity: 0;">
             <div id="popupCardAnimWrapper" class="w-full max-w-md flex items-center justify-center">
                 <div id="popupCard" class="w-full rounded-3xl p-6 sm:p-8 text-center shadow-2xl border-2 relative overflow-hidden">
-                    
+
                     <!-- Glow background ornament -->
                     <div id="popupGlow" class="absolute -top-20 -left-20 w-44 h-44 rounded-full blur-2xl opacity-40 pointer-events-none"></div>
 
@@ -921,11 +1102,122 @@
         })
         .then(data => {
             updateTrafficTank(data);
+            if (data.top_visitors) {
+                updateLeaderboardUI(data.top_visitors, data.month_name);
+            }
         })
         .catch(err => {
             console.warn('Gagal sinkronisasi live traffic kiosk:', err);
         });
     }
+
+    // 5. Engine Leaderboard Gamifikasi ("Leaderboard Kunjungan") & Carousel Panel Kanan
+    let kioskCarouselTimer = null;
+    const KIOSK_CAROUSEL_INTERVAL = 180000; // 3 Menit (180.000 ms)
+
+    function updateLeaderboardUI(topVisitors, monthName) {
+        if (monthName) {
+            const badgeMonth = document.getElementById('leaderboard-month-badge');
+            if (badgeMonth) badgeMonth.innerText = monthName;
+        }
+
+        if (!Array.isArray(topVisitors)) return;
+
+        const top1 = topVisitors.find(v => v.rank === 1);
+        const top2 = topVisitors.find(v => v.rank === 2);
+        const top3 = topVisitors.find(v => v.rank === 3);
+
+        const name1 = document.getElementById('podium-name-1');
+        const nim1 = document.getElementById('podium-nim-1');
+        const count1 = document.getElementById('podium-count-1');
+        if (name1) {
+            name1.innerText = top1 ? top1.name : 'Belum Ada';
+            name1.title = top1 ? top1.name : 'Belum Ada';
+        }
+        if (nim1) nim1.innerText = top1 ? top1.nim : '-';
+        if (count1) count1.innerText = top1 ? top1.total : 0;
+
+        const name2 = document.getElementById('podium-name-2');
+        const nim2 = document.getElementById('podium-nim-2');
+        const count2 = document.getElementById('podium-count-2');
+        if (name2) {
+            name2.innerText = top2 ? top2.name : 'Belum Ada';
+            name2.title = top2 ? top2.name : 'Belum Ada';
+        }
+        if (nim2) nim2.innerText = top2 ? top2.nim : '-';
+        if (count2) count2.innerText = top2 ? top2.total : 0;
+
+        const name3 = document.getElementById('podium-name-3');
+        const nim3 = document.getElementById('podium-nim-3');
+        const count3 = document.getElementById('podium-count-3');
+        if (name3) {
+            name3.innerText = top3 ? top3.name : 'Belum Ada';
+            name3.title = top3 ? top3.name : 'Belum Ada';
+        }
+        if (nim3) nim3.innerText = top3 ? top3.nim : '-';
+        if (count3) count3.innerText = top3 ? top3.total : 0;
+    }
+
+    function switchKioskWidget(targetName) {
+        const widgetTank = document.getElementById('widgetTank');
+        const widgetLeaderboard = document.getElementById('widgetLeaderboard');
+        const dotTank = document.getElementById('dot-widget-tank');
+        const dotLeaderboard = document.getElementById('dot-widget-leaderboard');
+
+        if (!widgetTank || !widgetLeaderboard) return;
+
+        if (targetName === 'leaderboard') {
+            widgetTank.classList.remove('active');
+            widgetLeaderboard.classList.add('active');
+            if (dotTank) {
+                dotTank.className = 'w-2 h-2 rounded-full transition-all duration-300 bg-slate-500 hover:bg-cyan-400 cursor-pointer';
+            }
+            if (dotLeaderboard) {
+                dotLeaderboard.className = 'w-2 h-2 rounded-full transition-all duration-300 bg-amber-400 ring-2 ring-amber-400/40 cursor-pointer';
+            }
+        } else {
+            widgetLeaderboard.classList.remove('active');
+            widgetTank.classList.add('active');
+            if (dotTank) {
+                dotTank.className = 'w-2 h-2 rounded-full transition-all duration-300 bg-cyan-400 ring-2 ring-cyan-400/40 cursor-pointer';
+            }
+            if (dotLeaderboard) {
+                dotLeaderboard.className = 'w-2 h-2 rounded-full transition-all duration-300 bg-slate-500 hover:bg-amber-400 cursor-pointer';
+            }
+        }
+    }
+
+    function startKioskCarousel() {
+        if (kioskCarouselTimer) clearInterval(kioskCarouselTimer);
+        kioskCarouselTimer = setInterval(() => {
+            const widgetTank = document.getElementById('widgetTank');
+            if (widgetTank && widgetTank.classList.contains('active')) {
+                switchKioskWidget('leaderboard');
+            } else {
+                switchKioskWidget('tank');
+            }
+        }, KIOSK_CAROUSEL_INTERVAL);
+    }
+
+    const dotWidgetTank = document.getElementById('dot-widget-tank');
+    const dotWidgetLeaderboard = document.getElementById('dot-widget-leaderboard');
+
+    if (dotWidgetTank) {
+        dotWidgetTank.addEventListener('click', () => {
+            switchKioskWidget('tank');
+            startKioskCarousel();
+        });
+    }
+
+    if (dotWidgetLeaderboard) {
+        dotWidgetLeaderboard.addEventListener('click', () => {
+            switchKioskWidget('leaderboard');
+            startKioskCarousel();
+        });
+    }
+
+    // Mulai timer rotasi carousel otomatis (setiap 3 menit / 180.000 ms)
+    startKioskCarousel();
 
     // Polling background setiap 3 detik di Kiosk
     fetchKioskLiveTraffic();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\VisitorLog;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class KioskController extends Controller
 {
@@ -74,6 +75,33 @@ class KioskController extends Controller
             ],
         ];
 
-        return view('kiosk.index', compact('libraryData', 'trafficData'));
+        // Data Top 3 Pengunjung Bulan Ini (Leaderboard Gamifikasi "Pahlawan Literasi")
+        $currentMonth = Carbon::now('Asia/Jakarta');
+        $topVisitors = VisitorLog::select('user_id', DB::raw('count(*) as total_kunjungan'))
+            ->whereNotNull('user_id')
+            ->whereMonth('created_at', $currentMonth->month)
+            ->whereYear('created_at', $currentMonth->year)
+            ->where('status', 'Bisa Masuk')
+            ->groupBy('user_id')
+            ->orderByDesc('total_kunjungan')
+            ->take(3)
+            ->with('user:id,name,nim')
+            ->get()
+            ->map(function ($log, $idx) {
+                return [
+                    'rank' => $idx + 1,
+                    'user_id' => $log->user_id,
+                    'name' => $log->user ? $log->user->name : 'Mahasiswa',
+                    'nim' => $log->user ? ($log->user->nim ?? '-') : '-',
+                    'total' => (int) $log->total_kunjungan,
+                ];
+            });
+
+        $leaderboardData = [
+            'month_name' => $currentMonth->translatedFormat('F Y'),
+            'top_visitors' => $topVisitors,
+        ];
+
+        return view('kiosk.index', compact('libraryData', 'trafficData', 'leaderboardData'));
     }
 }
