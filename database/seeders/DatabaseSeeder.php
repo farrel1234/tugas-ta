@@ -18,10 +18,11 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // 1. Buat User Admin jika belum ada
-        User::updateOrCreate(
+        $admin = User::updateOrCreate(
             ['email' => 'admin@polibatam.ac.id'],
             [
                 'name' => 'Admin Perpustakaan',
+                'role' => 'admin',
                 'password' => Hash::make('admin123'),
             ]
         );
@@ -32,6 +33,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'farrelariq3@gmail.com'],
             [
                 'name' => 'Farrel Ariq Nadhil',
+                'role' => 'mahasiswa',
                 'nim' => '4342301035',
                 'kode_kartu' => '058945125E9200',
                 'expired_at' => Carbon::now()->addYears(2),
@@ -44,6 +46,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'farhan@student.polibatam.ac.id'],
             [
                 'name' => 'Ahmad Farhan',
+                'role' => 'mahasiswa',
                 'nim' => '3312001001',
                 'kode_kartu' => '3312001001',
                 'expired_at' => Carbon::now()->addYear(),
@@ -56,6 +59,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'budi@student.polibatam.ac.id'],
             [
                 'name' => 'Budi Santoso',
+                'role' => 'mahasiswa',
                 'nim' => '3312001002',
                 'kode_kartu' => '3312001002',
                 'expired_at' => Carbon::now()->subMonth(),
@@ -68,6 +72,7 @@ class DatabaseSeeder extends Seeder
             ['kode_kartu' => '0452490A926C80'],
             [
                 'name' => 'Pengunjung KTP',
+                'role' => 'mahasiswa',
                 'email' => 'ktp.0452490a926c80@polibatam.ac.id',
                 'kode_kartu' => '0452490A926C80',
                 'expired_at' => Carbon::now()->addYears(3),
@@ -177,6 +182,7 @@ class DatabaseSeeder extends Seeder
             $menu = Menu::updateOrCreate(
                 ['num' => $m['num']],
                 [
+                    'user_id' => $admin->id,
                     'title' => $m['title'],
                     'desc' => $m['desc'],
                 ]

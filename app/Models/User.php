@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'email', 'password', 'nim', 'kode_kartu', 'expired_at'])]
+#[Fillable(['name', 'role', 'email', 'password', 'nim', 'kode_kartu', 'expired_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -21,6 +21,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'role',
         'nim',
         'email',
         'password',
@@ -48,5 +49,13 @@ class User extends Authenticatable
     public function visitorLogs(): HasMany
     {
         return $this->hasMany(VisitorLog::class);
+    }
+
+    /**
+     * Daftar menu layanan kiosk yang dikelola oleh user / admin.
+     */
+    public function menus(): HasMany
+    {
+        return $this->hasMany(Menu::class);
     }
 }

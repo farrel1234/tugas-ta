@@ -113,6 +113,29 @@ class KioskAndAdminTest extends TestCase
         $this->assertDatabaseHas('menus', ['title' => 'Menu Baru Diupdate']);
     }
 
+    public function test_admin_can_update_step(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+        $menu = Menu::create(['num' => '05', 'title' => 'Menu Step Test']);
+        $step = $menu->steps()->create(['step_order' => 1, 'text' => 'Teks Lama', 'image_path' => 'steps/old.png']);
+
+        $newImage = UploadedFile::fake()->image('new_slide.png');
+
+        $response = $this->actingAs($user)->put("/admin/steps/{$step->id}", [
+            'text' => 'Teks Baru Diupdate',
+            'step_order' => 2,
+            'image' => $newImage,
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('steps', [
+            'id' => $step->id,
+            'text' => 'Teks Baru Diupdate',
+            'step_order' => 2,
+        ]);
+    }
+
     public function test_admin_can_soft_delete_restore_and_force_delete_menu(): void
     {
         Storage::fake('public');

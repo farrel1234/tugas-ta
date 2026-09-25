@@ -4,20 +4,39 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\Step;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-
 use App\Models\VisitorLog;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class MenuController extends Controller
 {
     /**
+     * Helper: Menyimpan file gambar slide secara aman dengan nama unik dan ekstensi huruf kecil (lowercase).
+     */
+    private function saveUploadedSlide($file): string
+    {
+        $extension = strtolower($file->getClientOriginalExtension() ?: $file->guessExtension() ?: 'png');
+        $filename = Str::random(40) . '.' . $extension;
+
+        // Pastikan folder penyimpanan fisik storage/app/public/steps ada
+        $stepsDir = storage_path('app/public/steps');
+        File::ensureDirectoryExists($stepsDir);
+
+        $file->storeAs('steps', $filename, 'public');
+        return 'steps/' . $filename;
+    }
+
+    /**
      * Menampilkan daftar menu pada Dashboard Admin (aktif dan sampah).
+     * Diurutkan secara numerik alami (1, 2, ..., 10).
      */
     public function index()
     {
-        $menus = Menu::with('steps')->orderBy('num', 'asc')->get();
-        $trashedMenus = Menu::onlyTrashed()->with('steps')->orderBy('deleted_at', 'desc')->get();
+        $menus = Menu::with('steps')->orderByRaw('CAST(num AS UNSIGNED) ASC, num ASC')->get();
+        $trashedMenus = Menu::onlyTrashed()->with('steps')->orderByRaw('CAST(num AS UNSIGNED) ASC, num ASC')->get();
         $totalMenus = $menus->count();
         $totalSteps = Step::whereHas('menu')->count();
         $recentLogs = VisitorLog::with('user')->latest()->take(100)->get();
@@ -27,7 +46,7 @@ class MenuController extends Controller
     }
 
     /**
-     * Menyimpan Menu baru (dan opsional slide pertamanya).
+     * Menyimpan Menu baru (dan opsional slide pertamanya) dalam Database Transaction.
      */
     public function store(Request $request)
     {
@@ -44,22 +63,27 @@ class MenuController extends Controller
             'image.max' => 'Ukuran gambar maksimal 5MB.',
         ]);
 
-        $menu = Menu::create([
-            'num' => $validated['num'],
-            'title' => $validated['title'],
-            'desc' => $validated['desc'] ?? null,
-        ]);
-
-        // Jika user mengunggah gambar saat membuat menu
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('steps', 'public');
-
-            $menu->steps()->create([
-                'step_order' => 1,
-                'image_path' => $imagePath,
-                'text' => $validated['text'] ?? $validated['title'],
+        $menu = DB::transaction(function () use ($request, $validated) {
+            $menu = Menu::create([
+                'user_id' => auth()->id(),
+                'num' => $validated['num'],
+                'title' => $validated['title'],
+                'desc' => $validated['desc'] ?? null,
             ]);
-        }
+
+            // Jika user mengunggah gambar saat membuat menu
+            if ($request->hasFile('image')) {
+                $imagePath = $this->saveUploadedSlide($request->file('image'));
+
+                $menu->steps()->create([
+                    'step_order' => 1,
+                    'image_path' => $imagePath,
+                    'text' => $validated['text'] ?? $validated['title'],
+                ]);
+            }
+
+            return $menu;
+        });
 
         return redirect()->route('admin.dashboard')->with('success', "Menu '{$menu->title}' berhasil ditambahkan!");
     }
@@ -86,23 +110,25 @@ class MenuController extends Controller
             'text' => 'nullable|string',
         ]);
 
-        $menu->update([
-            'num' => $validated['num'],
-            'title' => $validated['title'],
-            'desc' => $validated['desc'] ?? null,
-        ]);
-
-        // Jika mengunggah slide tambahan
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('steps', 'public');
-            $nextOrder = ($menu->steps()->max('step_order') ?? 0) + 1;
-
-            $menu->steps()->create([
-                'step_order' => $nextOrder,
-                'image_path' => $imagePath,
-                'text' => $validated['text'] ?? "Langkah {$nextOrder}",
+        DB::transaction(function () use ($request, $menu, $validated) {
+            $menu->update([
+                'num' => $validated['num'],
+                'title' => $validated['title'],
+                'desc' => $validated['desc'] ?? null,
             ]);
-        }
+
+            // Jika mengunggah slide tambahan
+            if ($request->hasFile('image')) {
+                $imagePath = $this->saveUploadedSlide($request->file('image'));
+                $nextOrder = ($menu->steps()->max('step_order') ?? 0) + 1;
+
+                $menu->steps()->create([
+                    'step_order' => $nextOrder,
+                    'image_path' => $imagePath,
+                    'text' => $validated['text'] ?? "Langkah {$nextOrder}",
+                ]);
+            }
+        });
 
         return redirect()->route('admin.dashboard')->with('success', "Data Menu '{$menu->title}' berhasil diperbarui!");
     }
@@ -163,14 +189,16 @@ class MenuController extends Controller
             'image.max' => 'Ukuran gambar maksimal 5MB.',
         ]);
 
-        $imagePath = $request->file('image')->store('steps', 'public');
-        $order = $validated['step_order'] ?? (($menu->steps()->max('step_order') ?? 0) + 1);
+        DB::transaction(function () use ($request, $menu, $validated) {
+            $imagePath = $this->saveUploadedSlide($request->file('image'));
+            $order = $validated['step_order'] ?? (($menu->steps()->max('step_order') ?? 0) + 1);
 
-        $menu->steps()->create([
-            'step_order' => $order,
-            'image_path' => $imagePath,
-            'text' => $validated['text'] ?? "Langkah {$order}",
-        ]);
+            $menu->steps()->create([
+                'step_order' => $order,
+                'image_path' => $imagePath,
+                'text' => $validated['text'] ?? "Langkah {$order}",
+            ]);
+        });
 
         return back()->with('success', 'Slide baru berhasil ditambahkan ke menu ini!');
     }
@@ -187,5 +215,42 @@ class MenuController extends Controller
         $step->delete();
 
         return back()->with('success', 'Slide berhasil dihapus.');
+    }
+
+    /**
+     * Memperbarui slide/langkah tertentu (mengganti gambar atau teks).
+     */
+    public function updateStep(Request $request, Step $step)
+    {
+        $validated = $request->validate([
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'text' => 'nullable|string',
+            'step_order' => 'nullable|integer',
+        ], [
+            'image.image' => 'File harus berupa format gambar.',
+            'image.max' => 'Ukuran gambar maksimal 5MB.',
+        ]);
+
+        DB::transaction(function () use ($request, $step, $validated) {
+            if ($request->hasFile('image')) {
+                // Hapus gambar lama jika tersimpan di disk public
+                if ($step->image_path && Storage::disk('public')->exists($step->image_path)) {
+                    Storage::disk('public')->delete($step->image_path);
+                }
+                $step->image_path = $this->saveUploadedSlide($request->file('image'));
+            }
+
+            if ($request->has('text')) {
+                $step->text = $validated['text'];
+            }
+
+            if ($request->filled('step_order')) {
+                $step->step_order = $validated['step_order'];
+            }
+
+            $step->save();
+        });
+
+        return back()->with('success', 'Slide berhasil diperbarui!');
     }
 }

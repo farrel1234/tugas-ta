@@ -43,5 +43,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
 
     // Pengelolaan Langkah / Slide spesifik
     Route::post('/menus/{menu}/steps', [MenuController::class, 'storeStep'])->name('steps.store');
+    Route::put('/steps/{step}', [MenuController::class, 'updateStep'])->name('steps.update');
     Route::delete('/steps/{step}', [MenuController::class, 'destroyStep'])->name('steps.destroy');
 });

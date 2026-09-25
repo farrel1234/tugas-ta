@@ -681,7 +681,7 @@
                     <!-- Gambar Presentasi -->
                     <div class="relative w-full max-w-5xl flex-1 min-h-[150px] bg-blue-900/40 rounded-2xl sm:rounded-3xl overflow-hidden border border-blue-500/30 flex items-center justify-center p-2 sm:p-4 shadow-[0_0_40px_rgba(59,130,246,0.15)] backdrop-blur-sm">
 
-                        <img src="${currentStepData.img}" alt="Ilustrasi Langkah ${stepIndex + 1}" class="w-full h-full object-contain drop-shadow-xl rounded-xl">
+                        <img src="${currentStepData.img}" alt="Ilustrasi Langkah ${stepIndex + 1}" class="w-full h-full object-contain drop-shadow-xl rounded-xl" onerror="this.onerror=null; this.src='{{ asset('templating/img/polibatam.png') }}';">
 
                         <!-- Indikator Langkah -->
                         ${showStepBadge ? `

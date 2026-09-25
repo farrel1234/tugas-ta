@@ -158,8 +158,12 @@
                                 </div>
 
                                 <!-- Thumbnail Gambar -->
-                                <div class="w-28 h-20 bg-blue-900/50 rounded-xl overflow-hidden border border-blue-500/30 flex-shrink-0 flex items-center justify-center">
-                                    <img src="{{ $step->image_url }}" alt="Slide" class="w-full h-full object-cover">
+                                <div class="w-28 h-20 bg-blue-900/50 rounded-xl overflow-hidden border border-blue-500/30 flex-shrink-0 flex items-center justify-center relative group">
+                                    <img src="{{ $step->image_url }}" alt="Slide" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='{{ asset('templating/img/polibatam.png') }}';">
+                                    <button type="button" onclick="document.getElementById('edit-step-modal-{{ $step->id }}').classList.remove('hidden')" class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition text-cyan-300 text-[10px] font-bold gap-1 cursor-pointer">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                        Ganti
+                                    </button>
                                 </div>
 
                                 <!-- Teks Penjelasan -->
@@ -170,14 +174,60 @@
                                     </p>
                                 </div>
 
-                                <!-- Tombol Hapus Slide -->
-                                <div class="flex-shrink-0">
+                                <!-- Tombol Aksi Slide -->
+                                <div class="flex-shrink-0 flex items-center gap-2">
+                                    <!-- Tombol Edit / Ganti Gambar -->
+                                    <button type="button" onclick="document.getElementById('edit-step-modal-{{ $step->id }}').classList.remove('hidden')" class="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 p-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1" title="Ganti Gambar / Edit Slide">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                                    </button>
+
+                                    <!-- Tombol Hapus Slide -->
                                     <form action="{{ route('admin.steps.destroy', $step) }}" method="POST" onsubmit="return confirm('Hapus slide langkah ini?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 p-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1" title="Hapus Slide">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                         </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Modal Edit / Ganti Gambar Slide -->
+                            <div id="edit-step-modal-{{ $step->id }}" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+                                <div class="bg-[#0B1E3F] border border-blue-500/40 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
+                                    <div class="flex items-center justify-between border-b border-blue-800/50 pb-3">
+                                        <h3 class="text-sm font-black text-white uppercase tracking-wider">Edit / Ganti Gambar Slide Langkah {{ $step->step_order }}</h3>
+                                        <button type="button" onclick="document.getElementById('edit-step-modal-{{ $step->id }}').classList.add('hidden')" class="text-slate-400 hover:text-white text-lg font-bold">&times;</button>
+                                    </div>
+
+                                    <form action="{{ route('admin.steps.update', $step) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                                        @csrf
+                                        @method('PUT')
+
+                                        <div>
+                                            <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Unggah Gambar Baru (Ganti Gambar)</label>
+                                            <input type="file" name="image" accept="image/*" class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+                                            <span class="text-[10px] text-blue-300/70 block mt-1">Kosongkan jika hanya ingin mengubah teks penjelasan.</span>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Teks Penjelasan Langkah</label>
+                                            <textarea name="text" rows="3" class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">{{ old('text', $step->text) }}</textarea>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Nomor Urutan Langkah</label>
+                                            <input type="number" name="step_order" value="{{ $step->step_order }}" min="1" class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+                                        </div>
+
+                                        <div class="flex items-center justify-end gap-3 pt-2">
+                                            <button type="button" onclick="document.getElementById('edit-step-modal-{{ $step->id }}').classList.add('hidden')" class="px-4 py-2 rounded-xl bg-blue-900/60 hover:bg-blue-800 text-slate-300 text-xs font-bold transition">
+                                                Batal
+                                            </button>
+                                            <button type="submit" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-black transition shadow-lg shadow-cyan-500/20">
+                                                Simpan Perubahan
+                                            </button>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
