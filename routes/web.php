@@ -22,6 +22,9 @@ Route::post('/api/scan', [GateController::class, 'scan'])->name('api.scan');
 // 1.2 API Live Traffic Gerbang (Dashboard Real-time Telemetry)
 Route::get('/api/live-traffic', [GateController::class, 'liveTraffic'])->name('api.live-traffic');
 
+// 1.3 API Live Demografi Pengunjung
+Route::get('/api/demographics', [KioskController::class, 'getDemographicStats'])->name('api.demographics');
+
 // 2. Rute Autentikasi (Login untuk guest)
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

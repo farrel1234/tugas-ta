@@ -25,6 +25,9 @@ class User extends Authenticatable
         'nim',
         'email',
         'password',
+        'gender',
+        'tanggal_lahir',
+        'kecamatan_domisili',
         'kode_kartu',
         'expired_at',
     ];

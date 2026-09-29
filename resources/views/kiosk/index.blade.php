@@ -377,149 +377,84 @@
                     </div>
                 </div>
 
-                <!-- WIDGET 2: Leaderboard Gamifikasi ("Leaderboard kunjungan Bulan Ini") -->
+                <!-- WIDGET 2: Statistik Pemustaka Bulan Ini -->
                 <div id="widgetLeaderboard" class="dynamic-kiosk-widget p-3.5 sm:p-5 flex flex-col justify-between">
-                    <!-- Header Leaderboard (Atas) -->
-                    <div class="w-full flex items-center justify-between border-b border-amber-500/30 pb-2.5 flex-shrink-0">
+                    <!-- Header -->
+                    <div class="w-full flex items-center justify-between border-b border-indigo-500/30 pb-2.5 flex-shrink-0">
                         <div class="flex items-center gap-2 sm:gap-2.5">
-                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-400 to-yellow-300 flex items-center justify-center text-slate-950 text-sm sm:text-base shadow-[0_0_15px_rgba(245,158,11,0.4)] flex-shrink-0">
-                                🏆
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-500 to-cyan-400 flex items-center justify-center text-white text-sm sm:text-base shadow-[0_0_15px_rgba(99,102,241,0.4)] flex-shrink-0">
+                                📊
                             </div>
                             <div>
-                                <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
-                                    Leaderboard Kunjungan
+                                <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
+                                    Statistik Pemustaka
                                 </h3>
-                                <span class="text-[8px] sm:text-[9px] text-amber-200/70 font-medium block">Top 3 Pahlawan Literasi Bulan Ini</span>
+                                <span class="text-[8px] sm:text-[9px] text-indigo-200/70 font-medium block">Analitik Demografi Pengunjung</span>
                             </div>
                         </div>
-                        <span id="leaderboard-month-badge" class="text-[9px] sm:text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                            {{ $leaderboardData['month_name'] ?? date('F Y') }}
+                        <span id="demographic-month-badge" class="text-[9px] sm:text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
+                            Memuat...
                         </span>
                     </div>
 
-                    <!-- Area Tengah: Podium 3D Olimpiade (Juara 2 - Juara 1 - Juara 3) -->
-                    <div class="flex-1 flex flex-col min-h-0 w-full pt-3 sm:pt-4 pb-0 relative overflow-hidden">
-                        <!-- Decorative Golden Ambient Glow behind Champion -->
-                        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-56 sm:w-72 h-56 sm:h-72 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
-
-                        <div id="leaderboard-podium-wrapper" class="w-full flex-1 flex items-end justify-center gap-2.5 sm:gap-4 xl:gap-5 px-1 sm:px-3 min-h-0 relative z-10">
-
-                            <!-- PODIUM JUARA 2 (PERAK / KIRI) -->
-                            <div class="flex-1 flex flex-col items-center justify-end max-w-[130px] sm:max-w-[155px] xl:max-w-[185px] text-center" style="height: 85%;">
-                                <div class="w-full flex flex-col items-center mb-2 flex-shrink-0">
-                                    <div class="relative mb-1 sm:mb-1.5">
-                                        <div class="w-13 h-13 sm:w-16 sm:h-16 rounded-full bg-gradient-to-tr from-slate-500 via-slate-200 to-slate-400 p-[2px] shadow-[0_0_20px_rgba(148,163,184,0.45)] flex items-center justify-center">
-                                            <div class="w-full h-full rounded-full bg-[#0d1726] flex items-center justify-center font-black text-slate-200 text-sm sm:text-base">
-                                                2
-                                            </div>
-                                        </div>
-                                        <span class="absolute -top-2.5 -right-1 text-base sm:text-lg filter drop-shadow">🥈</span>
-                                    </div>
-                                    <h4 id="podium-name-2" class="text-[11px] sm:text-xs font-bold text-white truncate w-full px-1" title="{{ $top2['name'] ?? 'Belum Ada' }}">
-                                        {{ $top2['name'] ?? 'Belum Ada' }}
-                                    </h4>
-                                    <span id="podium-nim-2" class="text-[8px] sm:text-[9px] text-cyan-300/70 font-mono block">
-                                        {{ $top2['nim'] ?? '-' }}
-                                    </span>
-                                    <div class="mt-1 px-2.5 py-0.5 rounded-full bg-slate-500/20 border border-slate-400/40 text-[9px] sm:text-[10px] font-bold text-slate-200 font-mono">
-                                        <span id="podium-count-2">{{ $top2['total'] ?? 0 }}</span> <span class="text-[8px] font-sans font-normal opacity-75">Kunjungan</span>
-                                    </div>
-                                </div>
-                                <!-- Pedestal Step 2 (Stretches to bottom) -->
-                                <div class="w-full flex-1 min-h-[110px] rounded-t-xl bg-gradient-to-t from-slate-900/95 via-slate-800/60 to-slate-700/60 border-t-2 border-x border-slate-400/50 flex flex-col items-center justify-between py-2 shadow-inner">
-                                    <div class="flex flex-col items-center pt-0.5">
-                                        <span class="text-sm sm:text-lg font-black text-slate-300 font-mono tracking-wider leading-none">#2</span>
-                                        <span class="text-[7px] sm:text-[8px] uppercase tracking-widest text-slate-400 font-bold mt-0.5 px-1.5 py-0.5 rounded bg-slate-700/30 border border-slate-500/30">SILVER</span>
-                                    </div>
-                                    <div class="w-full flex flex-col items-center justify-center my-auto py-1 opacity-50 pointer-events-none">
-                                        <span class="text-[10px] sm:text-xs tracking-[0.2em] font-mono text-slate-400">★ ★</span>
-                                    </div>
-                                    <div class="w-full border-t border-slate-700/30 pt-1 text-center flex-shrink-0">
-                                        <span class="text-[7px] sm:text-[8px] font-mono text-slate-400/60 uppercase tracking-widest">Peringkat 2</span>
-                                    </div>
+                    <!-- Area Tengah: Konten Demografi -->
+                    <div class="flex-1 w-full flex flex-col gap-3 mt-3 relative z-10 overflow-hidden">
+                        
+                        <!-- Rasio Gender (Donut Chart Chart.js) -->
+                        <div class="bg-[#091731]/80 border border-indigo-500/30 rounded-xl p-3 shadow-inner relative overflow-hidden group flex flex-col items-center justify-center min-h-[150px]">
+                            <div class="absolute inset-0 bg-indigo-500/5 blur-xl group-hover:bg-indigo-500/10 transition-colors duration-500 pointer-events-none"></div>
+                            
+                            <div class="relative w-[180px] h-[90px] flex items-end justify-center">
+                                <canvas id="genderDonutChart"></canvas>
+                                <!-- Total Kunjungan Center Text -->
+                                <div class="absolute bottom-0 left-1/2 -translate-x-1/2 text-center w-full">
+                                    <div class="text-[8px] sm:text-[9px] text-indigo-300 font-bold tracking-widest uppercase">TOTAL KUNJUNGAN</div>
+                                    <div id="text-donut-total" class="text-xl sm:text-2xl font-black text-white font-mono leading-none mt-0.5">0</div>
                                 </div>
                             </div>
-
-                            <!-- PODIUM JUARA 1 (EMAS / TENGAH - SELF-STRETCH FILL MAX & LEBIH TINGGI) -->
-                            <div class="flex-1 flex flex-col items-center justify-end self-stretch max-w-[150px] sm:max-w-[185px] xl:max-w-[215px] text-center z-10">
-                                <div class="w-full flex flex-col items-center mb-2.5 flex-shrink-0">
-                                    <div class="relative mb-1.5 sm:mb-2">
-                                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-yellow-600 via-amber-300 to-yellow-100 p-[2.5px] shadow-[0_0_30px_rgba(245,158,11,0.7)] flex items-center justify-center">
-                                            <div class="w-full h-full rounded-full bg-[#1b1506] flex items-center justify-center font-black text-amber-300 text-base sm:text-lg">
-                                                1
-                                            </div>
-                                        </div>
-                                        <span class="absolute -top-4 sm:-top-5 left-1/2 -translate-x-1/2 text-xl sm:text-2xl filter drop-shadow-md animate-bounce" style="animation-duration: 2.5s;">👑</span>
-                                    </div>
-                                    <h4 id="podium-name-1" class="text-xs sm:text-sm font-black text-amber-200 truncate w-full px-1 tracking-tight" title="{{ $top1['name'] ?? 'Belum Ada' }}">
-                                        {{ $top1['name'] ?? 'Belum Ada' }}
-                                    </h4>
-                                    <span id="podium-nim-1" class="text-[9px] sm:text-[10px] text-amber-400/85 font-mono block font-bold">
-                                        {{ $top1['nim'] ?? '-' }}
-                                    </span>
-                                    <div class="mt-1 px-3 py-0.5 rounded-full bg-amber-500/25 border border-amber-400/60 text-[10px] sm:text-xs font-black text-amber-300 font-mono shadow-[0_0_15px_rgba(245,158,11,0.35)]">
-                                        <span id="podium-count-1">{{ $top1['total'] ?? 0 }}</span> <span class="text-[8px] sm:text-[9px] font-sans font-normal opacity-85">Kunjungan</span>
-                                    </div>
+                            
+                            <!-- Legend / Persentase Ujung Kiri Kanan -->
+                            <div class="w-full flex justify-between px-2 mt-3 text-[10px] sm:text-xs font-bold font-mono">
+                                <div class="text-blue-400 flex flex-col items-start z-10">
+                                    <span class="text-[9px]">Laki-laki 👨</span>
+                                    <span class="text-sm"><span id="text-gender-l-pct">0</span>%</span>
                                 </div>
-                                <!-- Pedestal Step 1 (Tall & Stretched to the Bottom) -->
-                                <div class="w-full flex-1 min-h-[160px] rounded-t-2xl bg-gradient-to-t from-amber-950/95 via-amber-900/60 to-amber-700/60 border-t-2 border-x border-amber-400 flex flex-col items-center justify-between py-2.5 shadow-[0_-8px_25px_rgba(245,158,11,0.3)]">
-                                    <div class="flex flex-col items-center pt-0.5">
-                                        <span class="text-base sm:text-xl font-black text-amber-300 font-mono tracking-wider leading-none">#1</span>
-                                        <span class="text-[8px] sm:text-[9px] uppercase tracking-widest text-amber-300 font-black mt-0.5 px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/30">CHAMPION</span>
-                                    </div>
-                                    <div class="w-full flex flex-col items-center justify-center my-auto py-1 opacity-70 pointer-events-none">
-                                        <span class="text-xs sm:text-sm tracking-[0.25em] font-mono font-bold text-amber-400/70">★ ★ ★</span>
-                                    </div>
-                                    <div class="w-full border-t border-amber-500/20 pt-1 text-center flex-shrink-0">
-                                        <span class="text-[7px] sm:text-[8px] font-mono text-amber-300/60 uppercase tracking-widest">Peringkat 1</span>
-                                    </div>
+                                <div class="text-rose-400 flex flex-col items-end z-10">
+                                    <span class="text-[9px]">👩 Perempuan</span>
+                                    <span class="text-sm"><span id="text-gender-p-pct">0</span>%</span>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- PODIUM JUARA 3 (PERUNGGU / KANAN) -->
-                            <div class="flex-1 flex flex-col items-center justify-end max-w-[130px] sm:max-w-[155px] xl:max-w-[185px] text-center" style="height: 72%;">
-                                <div class="w-full flex flex-col items-center mb-2 flex-shrink-0">
-                                    <div class="relative mb-1 sm:mb-1.5">
-                                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-orange-800 via-amber-600 to-amber-400 p-[2px] shadow-[0_0_20px_rgba(217,119,6,0.45)] flex items-center justify-center">
-                                            <div class="w-full h-full rounded-full bg-[#1b1006] flex items-center justify-center font-black text-amber-400 text-xs sm:text-sm">
-                                                3
-                                            </div>
-                                        </div>
-                                        <span class="absolute -top-2.5 -right-1 text-base sm:text-lg filter drop-shadow">🥉</span>
-                                    </div>
-                                    <h4 id="podium-name-3" class="text-[11px] sm:text-xs font-bold text-white truncate w-full px-1" title="{{ $top3['name'] ?? 'Belum Ada' }}">
-                                        {{ $top3['name'] ?? 'Belum Ada' }}
-                                    </h4>
-                                    <span id="podium-nim-3" class="text-[8px] sm:text-[9px] text-cyan-300/70 font-mono block">
-                                        {{ $top3['nim'] ?? '-' }}
-                                    </span>
-                                    <div class="mt-1 px-2 py-0.5 rounded-full bg-amber-800/20 border border-amber-600/40 text-[9px] sm:text-[10px] font-bold text-amber-300 font-mono">
-                                        <span id="podium-count-3">{{ $top3['total'] ?? 0 }}</span> <span class="text-[8px] font-sans font-normal opacity-75">Kunjungan</span>
-                                    </div>
-                                </div>
-                                <!-- Pedestal Step 3 -->
-                                <div class="w-full flex-1 min-h-[85px] rounded-t-xl bg-gradient-to-t from-orange-950/95 via-amber-950/60 to-amber-900/60 border-t-2 border-x border-amber-600/50 flex flex-col items-center justify-between py-2 shadow-inner">
-                                    <div class="flex flex-col items-center pt-0.5">
-                                        <span class="text-sm sm:text-lg font-black text-amber-400 font-mono tracking-wider leading-none">#3</span>
-                                        <span class="text-[7px] sm:text-[8px] uppercase tracking-widest text-amber-500 font-bold mt-0.5 px-1.5 py-0.5 rounded bg-amber-900/30 border border-amber-600/30">BRONZE</span>
-                                    </div>
-                                    <div class="w-full flex flex-col items-center justify-center my-auto py-1 opacity-50 pointer-events-none">
-                                        <span class="text-[10px] sm:text-xs tracking-[0.2em] font-mono text-amber-600">★</span>
-                                    </div>
-                                    <div class="w-full border-t border-amber-800/30 pt-1 text-center flex-shrink-0">
-                                        <span class="text-[7px] sm:text-[8px] font-mono text-amber-500/60 uppercase tracking-widest">Peringkat 3</span>
-                                    </div>
-                                </div>
+                        <!-- Grid Bawah: Umur & Wilayah -->
+                        <div class="grid grid-cols-2 gap-3 flex-1 h-full">
+                            <!-- Top 3 Kelompok Umur -->
+                            <div class="bg-[#091731]/80 border border-indigo-500/30 rounded-xl p-3 shadow-inner flex flex-col">
+                                <h4 class="text-[10px] sm:text-xs font-bold text-indigo-200 uppercase tracking-widest mb-2 flex items-center gap-1.5 border-b border-indigo-500/20 pb-1">
+                                    <span>🎂 Top Umur</span>
+                                </h4>
+                                <ul id="list-age-groups" class="flex-1 flex flex-col justify-center gap-2 mt-1">
+                                    <li class="flex items-center justify-between text-xs text-slate-300"><span>Memuat...</span></li>
+                                </ul>
                             </div>
 
+                            <!-- Top 3 Wilayah Domisili -->
+                            <div class="bg-[#091731]/80 border border-indigo-500/30 rounded-xl p-3 shadow-inner flex flex-col">
+                                <h4 class="text-[10px] sm:text-xs font-bold text-indigo-200 uppercase tracking-widest mb-2 flex items-center gap-1.5 border-b border-indigo-500/20 pb-1">
+                                    <span>📍 Top Wilayah</span>
+                                </h4>
+                                <ul id="list-regions" class="flex-1 flex flex-col justify-center gap-2 mt-1">
+                                    <li class="flex items-center justify-between text-xs text-slate-300"><span>Memuat...</span></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Footer Leaderboard: Pesan Motivasi & Gamifikasi -->
-                    <div class="w-full border-t border-amber-500/30 pt-2 sm:pt-2.5 flex items-center justify-between gap-2 flex-shrink-0">
-                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] text-amber-200/80">
-                            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0"></span>
-                            <span class="font-medium truncate pr-16">Tingkatkan kunjunganmu untuk raih predikat Leaderboard Kunjungan!</span>
+                    <!-- Footer -->
+                    <div class="w-full border-t border-indigo-500/30 pt-2 sm:pt-2.5 flex items-center justify-between gap-2 flex-shrink-0 mt-3">
+                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] text-indigo-200/80">
+                            <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse flex-shrink-0"></span>
+                            <span class="font-medium truncate">Data diperbarui secara real-time berdasarkan kunjungan.</span>
                         </div>
                     </div>
                 </div>
@@ -618,6 +553,7 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     function updateClock() {
         const now = new Date();
@@ -1102,9 +1038,7 @@
         })
         .then(data => {
             updateTrafficTank(data);
-            if (data.top_visitors) {
-                updateLeaderboardUI(data.top_visitors, data.month_name);
-            }
+            
         })
         .catch(err => {
             console.warn('Gagal sinkronisasi live traffic kiosk:', err);
@@ -1115,47 +1049,90 @@
     let kioskCarouselTimer = null;
     const KIOSK_CAROUSEL_INTERVAL = 180000; // 3 Menit (180.000 ms)
 
-    function updateLeaderboardUI(topVisitors, monthName) {
-        if (monthName) {
-            const badgeMonth = document.getElementById('leaderboard-month-badge');
-            if (badgeMonth) badgeMonth.innerText = monthName;
+    function fetchKioskDemographics() {
+        fetch('/api/demographics', { headers: { 'Accept': 'application/json' } })
+        .then(res => res.ok ? res.json() : Promise.reject(res))
+        .then(data => updateDemographicsUI(data))
+        .catch(err => console.warn('Gagal fetch demografi:', err));
+    }
+
+    function updateDemographicsUI(data) {
+        if (data.month_name) {
+            const badge = document.getElementById('demographic-month-badge');
+            if (badge) badge.innerText = data.month_name;
         }
 
-        if (!Array.isArray(topVisitors)) return;
+        if (data.gender) {
+            const pctL = data.gender.L_pct || 0;
+            const pctP = data.gender.P_pct || 0;
+            const countL = data.gender.L || 0;
+            const countP = data.gender.P || 0;
+            const total = countL + countP;
 
-        const top1 = topVisitors.find(v => v.rank === 1);
-        const top2 = topVisitors.find(v => v.rank === 2);
-        const top3 = topVisitors.find(v => v.rank === 3);
+            const tPctL = document.getElementById('text-gender-l-pct');
+            const tPctP = document.getElementById('text-gender-p-pct');
+            if (tPctL) tPctL.innerText = pctL;
+            if (tPctP) tPctP.innerText = pctP;
+            
+            const donutTotal = document.getElementById('text-donut-total');
+            if (donutTotal) donutTotal.innerText = total;
 
-        const name1 = document.getElementById('podium-name-1');
-        const nim1 = document.getElementById('podium-nim-1');
-        const count1 = document.getElementById('podium-count-1');
-        if (name1) {
-            name1.innerText = top1 ? top1.name : 'Belum Ada';
-            name1.title = top1 ? top1.name : 'Belum Ada';
+            if (window.genderChart) {
+                window.genderChart.data.datasets[0].data = [countL, countP];
+                window.genderChart.update();
+            } else {
+                const ctx = document.getElementById('genderDonutChart');
+                if (ctx) {
+                    window.genderChart = new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Laki-laki', 'Perempuan'],
+                            datasets: [{
+                                data: [countL, countP],
+                                backgroundColor: ['#3b82f6', '#f43f5e'],
+                                borderWidth: 0,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            circumference: 180,
+                            rotation: 270,
+                            cutout: '78%',
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: { enabled: false }
+                            }
+                        }
+                    });
+                }
+            }
         }
-        if (nim1) nim1.innerText = top1 ? top1.nim : '-';
-        if (count1) count1.innerText = top1 ? top1.total : 0;
 
-        const name2 = document.getElementById('podium-name-2');
-        const nim2 = document.getElementById('podium-nim-2');
-        const count2 = document.getElementById('podium-count-2');
-        if (name2) {
-            name2.innerText = top2 ? top2.name : 'Belum Ada';
-            name2.title = top2 ? top2.name : 'Belum Ada';
+        if (data.age_groups) {
+            const listAge = document.getElementById('list-age-groups');
+            if (listAge) {
+                listAge.innerHTML = data.age_groups.map(ag => `
+                    <li class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-300">${ag.group}</span>
+                        <span class="bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded font-mono border border-indigo-500/40">${ag.total}</span>
+                    </li>
+                `).join('') || '<li class="text-xs text-slate-400">Belum ada data</li>';
+            }
         }
-        if (nim2) nim2.innerText = top2 ? top2.nim : '-';
-        if (count2) count2.innerText = top2 ? top2.total : 0;
 
-        const name3 = document.getElementById('podium-name-3');
-        const nim3 = document.getElementById('podium-nim-3');
-        const count3 = document.getElementById('podium-count-3');
-        if (name3) {
-            name3.innerText = top3 ? top3.name : 'Belum Ada';
-            name3.title = top3 ? top3.name : 'Belum Ada';
+        if (data.regions) {
+            const listReg = document.getElementById('list-regions');
+            if (listReg) {
+                listReg.innerHTML = data.regions.map(r => `
+                    <li class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-300 truncate max-w-[90px]" title="${r.kecamatan_domisili}">${r.kecamatan_domisili}</span>
+                        <span class="bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded font-mono border border-indigo-500/40">${r.total}</span>
+                    </li>
+                `).join('') || '<li class="text-xs text-slate-400">Belum ada data</li>';
+            }
         }
-        if (nim3) nim3.innerText = top3 ? top3.nim : '-';
-        if (count3) count3.innerText = top3 ? top3.total : 0;
     }
 
     function switchKioskWidget(targetName) {
@@ -1222,6 +1199,8 @@
     // Polling background setiap 3 detik di Kiosk
     fetchKioskLiveTraffic();
     setInterval(fetchKioskLiveTraffic, 3000);
+    fetchKioskDemographics();
+    setInterval(fetchKioskDemographics, 10000);
 
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initSignage);

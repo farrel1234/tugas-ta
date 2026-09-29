@@ -106,4 +106,82 @@ class KioskController extends Controller
 
         return view('kiosk.index', compact('libraryData', 'trafficData', 'leaderboardData'));
     }
+    
+    public function getDemographicStats()
+    {
+        $currentMonth = Carbon::now('Asia/Jakarta');
+
+        // Base query for this month's visitors
+        $baseQuery = VisitorLog::whereMonth('visitor_logs.created_at', $currentMonth->month)
+            ->whereYear('visitor_logs.created_at', $currentMonth->year)
+            ->where('visitor_logs.status', 'Bisa Masuk')
+            ->whereNotNull('visitor_logs.user_id');
+
+        // 1. Gender Ratio
+        $genderData = (clone $baseQuery)
+            ->join('users', 'visitor_logs.user_id', '=', 'users.id')
+            ->select('users.gender', DB::raw('count(*) as total'))
+            ->whereNotNull('users.gender')
+            ->groupBy('users.gender')
+            ->pluck('total', 'gender');
+            
+        $totalGender = $genderData->sum();
+        $male = $genderData->get('L', 0);
+        $female = $genderData->get('P', 0);
+
+        $genderRatio = [
+            'L' => $male,
+            'P' => $female,
+            'L_pct' => $totalGender > 0 ? round(($male / $totalGender) * 100, 1) : 0,
+            'P_pct' => $totalGender > 0 ? round(($female / $totalGender) * 100, 1) : 0,
+        ];
+
+        // 2. Age Groups
+        $ages = (clone $baseQuery)
+            ->join('users', 'visitor_logs.user_id', '=', 'users.id')
+            ->select('users.tanggal_lahir')
+            ->whereNotNull('users.tanggal_lahir')
+            ->get()
+            ->map(function ($log) {
+                return Carbon::parse($log->tanggal_lahir)->age;
+            });
+
+        $ageGroupsCount = [
+            '17-19 Tahun' => 0,
+            '20-22 Tahun' => 0,
+            '23+ Tahun' => 0,
+        ];
+
+        foreach ($ages as $age) {
+            if ($age >= 17 && $age <= 19) {
+                $ageGroupsCount['17-19 Tahun']++;
+            } elseif ($age >= 20 && $age <= 22) {
+                $ageGroupsCount['20-22 Tahun']++;
+            } elseif ($age >= 23) {
+                $ageGroupsCount['23+ Tahun']++;
+            }
+        }
+
+        arsort($ageGroupsCount);
+        $topAgeGroups = collect($ageGroupsCount)->take(3)->map(function ($val, $key) {
+            return ['group' => $key, 'total' => $val];
+        })->values();
+
+        // 3. Top 3 Region (Kecamatan)
+        $topRegions = (clone $baseQuery)
+            ->join('users', 'visitor_logs.user_id', '=', 'users.id')
+            ->select('users.kecamatan_domisili', DB::raw('count(*) as total'))
+            ->whereNotNull('users.kecamatan_domisili')
+            ->groupBy('users.kecamatan_domisili')
+            ->orderByDesc('total')
+            ->take(3)
+            ->get();
+
+        return response()->json([
+            'month_name' => $currentMonth->translatedFormat('F Y'),
+            'gender' => $genderRatio,
+            'age_groups' => $topAgeGroups,
+            'regions' => $topRegions,
+        ]);
+    }
 }
