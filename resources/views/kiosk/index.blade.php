@@ -216,7 +216,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 flex-grow min-h-0 overflow-hidden relative z-10 my-1 sm:my-2">
 
             <!-- Kolom Kiri: Panduan Layanan (Rotator Signage) -->
-            <main id="spotlight-rotator" class="lg:col-span-7 xl:col-span-8 flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-blue-950/30 backdrop-blur-lg border border-blue-500/25 shadow-2xl p-3 sm:p-5 overflow-hidden transition-all duration-700 h-full min-h-0">
+            <main id="spotlight-rotator" class="lg:col-span-7 xl:col-span-7 flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-blue-950/30 backdrop-blur-lg border border-blue-500/25 shadow-2xl p-3 sm:p-5 overflow-hidden transition-all duration-700 h-full min-h-0">
 
                 <!-- Title & Description Info -->
                 <div class="mb-2 border-b border-blue-800/50 pb-2 sm:pb-2.5 flex-shrink-0">
@@ -249,7 +249,7 @@
             </main>
 
             <!-- Kolom Kanan: Container Carousel Dinamis (Traffic Tank Silinder & Leaderboard Gamifikasi) -->
-            <section id="kiosk-traffic-tank" class="lg:col-span-5 xl:col-span-4 rounded-2xl sm:rounded-3xl bg-blue-950/40 backdrop-blur-lg border border-blue-500/30 shadow-2xl overflow-hidden h-full min-h-0 relative">
+            <section id="kiosk-traffic-tank" class="lg:col-span-5 xl:col-span-5 rounded-2xl sm:rounded-3xl bg-blue-950/40 backdrop-blur-lg border border-blue-500/30 shadow-2xl overflow-hidden h-full min-h-0 relative">
 
                 @php
                     $kioskTopList = collect($leaderboardData['top_visitors'] ?? []);
@@ -400,52 +400,45 @@
                     <!-- Area Tengah: Konten Demografi -->
                     <div class="flex-1 w-full flex flex-col gap-3 mt-3 relative z-10 overflow-hidden">
                         
-                        <!-- Rasio Gender (Donut Chart Chart.js) -->
-                        <div class="bg-[#091731]/80 border border-indigo-500/30 rounded-xl p-3 shadow-inner relative overflow-hidden group flex flex-col items-center justify-center min-h-[150px]">
-                            <div class="absolute inset-0 bg-indigo-500/5 blur-xl group-hover:bg-indigo-500/10 transition-colors duration-500 pointer-events-none"></div>
-                            
-                            <div class="relative w-[180px] h-[90px] flex items-end justify-center">
-                                <canvas id="genderDonutChart"></canvas>
-                                <!-- Total Kunjungan Center Text -->
-                                <div class="absolute bottom-0 left-1/2 -translate-x-1/2 text-center w-full">
-                                    <div class="text-[8px] sm:text-[9px] text-indigo-300 font-bold tracking-widest uppercase">TOTAL KUNJUNGAN</div>
-                                    <div id="text-donut-total" class="text-xl sm:text-2xl font-black text-white font-mono leading-none mt-0.5">0</div>
+                        <!-- Rasio Gender (Split Block Raksasa) -->
+                        <div class="grid grid-cols-2 gap-3 h-[90px] sm:h-[110px]">
+                            <!-- Laki-laki -->
+                            <div class="bg-blue-950/40 border border-blue-500/30 rounded-xl p-3 flex flex-col justify-center items-center relative overflow-hidden shadow-inner group">
+                                <div class="absolute -right-2 -bottom-2 sm:-right-4 sm:-bottom-4 text-blue-500/10 text-5xl sm:text-7xl font-black group-hover:scale-110 transition-transform duration-500">👨</div>
+                                <div class="flex flex-col items-center z-10 w-full">
+                                    <div class="text-6xl sm:text-7xl font-black text-blue-400 font-mono tracking-tighter leading-none" id="gender-split-l-count">0</div>
+                                    <div class="text-[8px] sm:text-[10px] text-blue-200/70 font-bold uppercase tracking-widest mt-2">Pengunjung Laki-laki</div>
                                 </div>
                             </div>
-                            
-                            <!-- Legend / Persentase Ujung Kiri Kanan -->
-                            <div class="w-full flex justify-between px-2 mt-3 text-[10px] sm:text-xs font-bold font-mono">
-                                <div class="text-blue-400 flex flex-col items-start z-10">
-                                    <span class="text-[9px]">Laki-laki 👨</span>
-                                    <span class="text-sm"><span id="text-gender-l-pct">0</span>%</span>
-                                </div>
-                                <div class="text-rose-400 flex flex-col items-end z-10">
-                                    <span class="text-[9px]">👩 Perempuan</span>
-                                    <span class="text-sm"><span id="text-gender-p-pct">0</span>%</span>
+                            <!-- Perempuan -->
+                            <div class="bg-rose-950/40 border border-rose-500/30 rounded-xl p-3 flex flex-col justify-center items-center relative overflow-hidden shadow-inner group">
+                                <div class="absolute -right-2 -bottom-2 sm:-right-4 sm:-bottom-4 text-rose-500/10 text-5xl sm:text-7xl font-black group-hover:scale-110 transition-transform duration-500">👩</div>
+                                <div class="flex flex-col items-center z-10 w-full">
+                                    <div class="text-6xl sm:text-7xl font-black text-rose-400 font-mono tracking-tighter leading-none" id="gender-split-p-count">0</div>
+                                    <div class="text-[8px] sm:text-[10px] text-rose-200/70 font-bold uppercase tracking-widest mt-2">Pengunjung Perempuan</div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Grid Bawah: Umur & Wilayah -->
-                        <div class="grid grid-cols-2 gap-3 flex-1 h-full">
-                            <!-- Top 3 Kelompok Umur -->
-                            <div class="bg-[#091731]/80 border border-indigo-500/30 rounded-xl p-3 shadow-inner flex flex-col">
-                                <h4 class="text-[10px] sm:text-xs font-bold text-indigo-200 uppercase tracking-widest mb-2 flex items-center gap-1.5 border-b border-indigo-500/20 pb-1">
-                                    <span>🎂 Top Umur</span>
+                        <div class="grid grid-cols-2 gap-3 flex-1 h-full min-h-0">
+                            <!-- Top Umur (Horizontal Stat Bars) -->
+                            <div class="bg-[#091731]/80 border border-indigo-500/30 rounded-xl p-3 sm:p-4 shadow-inner flex flex-col overflow-hidden">
+                                <h4 class="text-[9px] sm:text-[10px] font-bold text-indigo-200 uppercase tracking-widest w-full text-center mb-4 border-b border-indigo-500/20 pb-2">
+                                    🎂 Top Umur
                                 </h4>
-                                <ul id="list-age-groups" class="flex-1 flex flex-col justify-center gap-2 mt-1">
-                                    <li class="flex items-center justify-between text-xs text-slate-300"><span>Memuat...</span></li>
-                                </ul>
+                                <div id="box-age-groups" class="flex flex-col gap-5 sm:gap-6 w-full flex-1 justify-center">
+                                    <!-- dynamic content -->
+                                </div>
                             </div>
 
-                            <!-- Top 3 Wilayah Domisili -->
-                            <div class="bg-[#091731]/80 border border-indigo-500/30 rounded-xl p-3 shadow-inner flex flex-col">
-                                <h4 class="text-[10px] sm:text-xs font-bold text-indigo-200 uppercase tracking-widest mb-2 flex items-center gap-1.5 border-b border-indigo-500/20 pb-1">
-                                    <span>📍 Top Wilayah</span>
+                            <!-- Top Wilayah (Tipografi Style) -->
+                            <div class="bg-[#091731]/80 border border-indigo-500/30 rounded-xl p-2.5 sm:p-3 shadow-inner flex flex-col overflow-hidden">
+                                <h4 class="text-[9px] sm:text-[10px] font-bold text-indigo-200 uppercase tracking-widest w-full text-center mb-2">
+                                    📍 Top Wilayah
                                 </h4>
-                                <ul id="list-regions" class="flex-1 flex flex-col justify-center gap-2 mt-1">
-                                    <li class="flex items-center justify-between text-xs text-slate-300"><span>Memuat...</span></li>
-                                </ul>
+                                <div id="box-regions" class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2 w-full">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -554,6 +547,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
     function updateClock() {
         const now = new Date();
@@ -1062,75 +1056,100 @@
             if (badge) badge.innerText = data.month_name;
         }
 
-        if (data.gender) {
-            const pctL = data.gender.L_pct || 0;
-            const pctP = data.gender.P_pct || 0;
-            const countL = data.gender.L || 0;
-            const countP = data.gender.P || 0;
-            const total = countL + countP;
-
-            const tPctL = document.getElementById('text-gender-l-pct');
-            const tPctP = document.getElementById('text-gender-p-pct');
-            if (tPctL) tPctL.innerText = pctL;
-            if (tPctP) tPctP.innerText = pctP;
+        function animateCounter(el, endVal) {
+            if (!el) return;
+            const startVal = parseInt(el.innerText) || 0;
+            const duration = 1500; // ms
+            const startTime = performance.now();
             
-            const donutTotal = document.getElementById('text-donut-total');
-            if (donutTotal) donutTotal.innerText = total;
+            if (startVal === endVal) {
+                el.innerText = endVal;
+                return;
+            }
 
-            if (window.genderChart) {
-                window.genderChart.data.datasets[0].data = [countL, countP];
-                window.genderChart.update();
-            } else {
-                const ctx = document.getElementById('genderDonutChart');
-                if (ctx) {
-                    window.genderChart = new Chart(ctx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['Laki-laki', 'Perempuan'],
-                            datasets: [{
-                                data: [countL, countP],
-                                backgroundColor: ['#3b82f6', '#f43f5e'],
-                                borderWidth: 0,
-                                hoverOffset: 4
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            circumference: 180,
-                            rotation: 270,
-                            cutout: '78%',
-                            plugins: {
-                                legend: { display: false },
-                                tooltip: { enabled: false }
-                            }
-                        }
-                    });
+            function step(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // easeOutQuad
+                const ease = progress * (2 - progress);
+                el.innerText = Math.floor(startVal + (endVal - startVal) * ease);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    el.innerText = endVal;
                 }
             }
+            requestAnimationFrame(step);
+        }
+
+        if (data.gender) {
+            const countL = data.gender.L || 0;
+            const countP = data.gender.P || 0;
+
+            const splitLcount = document.getElementById('gender-split-l-count');
+            const splitPcount = document.getElementById('gender-split-p-count');
+            
+            animateCounter(splitLcount, countL);
+            animateCounter(splitPcount, countP);
         }
 
         if (data.age_groups) {
-            const listAge = document.getElementById('list-age-groups');
-            if (listAge) {
-                listAge.innerHTML = data.age_groups.map(ag => `
-                    <li class="flex items-center justify-between text-xs">
-                        <span class="font-bold text-slate-300">${ag.group}</span>
-                        <span class="bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded font-mono border border-indigo-500/40">${ag.total}</span>
-                    </li>
-                `).join('') || '<li class="text-xs text-slate-400">Belum ada data</li>';
+            const boxAge = document.getElementById('box-age-groups');
+            if (boxAge) {
+                let maxVal = 0;
+                data.age_groups.forEach(ag => {
+                    const t = Number(ag.total);
+                    if (t > maxVal) maxVal = t;
+                });
+                
+                const colorClasses = ['bg-cyan-500', 'bg-purple-500', 'bg-yellow-500'];
+
+                boxAge.innerHTML = data.age_groups.map((ag, i) => {
+                    const pct = maxVal > 0 ? (Number(ag.total) / maxVal) * 100 : 0;
+                    const c = colorClasses[i] || 'bg-slate-500';
+                    return `
+                        <div class="flex items-center justify-between w-full">
+                            <div class="w-[30%] flex-shrink-0 text-left">
+                                <span class="text-xs sm:text-sm text-gray-300 font-medium whitespace-nowrap">${ag.group}</span>
+                            </div>
+                            <div class="flex-1 mx-2 sm:mx-3 bg-slate-700/50 rounded-full h-2 overflow-hidden flex items-center">
+                                <div class="${c} rounded-full h-2 transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(255,255,255,0.1)]" style="width: ${pct}%;"></div>
+                            </div>
+                            <div class="w-[20%] flex-shrink-0 text-right flex flex-col items-end leading-none">
+                                <span class="text-2xl sm:text-3xl font-bold text-white font-mono">${ag.total}</span>
+                                <span class="text-[9px] sm:text-xs text-gray-500 mt-1 block">Orang</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('') || '<div class="text-xs text-slate-400 text-center">Belum ada data</div>';
             }
         }
 
         if (data.regions) {
-            const listReg = document.getElementById('list-regions');
-            if (listReg) {
-                listReg.innerHTML = data.regions.map(r => `
-                    <li class="flex items-center justify-between text-xs">
-                        <span class="font-bold text-slate-300 truncate max-w-[90px]" title="${r.kecamatan_domisili}">${r.kecamatan_domisili}</span>
-                        <span class="bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded font-mono border border-indigo-500/40">${r.total}</span>
-                    </li>
-                `).join('') || '<li class="text-xs text-slate-400">Belum ada data</li>';
+            const boxReg = document.getElementById('box-regions');
+            if (boxReg) {
+                const colorClasses = ['text-emerald-400', 'text-amber-400', 'text-rose-400'];
+                
+                boxReg.innerHTML = data.regions.map((r, i) => {
+                    const badge = (i === 0) 
+                        ? `<span class="bg-gradient-to-r from-red-500 to-orange-500 text-white text-[7px] px-1.5 py-0.5 rounded-full flex items-center gap-0.5 whitespace-nowrap">🔥 Terbanyak</span>` 
+                        : '';
+                    return `
+                        <div class="flex items-center justify-between bg-slate-900/50 rounded-lg p-1.5 sm:p-2 border border-slate-700/50 hover:bg-slate-800/50 transition-colors">
+                            <span class="text-[9px] sm:text-[10px] font-bold text-slate-200 truncate w-[45%]" title="${r.kecamatan_domisili}">
+                                ${i === 0 ? '🥇' : (i === 1 ? '🥈' : '🥉')} ${r.kecamatan_domisili}
+                            </span>
+                            <div class="text-right flex items-center gap-1.5 sm:gap-2 justify-end w-[55%]">
+                                ${badge}
+                                <div class="flex flex-col items-end leading-none">
+                                    <span class="font-black text-sm sm:text-base ${colorClasses[i]} font-mono">${r.total}</span>
+                                    <span class="text-[7px] sm:text-[8px] text-slate-400 opacity-70 mt-0.5">Kunjungan</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('') || '<div class="text-xs text-slate-400 text-center">Belum ada data</div>';
             }
         }
     }
