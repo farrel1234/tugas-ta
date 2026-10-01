@@ -212,7 +212,7 @@
             <div class="space-y-6">
                 <div>
                     <span class="text-[10px] font-bold uppercase tracking-widest text-cyan-400 block mb-3">Navigasi Utama</span>
-                    <nav class="space-y-1.5">
+                                        <nav class="space-y-1.5">
                         <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 font-semibold px-4 py-2.5 rounded-xl border border-cyan-500/30 text-sm">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                             Kelola Signage
@@ -220,6 +220,10 @@
                         <a href="{{ url('/') }}" class="flex items-center gap-3 text-blue-200/70 hover:text-white hover:bg-blue-900/40 font-medium px-4 py-2.5 rounded-xl text-sm transition">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
                             Lihat Tampilan Signage
+                        </a>
+                        <a href="{{ route('admin.analytics') }}" class="flex items-center gap-3 font-medium px-4 py-2.5 rounded-xl text-sm transition {{ request()->routeIs('admin.analytics') ? 'bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-300 border border-cyan-500/30' : 'text-blue-200/70 hover:text-white hover:bg-blue-900/40' }}">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                            Analitik Pengunjung
                         </a>
                     </nav>
                 </div>
