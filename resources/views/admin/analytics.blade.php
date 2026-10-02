@@ -271,38 +271,76 @@
     </div>
 
     <!-- Charts Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        
         <!-- Daily Trend -->
-        <div class="bg-blue-950/40 p-5 rounded-2xl border border-blue-500/20 backdrop-blur-md shadow-xl">
-            <h3 class="text-sm font-bold text-cyan-300 uppercase tracking-widest mb-4">📈 Tren Harian</h3>
-            <div class="relative h-64 w-full">
-                <canvas id="dailyChart"></canvas>
+        <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl overflow-hidden shadow-lg backdrop-blur-sm">
+            <div class="px-5 py-4 border-b border-slate-700/70 bg-slate-900/30">
+                <h3 class="text-lg font-bold text-white tracking-wide">
+                    Grafik Kunjungan Harian
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">
+                    Fluktuasi jumlah kedatangan pemustaka per tanggal dalam bulan ini.
+                </p>
+            </div>
+            <div class="p-5">
+                <div class="relative h-64 w-full">
+                    <canvas id="dailyChart"></canvas>
+                </div>
             </div>
         </div>
 
         <!-- Gender Ratio -->
-        <div class="bg-blue-950/40 p-5 rounded-2xl border border-blue-500/20 backdrop-blur-md shadow-xl">
-            <h3 class="text-sm font-bold text-cyan-300 uppercase tracking-widest mb-4">🚻 Rasio Gender</h3>
-            <div class="relative h-64 w-full flex justify-center">
-                <canvas id="genderChart"></canvas>
+        <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl overflow-hidden shadow-lg backdrop-blur-sm">
+            <div class="px-5 py-4 border-b border-slate-700/70 bg-slate-900/30">
+                <h3 class="text-lg font-bold text-white tracking-wide">
+                    Rasio Gender
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">
+                    Perbandingan rasio pemustaka laki-laki dan perempuan.
+                </p>
+            </div>
+            <div class="p-5">
+                <div class="relative h-64 w-full flex justify-center">
+                    <canvas id="genderChart"></canvas>
+                </div>
             </div>
         </div>
 
         <!-- Age Distribution -->
-        <div class="bg-blue-950/40 p-5 rounded-2xl border border-blue-500/20 backdrop-blur-md shadow-xl">
-            <h3 class="text-sm font-bold text-cyan-300 uppercase tracking-widest mb-4">🎂 Distribusi Umur</h3>
-            <div class="relative h-64 w-full">
-                <canvas id="ageChart"></canvas>
+        <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl overflow-hidden shadow-lg backdrop-blur-sm">
+            <div class="px-5 py-4 border-b border-slate-700/70 bg-slate-900/30">
+                <h3 class="text-lg font-bold text-white tracking-wide">
+                    Range Usia
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">
+                    Segmentasi pengunjung perpustakaan berdasarkan rentang umur.
+                </p>
+            </div>
+            <div class="p-5">
+                <div class="relative h-64 w-full">
+                    <canvas id="ageChart"></canvas>
+                </div>
             </div>
         </div>
 
         <!-- Region Mapping -->
-        <div class="bg-blue-950/40 p-5 rounded-2xl border border-blue-500/20 backdrop-blur-md shadow-xl">
-            <h3 class="text-sm font-bold text-cyan-300 uppercase tracking-widest mb-4">📍 Pemetaan Wilayah</h3>
-            <div class="relative h-64 w-full">
-                <canvas id="regionChart"></canvas>
+        <div class="bg-slate-800/40 border border-slate-700/50 rounded-xl overflow-hidden shadow-lg backdrop-blur-sm">
+            <div class="px-5 py-4 border-b border-slate-700/70 bg-slate-900/30">
+                <h3 class="text-lg font-bold text-white tracking-wide">
+                    Pemetaan Wilayah
+                </h3>
+                <p class="text-xs text-slate-400 mt-1">
+                    Pemetaan area tempat tinggal pemustaka yang paling sering berkunjung.
+                </p>
+            </div>
+            <div class="p-5">
+                <div class="relative h-64 w-full">
+                    <canvas id="regionChart"></canvas>
+                </div>
             </div>
         </div>
+        
     </div>
 
     <!-- Data Table -->
@@ -354,8 +392,36 @@
     Chart.defaults.color = '#94a3b8';
     Chart.defaults.font.family = 'Inter, sans-serif';
 
-    // Daily Trend
+    // 1. Plugin Shadow (Efek Lampu Neon / Glow)
+    const glowPlugin = {
+        id: 'glowPlugin',
+        beforeDatasetsDraw(chart) {
+            const ctx = chart.ctx;
+            ctx.save();
+            ctx.shadowColor = chart.config.options.plugins.glowPlugin?.color || 'transparent';
+            ctx.shadowBlur = chart.config.options.plugins.glowPlugin?.blur || 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
+        },
+        afterDatasetsDraw(chart) {
+            chart.ctx.restore();
+        }
+    };
+    Chart.register(glowPlugin);
+
+    // Garis bantu transparan
+    const gridOptions = {
+        color: 'rgba(255, 255, 255, 0.05)'
+    };
+
+    // --- 1. TOTAL PENGUNJUNG ---
     const dailyCtx = document.getElementById('dailyChart');
+    const dailyCtx2D = dailyCtx.getContext('2d');
+    
+    const dailyGradient = dailyCtx2D.createLinearGradient(0, 0, 0, 300);
+    dailyGradient.addColorStop(0, 'rgba(6, 182, 212, 0.5)');
+    dailyGradient.addColorStop(1, 'rgba(6, 182, 212, 0.01)');
+
     const dailyData = @json($dailyTrend);
     new Chart(dailyCtx, {
         type: 'line',
@@ -365,26 +431,40 @@
                 label: 'Kunjungan',
                 data: Object.values(dailyData),
                 borderColor: '#06b6d4',
-                backgroundColor: 'rgba(6, 182, 212, 0.1)',
-                borderWidth: 2,
-                tension: 0.3,
+                backgroundColor: dailyGradient,
+                borderWidth: 3,
+                tension: 0.4,
                 fill: true,
-                pointBackgroundColor: '#06b6d4'
+                pointRadius: 0,
+                pointHoverRadius: 6
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(59, 130, 246, 0.1)' }, ticks: { precision: 0 } },
-                x: { grid: { color: 'rgba(59, 130, 246, 0.1)' } }
+                y: { beginAtZero: true, grid: gridOptions, ticks: { precision: 0 } },
+                x: { grid: gridOptions }
             },
-            plugins: { legend: { display: false } }
+            plugins: { 
+                legend: { display: false },
+                glowPlugin: { color: 'rgba(6, 182, 212, 0.8)', blur: 15 } // Efek Glow Cyan
+            }
         }
     });
 
-    // Gender
+    // --- 2. GENDER ---
     const genderCtx = document.getElementById('genderChart');
+    const genderCtx2D = genderCtx.getContext('2d');
+    
+    const gradL = genderCtx2D.createLinearGradient(0, 0, 0, 200);
+    gradL.addColorStop(0, '#3b82f6');
+    gradL.addColorStop(1, '#1e3a8a');
+    
+    const gradP = genderCtx2D.createLinearGradient(0, 0, 0, 200);
+    gradP.addColorStop(0, '#f43f5e');
+    gradP.addColorStop(1, '#881337');
+
     const genderData = @json($genderData);
     new Chart(genderCtx, {
         type: 'doughnut',
@@ -392,22 +472,40 @@
             labels: ['Laki-laki', 'Perempuan'],
             datasets: [{
                 data: [genderData['L'] || 0, genderData['P'] || 0],
-                backgroundColor: ['#3b82f6', '#f43f5e'],
+                backgroundColor: [gradL, gradP],
                 borderWidth: 0,
-                hoverOffset: 4
+                hoverOffset: 6
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            cutout: '80%', // Cincin tipis
             plugins: {
-                legend: { position: 'bottom', labels: { color: '#cbd5e1' } }
+                legend: { position: 'bottom', labels: { color: '#cbd5e1' } },
+                glowPlugin: { color: 'rgba(255, 255, 255, 0.1)', blur: 10 }
             }
         }
     });
 
-    // Age
+    // --- 3. UMUR ---
     const ageCtx = document.getElementById('ageChart');
+    const ageCtx2D = ageCtx.getContext('2d');
+    
+    const ageColors = [
+        { top: '#06b6d4', bottom: 'rgba(6, 182, 212, 0.05)' },
+        { top: '#8b5cf6', bottom: 'rgba(139, 92, 246, 0.05)' },
+        { top: '#eab308', bottom: 'rgba(234, 179, 8, 0.05)' },
+        { top: '#f97316', bottom: 'rgba(249, 115, 22, 0.05)' }
+    ];
+    
+    const ageGradients = ageColors.map(c => {
+        const g = ageCtx2D.createLinearGradient(0, 0, 0, 250);
+        g.addColorStop(0, c.top);
+        g.addColorStop(1, c.bottom);
+        return g;
+    });
+
     const ageData = @json($ageGroups);
     new Chart(ageCtx, {
         type: 'bar',
@@ -416,23 +514,34 @@
             datasets: [{
                 label: 'Pengunjung',
                 data: Object.values(ageData),
-                backgroundColor: ['#06b6d4', '#8b5cf6', '#eab308', '#f97316'],
-                borderRadius: 4
+                backgroundColor: ageGradients,
+                borderRadius: 8,
+                borderSkipped: false
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: { beginAtZero: true, grid: { color: 'rgba(59, 130, 246, 0.1)' }, ticks: { precision: 0 } },
+                y: { beginAtZero: true, grid: gridOptions, ticks: { precision: 0 } },
                 x: { grid: { display: false } }
             },
-            plugins: { legend: { display: false } }
+            plugins: { 
+                legend: { display: false },
+                glowPlugin: { color: 'rgba(139, 92, 246, 0.3)', blur: 10 }
+            }
         }
     });
 
-    // Region
+    // --- 4. WILAYAH ---
     const regionCtx = document.getElementById('regionChart');
+    const regionCtx2D = regionCtx.getContext('2d');
+    
+    // Gradien Horizontal (kiri-ke-kanan)
+    const regionGradient = regionCtx2D.createLinearGradient(0, 0, 400, 0);
+    regionGradient.addColorStop(1, '#10b981'); // Emerald ujung kanan
+    regionGradient.addColorStop(0, 'rgba(16, 185, 129, 0.05)');
+
     const regionData = @json($regionData);
     new Chart(regionCtx, {
         type: 'bar',
@@ -441,19 +550,23 @@
             datasets: [{
                 label: 'Kunjungan',
                 data: Object.values(regionData),
-                backgroundColor: '#10b981',
-                borderRadius: 4
+                backgroundColor: regionGradient,
+                borderRadius: 8,
+                borderSkipped: false
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            indexAxis: 'y',
+            indexAxis: 'y', // Mode Horizontal
             scales: {
-                x: { beginAtZero: true, grid: { color: 'rgba(59, 130, 246, 0.1)' }, ticks: { precision: 0 } },
+                x: { beginAtZero: true, grid: gridOptions, ticks: { precision: 0 } },
                 y: { grid: { display: false } }
             },
-            plugins: { legend: { display: false } }
+            plugins: { 
+                legend: { display: false },
+                glowPlugin: { color: 'rgba(16, 185, 129, 0.4)', blur: 10 }
+            }
         }
     });
 </script>
