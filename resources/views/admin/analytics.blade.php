@@ -346,13 +346,13 @@
     <!-- Data Table -->
     <div class="bg-blue-950/40 p-5 rounded-2xl border border-blue-500/20 backdrop-blur-md shadow-xl overflow-hidden">
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
-            <h3 class="text-sm font-bold text-cyan-300 uppercase tracking-widest">📋 Log Kunjungan Detail</h3>
+            <h3 class="text-sm font-bold text-cyan-300 uppercase tracking-widest">📊 Rekap Data Anggota Terdaftar</h3>
             <div class="flex gap-2">
-                <a href="{{ route('admin.analytics.export', ['type' => 'excel', 'month' => $selectedMonth, 'year' => $selectedYear]) }}" class="flex items-center gap-2 bg-emerald-600/90 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors border border-emerald-400/50 shadow-lg backdrop-blur-sm">
+                <a href="{{ route('admin.analytics.export', ['type' => 'excel']) }}" class="flex items-center gap-2 bg-emerald-600/90 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors border border-emerald-400/50 shadow-lg backdrop-blur-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M16 13H8M16 17H8M10 9H8"/></svg>
                     <span>Export Excel</span>
                 </a>
-                <a href="{{ route('admin.analytics.export', ['type' => 'pdf', 'month' => $selectedMonth, 'year' => $selectedYear]) }}" class="flex items-center gap-2 bg-rose-600/90 hover:bg-rose-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors border border-rose-400/50 shadow-lg backdrop-blur-sm">
+                <a href="{{ route('admin.analytics.export', ['type' => 'pdf']) }}" class="flex items-center gap-2 bg-rose-600/90 hover:bg-rose-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors border border-rose-400/50 shadow-lg backdrop-blur-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 10v9M15 16l-3 3-3-3M8 4h8a2 2 0 012 2v2H6V6a2 2 0 012-2z"/></svg>
                     <span>Cetak PDF</span>
                 </a>
@@ -363,36 +363,66 @@
                 <thead class="text-xs text-cyan-300 uppercase bg-blue-900/50 border-b border-blue-500/30">
                     <tr>
                         <th class="px-4 py-3 rounded-tl-lg">No</th>
-                        <th class="px-4 py-3">Waktu Masuk</th>
-                        <th class="px-4 py-3">Nama Pengunjung</th>
+                        <th class="px-4 py-3">NIM</th>
+                        <th class="px-4 py-3">Nama Anggota</th>
                         <th class="px-4 py-3">Gender</th>
                         <th class="px-4 py-3">Umur</th>
-                        <th class="px-4 py-3 rounded-tr-lg">Wilayah</th>
+                        <th class="px-4 py-3">Wilayah</th>
+                        <th class="px-4 py-3 rounded-tr-lg">Status</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($paginatedLogs as $index => $log)
+                    @forelse($paginatedMembers as $index => $member)
                         @php
-                            $age = $log->user && $log->user->tanggal_lahir ? \Carbon\Carbon::parse($log->user->tanggal_lahir)->age : '-';
+                            $age = $member->tanggal_lahir ? \Carbon\Carbon::parse($member->tanggal_lahir)->age : '-';
+                            $gender = $member->gender === 'L' ? 'Laki-laki' : ($member->gender === 'P' ? 'Perempuan' : '-');
+                            $isExpired = $member->expired_at ? \Carbon\Carbon::parse($member->expired_at)->isPast() : null;
                         @endphp
                         <tr class="border-b border-blue-500/10 hover:bg-blue-800/30 transition-colors">
-                            <td class="px-4 py-3">{{ $paginatedLogs->firstItem() + $index }}</td>
-                            <td class="px-4 py-3 font-mono text-cyan-200">{{ \Carbon\Carbon::parse($log->created_at)->format('d M Y, H:i') }}</td>
-                            <td class="px-4 py-3 font-semibold">{{ $log->user->name ?? 'Unknown' }}</td>
-                            <td class="px-4 py-3">{{ $log->user ? ($log->user->gender == 'L' ? 'Laki-laki' : 'Perempuan') : '-' }}</td>
+                            <td class="px-4 py-3">{{ $paginatedMembers->firstItem() + $index }}</td>
+                            <td class="px-4 py-3 font-mono text-cyan-200 font-semibold">{{ $member->nim ?? '-' }}</td>
+                            <td class="px-4 py-3 font-semibold text-white">{{ $member->name }}</td>
+                            <td class="px-4 py-3">{{ $gender }}</td>
                             <td class="px-4 py-3">{{ $age }} Thn</td>
-                            <td class="px-4 py-3">{{ $log->user->kecamatan_domisili ?? '-' }}</td>
+                            <td class="px-4 py-3">{{ $member->kecamatan_domisili ?? '-' }}</td>
+                            <td class="px-4 py-3">
+                                @if($member->expired_at)
+                                    @if($isExpired)
+                                        <div class="inline-flex flex-col items-start gap-1">
+                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-500/15 text-rose-300 border border-rose-500/40 inline-flex items-center gap-1.5 shadow-sm">
+                                                <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+                                                Kadaluarsa
+                                            </span>
+                                            <span class="text-[10px] text-rose-400/80 font-mono tracking-tight pl-0.5">
+                                                exp: {{ \Carbon\Carbon::parse($member->expired_at)->format('d/m/Y') }}
+                                            </span>
+                                        </div>
+                                    @else
+                                        <div class="inline-flex flex-col items-start gap-1">
+                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/40 inline-flex items-center gap-1.5 shadow-sm">
+                                                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                                Aktif
+                                            </span>
+                                            <span class="text-[10px] text-cyan-300/80 font-mono tracking-tight pl-0.5">
+                                                s.d. {{ \Carbon\Carbon::parse($member->expired_at)->format('d/m/Y') }}
+                                            </span>
+                                        </div>
+                                    @endif
+                                @else
+                                    <span class="text-slate-400">-</span>
+                                @endif
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-6 text-center text-slate-400">Tidak ada data kunjungan di bulan ini.</td>
+                            <td colspan="7" class="px-4 py-6 text-center text-slate-400">Tidak ada data anggota terdaftar.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
         <div class="mt-4">
-            {{ $paginatedLogs->links() }}
+            {{ $paginatedMembers->links() }}
         </div>
     </div>
 </main>
