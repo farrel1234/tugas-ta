@@ -2,115 +2,66 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Log Kunjungan - {{ $monthName }} {{ $year }}</title>
+    <title>Laporan Log Kunjungan</title>
     <style>
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 11px;
-            color: #1e293b;
-            margin: 20px;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #333;
         }
         .header {
             text-align: center;
-            border-bottom: 2px solid #0f172a;
-            padding-bottom: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
         }
         .header h1 {
-            font-size: 16px;
+            margin: 0;
+            font-size: 18px;
             text-transform: uppercase;
-            margin: 0 0 4px 0;
-            color: #0f172a;
         }
         .header p {
-            margin: 2px 0;
-            color: #475569;
-            font-size: 11px;
+            margin: 5px 0 0 0;
+            font-size: 14px;
         }
-        .meta-info {
-            margin-bottom: 14px;
-            width: 100%;
-        }
-        .meta-info table {
+        table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 10px;
         }
-        .meta-info td {
-            font-size: 11px;
-            padding: 2px 0;
-        }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
-        }
-        .data-table th {
-            background-color: #0f172a;
-            color: #ffffff;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 10px;
-            padding: 8px 6px;
-            border: 1px solid #0f172a;
+        th, td {
+            border: 1px solid #999;
+            padding: 8px;
             text-align: left;
         }
-        .data-table td {
-            padding: 7px 6px;
-            border: 1px solid #cbd5e1;
-            font-size: 10px;
-        }
-        .data-table tr:nth-child(even) {
-            background-color: #f8fafc;
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 11px;
         }
         .text-center {
             text-align: center;
         }
-        .empty-row {
-            text-align: center;
-            color: #94a3b8;
-            font-style: italic;
-            padding: 20px !important;
-        }
-        .footer {
-            margin-top: 20px;
-            text-align: right;
-            font-size: 9px;
-            color: #64748b;
-        }
     </style>
 </head>
 <body>
+
     <div class="header">
-        <h1>LAPORAN LOG KUNJUNGAN DETAIL</h1>
-        <p>Sistem Kiosk & Telemetri Pengunjung</p>
+        <h1>Laporan Log Kunjungan Detail</h1>
+        <p>UPA Perpustakaan Politeknik Negeri Batam</p>
+        <p><strong>Periode: {{ $monthName }} {{ $year }}</strong></p>
     </div>
 
-    <div class="meta-info">
-        <table>
-            <tr>
-                <td style="width: 15%;"><strong>Periode</strong></td>
-                <td style="width: 35%;">: {{ $monthName }} {{ $year }}</td>
-                <td style="width: 25%; text-align: right;"><strong>Total Kunjungan</strong></td>
-                <td style="width: 25%; text-align: right;">: {{ count($logs) }} Kunjungan</td>
-            </tr>
-            <tr>
-                <td><strong>Waktu Cetak</strong></td>
-                <td>: {{ now()->translatedFormat('d F Y, H:i:s') }}</td>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
-    </div>
-
-    <table class="data-table">
+    <table>
         <thead>
             <tr>
-                <th style="width: 5%; text-align: center;">No</th>
-                <th style="width: 22%;">Waktu Masuk</th>
-                <th style="width: 30%;">Nama Pengunjung</th>
-                <th style="width: 15%;">Gender</th>
-                <th style="width: 10%;">Umur</th>
-                <th style="width: 18%;">Wilayah</th>
+                <th width="5%" class="text-center">No</th>
+                <th width="20%">Waktu Masuk</th>
+                <th width="35%">Nama Pengunjung</th>
+                <th width="10%" class="text-center">Gender</th>
+                <th width="10%" class="text-center">Umur</th>
+                <th width="20%">Wilayah</th>
             </tr>
         </thead>
         <tbody>
@@ -119,27 +70,24 @@
                     $age = $log->user && $log->user->tanggal_lahir ? \Carbon\Carbon::parse($log->user->tanggal_lahir)->age . ' Thn' : '-';
                     $gender = '-';
                     if ($log->user) {
-                        $gender = $log->user->gender === 'L' ? 'Laki-laki' : ($log->user->gender === 'P' ? 'Perempuan' : '-');
+                        $gender = $log->user->gender === 'L' ? 'L' : ($log->user->gender === 'P' ? 'P' : '-');
                     }
                 @endphp
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td>{{ \Carbon\Carbon::parse($log->created_at)->format('d M Y, H:i') }}</td>
-                    <td><strong>{{ $log->user->name ?? 'Unknown / Guest' }}</strong></td>
-                    <td>{{ $gender }}</td>
-                    <td>{{ $age }}</td>
+                    <td>{{ $log->created_at ? \Carbon\Carbon::parse($log->created_at)->format('d-m-Y H:i') : '-' }}</td>
+                    <td>{{ $log->user->name ?? 'Unknown / Guest' }}</td>
+                    <td class="text-center">{{ $gender }}</td>
+                    <td class="text-center">{{ $age }}</td>
                     <td>{{ $log->user->kecamatan_domisili ?? '-' }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="empty-row">Tidak ada data kunjungan pada periode ini.</td>
+                    <td colspan="6" class="text-center">Tidak ada data kunjungan pada periode ini.</td>
                 </tr>
             @endforelse
         </tbody>
     </table>
 
-    <div class="footer">
-        Dicetak secara otomatis oleh Sistem Admin pada {{ now()->format('d/m/Y H:i') }}
-    </div>
 </body>
 </html>
