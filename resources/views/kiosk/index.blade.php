@@ -306,7 +306,7 @@
                     <!-- Area Tengah: Silinder 3D & HUD Total Kunjungan (Tepat di Tengah / Centered Vertikal) -->
                     <div class="flex-1 flex flex-col justify-center items-center my-auto py-2 sm:py-4 min-h-0 w-full">
                         <!-- 3D Database Cylinder Graphic -->
-                        <div class="relative w-[210px] sm:w-[240px] xl:w-[270px] h-[230px] sm:h-[260px] xl:h-[300px] db-cylinder-container mx-auto">
+                        <div class="relative w-[170px] sm:w-[190px] xl:w-[210px] h-[230px] sm:h-[260px] xl:h-[300px] db-cylinder-container mx-auto">
                             <!-- Cylinder Top Oval Cap -->
                             <div class="db-cylinder-cap"></div>
 
@@ -361,45 +361,45 @@
                     </div>
 
                     <!-- Breakdown Status Pills Below Cylinder (Bawah) -->
-                    <div class="w-full grid grid-cols-3 gap-2 border-t border-blue-800/40 pt-2.5 sm:pt-3 flex-shrink-0">
+                    <div class="w-full grid grid-cols-3 gap-2 border-t border-blue-800/40 pt-1.5 sm:pt-2 flex-shrink-0 mt-1">
                         <!-- Green Stat -->
-                        <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-xl p-2 sm:p-2.5 text-center">
-                            <div class="flex items-center justify-center gap-1 mb-0.5 sm:mb-1">
-                                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400"></span>
-                                <span class="text-[9px] sm:text-[10px] font-bold text-emerald-300">Bisa Masuk</span>
+                        <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-lg py-1 px-1 sm:py-1.5 text-center">
+                            <div class="flex items-center justify-center gap-1 mb-0.5">
+                                <span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-emerald-400"></span>
+                                <span class="text-[8px] sm:text-[9px] font-bold text-emerald-300">Bisa Masuk</span>
                             </div>
-                            <div id="stat-bisa-masuk-count" class="text-sm sm:text-base font-black text-white font-mono leading-none">
+                            <div id="stat-bisa-masuk-count" class="text-xs sm:text-sm font-black text-white font-mono leading-none">
                                 {{ $trafficData['status_counts']['bisa_masuk'] ?? 0 }}
                             </div>
-                            <span id="stat-bisa-masuk-pct" class="text-[8px] sm:text-[9px] text-emerald-300/70 font-mono">
+                            <span id="stat-bisa-masuk-pct" class="text-[7px] sm:text-[8px] text-emerald-300/70 font-mono">
                                 {{ $trafficData['status_percentages']['bisa_masuk'] ?? 0 }}%
                             </span>
                         </div>
 
                         <!-- Gray Stat -->
-                        <div class="bg-slate-900/50 border border-slate-500/30 rounded-xl p-2 sm:p-2.5 text-center">
-                            <div class="flex items-center justify-center gap-1 mb-0.5 sm:mb-1">
-                                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-slate-400"></span>
-                                <span class="text-[9px] sm:text-[10px] font-bold text-slate-300">Expired</span>
+                        <div class="bg-slate-900/50 border border-slate-500/30 rounded-lg py-1 px-1 sm:py-1.5 text-center">
+                            <div class="flex items-center justify-center gap-1 mb-0.5">
+                                <span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-slate-400"></span>
+                                <span class="text-[8px] sm:text-[9px] font-bold text-slate-300">Expired</span>
                             </div>
-                            <div id="stat-belum-perpanjang-count" class="text-sm sm:text-base font-black text-white font-mono leading-none">
+                            <div id="stat-belum-perpanjang-count" class="text-xs sm:text-sm font-black text-white font-mono leading-none">
                                 {{ $trafficData['status_counts']['belum_perpanjang'] ?? 0 }}
                             </div>
-                            <span id="stat-belum-perpanjang-pct" class="text-[8px] sm:text-[9px] text-slate-300/70 font-mono">
+                            <span id="stat-belum-perpanjang-pct" class="text-[7px] sm:text-[8px] text-slate-300/70 font-mono">
                                 {{ $trafficData['status_percentages']['belum_perpanjang'] ?? 0 }}%
                             </span>
                         </div>
 
                         <!-- Red Stat -->
-                        <div class="bg-rose-950/40 border border-rose-500/30 rounded-xl p-2 sm:p-2.5 text-center">
-                            <div class="flex items-center justify-center gap-1 mb-0.5 sm:mb-1">
-                                <span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-400"></span>
-                                <span class="text-[9px] sm:text-[10px] font-bold text-rose-300">Belum Daftar</span>
+                        <div class="bg-rose-950/40 border border-rose-500/30 rounded-lg py-1 px-1 sm:py-1.5 text-center">
+                            <div class="flex items-center justify-center gap-1 mb-0.5">
+                                <span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-rose-400"></span>
+                                <span class="text-[8px] sm:text-[9px] font-bold text-rose-300">Belum Daftar</span>
                             </div>
-                            <div id="stat-belum-daftar-count" class="text-sm sm:text-base font-black text-white font-mono leading-none">
+                            <div id="stat-belum-daftar-count" class="text-xs sm:text-sm font-black text-white font-mono leading-none">
                                 {{ $trafficData['status_counts']['belum_daftar'] ?? 0 }}
                             </div>
-                            <span id="stat-belum-daftar-pct" class="text-[8px] sm:text-[9px] text-rose-300/70 font-mono">
+                            <span id="stat-belum-daftar-pct" class="text-[7px] sm:text-[8px] text-rose-300/70 font-mono">
                                 {{ $trafficData['status_percentages']['belum_daftar'] ?? 0 }}%
                             </span>
                         </div>
