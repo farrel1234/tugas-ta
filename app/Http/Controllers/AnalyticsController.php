@@ -157,21 +157,61 @@ class AnalyticsController extends Controller
 
     private function exportExcel($logs, $month, $year)
     {
-        // TODO: Implementasi Maatwebsite/Laravel-Excel
-        // Contoh: return Excel::download(new VisitorLogExport($logs), "Log_Kunjungan_{$month}_{$year}.xlsx");
-        
-        // Return dummy untuk sementara
-        return back()->with('success', "Kerangka Export Excel untuk bulan {$month}-{$year} berhasil dipanggil! Silakan install package Maatwebsite.");
+        $monthName = Carbon::createFromDate($year, $month, 1)->translatedFormat('F');
+        $fileName = "Log_Kunjungan_{$month}_{$year}.xlsx";
+        $tempPath = tempnam(sys_get_temp_dir(), 'export_pma_') . '.xlsx';
+
+        $writer = new \OpenSpout\Writer\XLSX\Writer();
+        $writer->openToFile($tempPath);
+
+        // Header Style (Bold)
+        $headerStyle = (new \OpenSpout\Common\Entity\Style\Style())->withFontBold(true);
+
+        // Judul Laporan
+        $writer->addRow(\OpenSpout\Common\Entity\Row::fromValuesWithStyle(["LAPORAN LOG KUNJUNGAN DETAIL - PERIODE {$monthName} {$year}"], $headerStyle));
+        $writer->addRow(\OpenSpout\Common\Entity\Row::fromValues([]));
+
+        // Header Kolom
+        $headers = ['NO', 'WAKTU MASUK', 'NAMA PENGUNJUNG', 'GENDER', 'UMUR', 'WILAYAH'];
+        $writer->addRow(\OpenSpout\Common\Entity\Row::fromValuesWithStyle($headers, $headerStyle));
+
+        // Baris Data
+        if ($logs->isEmpty()) {
+            $writer->addRow(\OpenSpout\Common\Entity\Row::fromValues(['-', '-', 'Tidak ada data kunjungan pada periode ini.', '-', '-', '-']));
+        } else {
+            foreach ($logs as $index => $log) {
+                $age = $log->user && $log->user->tanggal_lahir ? Carbon::parse($log->user->tanggal_lahir)->age . ' Thn' : '-';
+                $gender = '-';
+                if ($log->user) {
+                    $gender = $log->user->gender === 'L' ? 'Laki-laki' : ($log->user->gender === 'P' ? 'Perempuan' : '-');
+                }
+
+                $writer->addRow(\OpenSpout\Common\Entity\Row::fromValues([
+                    $index + 1,
+                    $log->created_at ? Carbon::parse($log->created_at)->format('d-m-Y H:i') : '-',
+                    $log->user->name ?? 'Unknown / Guest',
+                    $gender,
+                    $age,
+                    $log->user->kecamatan_domisili ?? '-',
+                ]));
+            }
+        }
+
+        $writer->close();
+
+        return response()->download($tempPath, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ])->deleteFileAfterSend(true);
     }
 
     private function exportPdf($logs, $month, $year)
     {
-        // TODO: Implementasi barryvdh/laravel-dompdf
-        // Contoh: 
-        // $pdf = PDF::loadView('admin.exports.visitor_pdf', compact('logs', 'month', 'year'));
-        // return $pdf->download("Laporan_Kunjungan_{$month}_{$year}.pdf");
+        $monthName = Carbon::createFromDate($year, $month, 1)->translatedFormat('F');
+        $fileName = "Log_Kunjungan_{$month}_{$year}.pdf";
 
-        // Return dummy untuk sementara
-        return back()->with('success', "Kerangka Cetak PDF untuk bulan {$month}-{$year} berhasil dipanggil! Silakan install package DomPDF.");
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.exports.visitor_pdf', compact('logs', 'month', 'year', 'monthName'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download($fileName);
     }
 }

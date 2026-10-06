@@ -129,7 +129,7 @@
                 </button>
 
                 <div class="flex-grow sm:w-48 lg:w-72 h-1.5 sm:h-2.5 bg-blue-950/80 rounded-full overflow-hidden border border-blue-500/30 shadow-inner">
-                    <div id="progress-bar" class="h-full bg-gradient-to-r from-cyan-400 to-blue-400 transition-all duration-300 w-0"></div>
+                    <div id="progress-bar" class="h-full bg-gradient-tdo-r from-cyan-400 to-blue-400 transition-all duration-300 w-0"></div>
                 </div>
 
                 <button id="next-btn" class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-blue-900/80 hover:bg-cyan-400 hover:text-slate-950 text-white flex items-center justify-center transition border border-blue-500/30 shadow-lg cursor-pointer active:scale-95 flex-shrink-0">
