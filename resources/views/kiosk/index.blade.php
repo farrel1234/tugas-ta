@@ -4,6 +4,17 @@
 
 @section('content')
 <style>
+    @keyframes marquee {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-200vw);
+        }
+    }
+    .animate-marquee {
+        animation: marquee 20s linear infinite;
+    }
     @keyframes popupEntrance {
         0% {
             opacity: 0;
@@ -210,7 +221,21 @@
                     <span class="hidden sm:inline font-bold">Admin</span>
                 </a>
             </div>
-        </header>
+                </header>
+
+        <!-- FITUR 1: Animasi Running Text (Ticker) -->
+        <div class="w-full bg-[#060B19]/80 border-y border-slate-700/50 flex items-center relative z-10 my-2 overflow-hidden shadow-lg h-10 sm:h-12 flex-shrink-0">
+            <!-- Ikon Toa Kiri (Statis) -->
+            <div class="h-full px-4 flex items-center justify-center bg-[#060B19] border-r border-slate-700/50 z-20 shadow-[10px_0_15px_-3px_rgba(0,0,0,0.5)]">
+                <span class="text-cyan-400 text-lg sm:text-xl">📢</span>
+            </div>
+            <!-- Area Teks Berjalan -->
+            <div class="flex-1 overflow-hidden relative h-full flex items-center">
+                <div class="whitespace-nowrap absolute left-full text-cyan-200 font-semibold tracking-wide text-xs sm:text-sm animate-marquee">
+                    Selamat datang di UPA Perpustakaan Politeknik Negeri Batam. 📢 Silakan tap KTP/KTM Anda pada Gate Scanner sebelum memasuki area perpustakaan. 🕒 Jam operasional layanan: Senin - Jumat, pukul 08.00 - 17.00 WIB. 📚 Gunakan fasilitas Layanan Sirkulasi Mandiri untuk kemudahan peminjaman. 🤫 Mohon jaga ketenangan ruang baca demi kenyamanan bersama.
+                </div>
+            </div>
+        </div>
 
         <!-- Main Content Area: Bersebelahan Panduan Layanan & Traffic Tank Silinder -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 flex-grow min-h-0 overflow-hidden relative z-10 my-1 sm:my-2">

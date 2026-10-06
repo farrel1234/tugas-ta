@@ -130,4 +130,48 @@ class AnalyticsController extends Controller
             'kpiDominant'
         ));
     }
+
+    // --- FITUR EXPORT (Excel & PDF) ---
+
+    public function export(Request $request)
+    {
+        $type = $request->input('type');
+        $selectedMonth = $request->input('month', now()->format('m'));
+        $selectedYear = $request->input('year', now()->format('Y'));
+
+        // Ambil data sesuai filter
+        $logs = VisitorLog::with('user')
+            ->whereMonth('created_at', $selectedMonth)
+            ->whereYear('created_at', $selectedYear)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        if ($type === 'excel') {
+            return $this->exportExcel($logs, $selectedMonth, $selectedYear);
+        } elseif ($type === 'pdf') {
+            return $this->exportPdf($logs, $selectedMonth, $selectedYear);
+        }
+
+        return back()->with('error', 'Tipe ekspor tidak valid.');
+    }
+
+    private function exportExcel($logs, $month, $year)
+    {
+        // TODO: Implementasi Maatwebsite/Laravel-Excel
+        // Contoh: return Excel::download(new VisitorLogExport($logs), "Log_Kunjungan_{$month}_{$year}.xlsx");
+        
+        // Return dummy untuk sementara
+        return back()->with('success', "Kerangka Export Excel untuk bulan {$month}-{$year} berhasil dipanggil! Silakan install package Maatwebsite.");
+    }
+
+    private function exportPdf($logs, $month, $year)
+    {
+        // TODO: Implementasi barryvdh/laravel-dompdf
+        // Contoh: 
+        // $pdf = PDF::loadView('admin.exports.visitor_pdf', compact('logs', 'month', 'year'));
+        // return $pdf->download("Laporan_Kunjungan_{$month}_{$year}.pdf");
+
+        // Return dummy untuk sementara
+        return back()->with('success', "Kerangka Cetak PDF untuk bulan {$month}-{$year} berhasil dipanggil! Silakan install package DomPDF.");
+    }
 }

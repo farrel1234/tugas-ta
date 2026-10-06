@@ -345,7 +345,19 @@
 
     <!-- Data Table -->
     <div class="bg-blue-950/40 p-5 rounded-2xl border border-blue-500/20 backdrop-blur-md shadow-xl overflow-hidden">
-        <h3 class="text-sm font-bold text-cyan-300 uppercase tracking-widest mb-4">📋 Log Kunjungan Detail</h3>
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-3">
+            <h3 class="text-sm font-bold text-cyan-300 uppercase tracking-widest">📋 Log Kunjungan Detail</h3>
+            <div class="flex gap-2">
+                <a href="{{ route('admin.analytics.export', ['type' => 'excel', 'month' => $selectedMonth, 'year' => $selectedYear]) }}" class="flex items-center gap-2 bg-emerald-600/90 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors border border-emerald-400/50 shadow-lg backdrop-blur-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"/><path d="M14 3v5h5M16 13H8M16 17H8M10 9H8"/></svg>
+                    <span>Export Excel</span>
+                </a>
+                <a href="{{ route('admin.analytics.export', ['type' => 'pdf', 'month' => $selectedMonth, 'year' => $selectedYear]) }}" class="flex items-center gap-2 bg-rose-600/90 hover:bg-rose-500 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors border border-rose-400/50 shadow-lg backdrop-blur-sm">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 10v9M15 16l-3 3-3-3M8 4h8a2 2 0 012 2v2H6V6a2 2 0 012-2z"/></svg>
+                    <span>Cetak PDF</span>
+                </a>
+            </div>
+        </div>
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left text-blue-100">
                 <thead class="text-xs text-cyan-300 uppercase bg-blue-900/50 border-b border-blue-500/30">
@@ -392,7 +404,6 @@
     Chart.defaults.color = '#94a3b8';
     Chart.defaults.font.family = 'Inter, sans-serif';
 
-    // 1. Plugin Shadow (Efek Lampu Neon / Glow)
     const glowPlugin = {
         id: 'glowPlugin',
         beforeDatasetsDraw(chart) {
@@ -409,12 +420,17 @@
     };
     Chart.register(glowPlugin);
 
-    // Garis bantu transparan
-    const gridOptions = {
-        color: 'rgba(255, 255, 255, 0.05)'
+    // Premium Tooltip Config
+    const tooltipConfig = {
+        backgroundColor: 'rgba(0, 0, 0, 0.75)',
+        padding: 12,
+        cornerRadius: 8,
+        titleFont: { size: 14, family: 'Inter, sans-serif', weight: 'bold' },
+        bodyFont: { size: 13, family: 'Inter, sans-serif' },
+        displayColors: false,
     };
 
-    // --- 1. TOTAL PENGUNJUNG ---
+    // --- 1. TREN KUNJUNGAN HARIAN ---
     const dailyCtx = document.getElementById('dailyChart');
     const dailyCtx2D = dailyCtx.getContext('2d');
     
@@ -443,12 +459,13 @@
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: { beginAtZero: true, grid: gridOptions, ticks: { precision: 0 } },
-                x: { grid: gridOptions }
+                y: { beginAtZero: true, grid: { display: false }, ticks: { precision: 0 } },
+                x: { grid: { display: false } }
             },
             plugins: { 
                 legend: { display: false },
-                glowPlugin: { color: 'rgba(6, 182, 212, 0.8)', blur: 15 } // Efek Glow Cyan
+                tooltip: tooltipConfig,
+                glowPlugin: { color: 'rgba(6, 182, 212, 0.8)', blur: 15 }
             }
         }
     });
@@ -466,6 +483,35 @@
     gradP.addColorStop(1, '#881337');
 
     const genderData = @json($genderData);
+    
+    const centerTextPlugin = {
+        id: 'centerTextPlugin',
+        beforeDraw(chart) {
+            const { ctx, width, height } = chart;
+            ctx.save();
+            
+            // Get exact center of the doughnut ring
+            const meta = chart.getDatasetMeta(0);
+            const centerX = meta.data[0]?.x || width / 2;
+            const centerY = meta.data[0]?.y || height / 2;
+            
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Text 1: "TOTAL"
+            ctx.font = 'bold 12px "Inter", Arial, sans-serif';
+            ctx.fillStyle = '#94a3b8';
+            ctx.fillText('TOTAL', centerX, centerY - 15);
+            
+            // Text 2: Angka total
+            ctx.font = 'bold 36px "Inter", Arial, sans-serif';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillText('{{ $kpiTotal }}', centerX, centerY + 15);
+            
+            ctx.restore();
+        }
+    };
+
     new Chart(genderCtx, {
         type: 'doughnut',
         data: {
@@ -473,19 +519,22 @@
             datasets: [{
                 data: [genderData['L'] || 0, genderData['P'] || 0],
                 backgroundColor: [gradL, gradP],
-                borderWidth: 0,
+                borderWidth: 8,
+                borderColor: '#1e293b', 
                 hoverOffset: 6
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            cutout: '80%', // Cincin tipis
+            cutout: '80%', 
             plugins: {
-                legend: { position: 'bottom', labels: { color: '#cbd5e1' } },
-                glowPlugin: { color: 'rgba(255, 255, 255, 0.1)', blur: 10 }
+                legend: { position: 'bottom', labels: { color: '#cbd5e1', padding: 20 } },
+                tooltip: tooltipConfig,
+                glowPlugin: { color: 'rgba(255, 255, 255, 0.05)', blur: 10 }
             }
-        }
+        },
+        plugins: [centerTextPlugin]
     });
 
     // --- 3. UMUR ---
@@ -515,19 +564,21 @@
                 label: 'Pengunjung',
                 data: Object.values(ageData),
                 backgroundColor: ageGradients,
-                borderRadius: 8,
-                borderSkipped: false
+                borderRadius: 50,
+                borderSkipped: false,
+                barThickness: 15
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                y: { beginAtZero: true, grid: gridOptions, ticks: { precision: 0 } },
+                y: { beginAtZero: true, grid: { display: false }, ticks: { precision: 0 } },
                 x: { grid: { display: false } }
             },
             plugins: { 
                 legend: { display: false },
+                tooltip: tooltipConfig,
                 glowPlugin: { color: 'rgba(139, 92, 246, 0.3)', blur: 10 }
             }
         }
@@ -537,9 +588,8 @@
     const regionCtx = document.getElementById('regionChart');
     const regionCtx2D = regionCtx.getContext('2d');
     
-    // Gradien Horizontal (kiri-ke-kanan)
     const regionGradient = regionCtx2D.createLinearGradient(0, 0, 400, 0);
-    regionGradient.addColorStop(1, '#10b981'); // Emerald ujung kanan
+    regionGradient.addColorStop(1, '#10b981');
     regionGradient.addColorStop(0, 'rgba(16, 185, 129, 0.05)');
 
     const regionData = @json($regionData);
@@ -551,20 +601,22 @@
                 label: 'Kunjungan',
                 data: Object.values(regionData),
                 backgroundColor: regionGradient,
-                borderRadius: 8,
-                borderSkipped: false
+                borderRadius: 50,
+                borderSkipped: false,
+                barThickness: 12
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            indexAxis: 'y', // Mode Horizontal
+            indexAxis: 'y',
             scales: {
-                x: { beginAtZero: true, grid: gridOptions, ticks: { precision: 0 } },
+                x: { beginAtZero: true, grid: { display: false }, ticks: { precision: 0 } },
                 y: { grid: { display: false } }
             },
             plugins: { 
                 legend: { display: false },
+                tooltip: tooltipConfig,
                 glowPlugin: { color: 'rgba(16, 185, 129, 0.4)', blur: 10 }
             }
         }
