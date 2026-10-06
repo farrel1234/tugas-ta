@@ -5,15 +5,14 @@
 @section('content')
 <style>
     @keyframes marquee {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-200vw);
-        }
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
     }
     .animate-marquee {
-        animation: marquee 20s linear infinite;
+        animation: marquee 35s linear infinite;
+    }
+    .animate-marquee:hover {
+        animation-play-state: paused;
     }
     @keyframes popupEntrance {
         0% {
@@ -231,8 +230,13 @@
             </div>
             <!-- Area Teks Berjalan -->
             <div class="flex-1 overflow-hidden relative h-full flex items-center">
-                <div class="whitespace-nowrap absolute left-full text-cyan-200 font-semibold tracking-wide text-xs sm:text-sm animate-marquee">
-                    Selamat datang di UPA Perpustakaan Politeknik Negeri Batam. 📢 Silakan tap KTP/KTM Anda pada Gate Scanner sebelum memasuki area perpustakaan. 🕒 Jam Layanan: Senin - Kamis (08.00 - 22.00 WIB) & Jumat (09.00 - 22.00 WIB). ⏸️ INFO JEDA LAYANAN (Pergantian Shift/Sholat): Pukul 17.00 - 18.30 WIB (Setiap Hari) & 11.30 - 13.30 WIB (Khusus Jumat). 📚 Gunakan fasilitas Layanan Sirkulasi Mandiri untuk kemudahan peminjaman. 🤫 Mohon jaga ketenangan ruang baca demi kenyamanan bersama.
+                <div class="flex w-max animate-marquee text-cyan-200 font-semibold tracking-wide text-xs sm:text-sm">
+                    <div class="px-8 whitespace-nowrap">
+                        Selamat datang di UPA Perpustakaan Politeknik Negeri Batam. 📢 Silakan tap KTP/KTM Anda pada Gate Scanner sebelum memasuki area perpustakaan. 🕒 Jam Layanan: Senin - Kamis (08.00 - 22.00 WIB) & Jumat (09.00 - 22.00 WIB). ⏸️ INFO JEDA LAYANAN (Pergantian Shift/Sholat): Pukul 17.00 - 18.30 WIB (Setiap Hari) & 11.30 - 13.30 WIB (Khusus Jumat). 📚 Gunakan fasilitas Layanan Sirkulasi Mandiri untuk kemudahan peminjaman. 🤫 Mohon jaga ketenangan ruang baca demi kenyamanan bersama.
+                    </div>
+                    <div class="px-8 whitespace-nowrap" aria-hidden="true">
+                        Selamat datang di UPA Perpustakaan Politeknik Negeri Batam. 📢 Silakan tap KTP/KTM Anda pada Gate Scanner sebelum memasuki area perpustakaan. 🕒 Jam Layanan: Senin - Kamis (08.00 - 22.00 WIB) & Jumat (09.00 - 22.00 WIB). ⏸️ INFO JEDA LAYANAN (Pergantian Shift/Sholat): Pukul 17.00 - 18.30 WIB (Setiap Hari) & 11.30 - 13.30 WIB (Khusus Jumat). 📚 Gunakan fasilitas Layanan Sirkulasi Mandiri untuk kemudahan peminjaman. 🤫 Mohon jaga ketenangan ruang baca demi kenyamanan bersama.
+                    </div>
                 </div>
             </div>
         </div>
