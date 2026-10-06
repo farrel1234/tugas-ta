@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\VisitorLog;
-use App\Models\User;
 use Carbon\Carbon;
 
 class AnalyticsController extends Controller
@@ -108,24 +107,13 @@ class AnalyticsController extends Controller
             $kpiDominant = array_key_first($regionData);
         }
 
-        // 5. Pagination Table Data (Rekap Data Anggota Terdaftar)
-        $memberPage = max(1, (int) $request->input('page', 1));
-        $membersQuery = User::where('role', '!=', 'admin')->orderBy('name', 'asc');
-        $totalMembers = $membersQuery->count();
-        $maxMemberPage = max(1, (int) ceil($totalMembers / 15));
-        if ($memberPage > $maxMemberPage) {
-            $memberPage = 1;
-        }
-
-        $paginatedMembers = $membersQuery->paginate(15, ['*'], 'page', $memberPage);
-        $paginatedMembers->appends($request->except('page'));
-
+        // 5. Pagination Table Data (Log Kunjungan Detail)
         $paginatedLogs = VisitorLog::with('user')
             ->whereMonth('created_at', $selectedMonth)
             ->whereYear('created_at', $selectedYear)
             ->orderBy('created_at', 'desc')
             ->paginate(15);
-            
+
         $paginatedLogs->appends(['month' => $selectedMonth, 'year' => $selectedYear]);
 
         return view('admin.analytics', compact(
@@ -135,7 +123,6 @@ class AnalyticsController extends Controller
             'genderData',
             'ageGroups',
             'regionData',
-            'paginatedMembers',
             'paginatedLogs',
             'kpiTotal',
             'kpiAvg',
@@ -144,66 +131,66 @@ class AnalyticsController extends Controller
         ));
     }
 
-    // --- FITUR EXPORT (Excel & PDF Rekap Data Anggota) ---
+    // --- FITUR EXPORT (Excel & PDF Log Kunjungan Detail) ---
 
     public function export(Request $request)
     {
-        $type = $request->input('type');
+        $type        = $request->input('type');
+        $month       = $request->input('month', now()->format('m'));
+        $year        = $request->input('year', now()->format('Y'));
 
-        // Ambil seluruh data anggota terdaftar (kecuali akun admin)
-        $members = User::where('role', '!=', 'admin')
-            ->orderBy('name', 'asc')
+        $logs = VisitorLog::with('user')
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->orderBy('created_at', 'desc')
             ->get();
 
+        $monthName = Carbon::create($year, $month)->translatedFormat('F');
+
         if ($type === 'excel') {
-            return $this->exportExcel($members);
+            return $this->exportExcel($logs, $monthName, $year);
         } elseif ($type === 'pdf') {
-            return $this->exportPdf($members);
+            return $this->exportPdf($logs, $monthName, $year);
         }
 
         return back()->with('error', 'Tipe ekspor tidak valid.');
     }
 
-    private function exportExcel($members)
+    private function exportExcel($logs, $monthName, $year)
     {
-        $fileName = "Rekap_Data_Anggota_Terdaftar.xlsx";
-        $tempPath = tempnam(sys_get_temp_dir(), 'export_member_') . '.xlsx';
+        $fileName = "Log_Kunjungan_{$monthName}_{$year}.xlsx";
+        $tempPath = tempnam(sys_get_temp_dir(), 'export_log_') . '.xlsx';
 
         $writer = new \OpenSpout\Writer\XLSX\Writer();
         $writer->openToFile($tempPath);
 
-        // Header Style (Bold)
         $headerStyle = (new \OpenSpout\Common\Entity\Style\Style())->withFontBold(true);
 
-        // Judul Laporan
-        $writer->addRow(\OpenSpout\Common\Entity\Row::fromValuesWithStyle(["REKAP DATA ANGGOTA TERDAFTAR PERPUSTAKAAN"], $headerStyle));
+        $writer->addRow(\OpenSpout\Common\Entity\Row::fromValuesWithStyle(
+            ["LOG KUNJUNGAN DETAIL - {$monthName} {$year}"], $headerStyle
+        ));
         $writer->addRow(\OpenSpout\Common\Entity\Row::fromValues([]));
 
-        // Header Kolom
-        $headers = ['NO', 'NIM', 'NAMA ANGGOTA', 'GENDER', 'UMUR', 'WILAYAH', 'STATUS'];
+        $headers = ['NO', 'WAKTU MASUK', 'NAMA PENGUNJUNG', 'GENDER', 'UMUR', 'WILAYAH'];
         $writer->addRow(\OpenSpout\Common\Entity\Row::fromValuesWithStyle($headers, $headerStyle));
 
-        // Baris Data
-        if ($members->isEmpty()) {
-            $writer->addRow(\OpenSpout\Common\Entity\Row::fromValues(['-', '-', 'Tidak ada data anggota terdaftar.', '-', '-', '-', '-']));
+        if ($logs->isEmpty()) {
+            $writer->addRow(\OpenSpout\Common\Entity\Row::fromValues(['-', '-', 'Tidak ada data kunjungan.', '-', '-', '-']));
         } else {
-            foreach ($members as $index => $member) {
-                $age = $member->tanggal_lahir ? Carbon::parse($member->tanggal_lahir)->age . ' Thn' : '-';
-                $gender = $member->gender === 'L' ? 'Laki-laki' : ($member->gender === 'P' ? 'Perempuan' : '-');
-                $statusKartu = '-';
-                if ($member->expired_at) {
-                    $exp = Carbon::parse($member->expired_at);
-                    $statusKartu = $exp->isPast() ? 'Kadaluarsa (exp: ' . $exp->format('d/m/Y') . ')' : 'Aktif (s.d. ' . $exp->format('d/m/Y') . ')';
+            foreach ($logs as $index => $log) {
+                $age    = ($log->user && $log->user->tanggal_lahir) ? Carbon::parse($log->user->tanggal_lahir)->age . ' Thn' : '-';
+                $gender = '-';
+                if ($log->user) {
+                    $gender = $log->user->gender === 'L' ? 'Laki-laki' : ($log->user->gender === 'P' ? 'Perempuan' : '-');
                 }
 
                 $writer->addRow(\OpenSpout\Common\Entity\Row::fromValues([
                     $index + 1,
-                    $member->nim ?? '-',
-                    $member->name,
+                    $log->created_at ? Carbon::parse($log->created_at)->format('d/m/Y H:i') : '-',
+                    $log->user->name ?? 'Unknown / Guest',
                     $gender,
                     $age,
-                    $member->kecamatan_domisili ?? '-',
-                    $statusKartu,
+                    $log->user->kecamatan_domisili ?? '-',
                 ]));
             }
         }
@@ -215,12 +202,12 @@ class AnalyticsController extends Controller
         ])->deleteFileAfterSend(true);
     }
 
-    private function exportPdf($members)
+    private function exportPdf($logs, $monthName, $year)
     {
-        $fileName = "Rekap_Data_Anggota_Terdaftar.pdf";
+        $fileName = "Log_Kunjungan_{$monthName}_{$year}.pdf";
 
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.exports.members_pdf', compact('members'))
-            ->setPaper('a4', 'portrait');
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.exports.visitor_pdf', compact('logs', 'monthName', 'year'))
+            ->setPaper('a4', 'landscape');
 
         return $pdf->download($fileName);
     }

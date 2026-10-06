@@ -39,6 +39,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/', [MenuController::class, 'index'])->name('dashboard');
     Route::get('/analytics', [\App\Http\Controllers\AnalyticsController::class, 'index'])->name('analytics');
     Route::get('/analytics/export', [\App\Http\Controllers\AnalyticsController::class, 'export'])->name('analytics.export');
+    Route::get('/members', [\App\Http\Controllers\MemberController::class, 'index'])->name('members.index');
+    Route::get('/members/export', [\App\Http\Controllers\MemberController::class, 'export'])->name('members.export');
     Route::post('/menus', [MenuController::class, 'store'])->name('menus.store');
     Route::get('/menus/{menu}/edit', [MenuController::class, 'edit'])->name('menus.edit');
     Route::put('/menus/{menu}', [MenuController::class, 'update'])->name('menus.update');
