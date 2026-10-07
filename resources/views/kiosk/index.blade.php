@@ -232,10 +232,10 @@
             <div class="flex-1 overflow-hidden relative h-full flex items-center">
                 <div class="flex w-max animate-marquee text-cyan-200 font-semibold tracking-wide text-xs sm:text-sm">
                     <div class="px-8 whitespace-nowrap">
-                        Selamat datang di UPA Perpustakaan Politeknik Negeri Batam. 📢 Silakan tap KTP/KTM Anda pada Gate Scanner sebelum memasuki area perpustakaan. 🕒 Jam Layanan: Senin - Kamis (08.00 - 22.00 WIB) & Jumat (09.00 - 22.00 WIB). ⏸️ INFO JEDA LAYANAN (Pergantian Shift/Sholat): Pukul 17.00 - 18.30 WIB (Setiap Hari) & 11.30 - 13.30 WIB (Khusus Jumat). 📚 Gunakan fasilitas Layanan Sirkulasi Mandiri untuk kemudahan peminjaman. 🤫 Mohon jaga ketenangan ruang baca demi kenyamanan bersama.
+                        Selamat datang di UPA Perpustakaan Politeknik Negeri Batam. 📢 Silakan tap KTP/KTM Anda pada Gate Scanner sebelum memasuki area perpustakaan. 🕒 Jam Layanan: Senin - Kamis (08.00 - 22.00 WIB) & Jumat (09.00 - 22.00 WIB). ⏸️ INFO JEDA LAYANAN (Pergantian Shift/Sholat): Pukul 17.00 - 18.30 WIB (Setiap Hari) & 11.30 - 13.30 WIB (Khusus Jumat). ⚙️ INFO AKSES GATE: Mohon keluarkan kartu KTP/KTM dari dompet sebelum di-tap pada scanner untuk menghindari bentrok sensor pembacaan ganda. Jika pemindaian gagal, silakan melapor ke meja administrasi.
                     </div>
                     <div class="px-8 whitespace-nowrap" aria-hidden="true">
-                        Selamat datang di UPA Perpustakaan Politeknik Negeri Batam. 📢 Silakan tap KTP/KTM Anda pada Gate Scanner sebelum memasuki area perpustakaan. 🕒 Jam Layanan: Senin - Kamis (08.00 - 22.00 WIB) & Jumat (09.00 - 22.00 WIB). ⏸️ INFO JEDA LAYANAN (Pergantian Shift/Sholat): Pukul 17.00 - 18.30 WIB (Setiap Hari) & 11.30 - 13.30 WIB (Khusus Jumat). 📚 Gunakan fasilitas Layanan Sirkulasi Mandiri untuk kemudahan peminjaman. 🤫 Mohon jaga ketenangan ruang baca demi kenyamanan bersama.
+                        Selamat datang di UPA Perpustakaan Politeknik Negeri Batam. 📢 Silakan tap KTP/KTM Anda pada Gate Scanner sebelum memasuki area perpustakaan. 🕒 Jam Layanan: Senin - Kamis (08.00 - 22.00 WIB) & Jumat (09.00 - 22.00 WIB). ⏸️ INFO JEDA LAYANAN (Pergantian Shift/Sholat): Pukul 17.00 - 18.30 WIB (Setiap Hari) & 11.30 - 13.30 WIB (Khusus Jumat). ⚙️ INFO AKSES GATE: Mohon keluarkan kartu KTP/KTM dari dompet sebelum di-tap pada scanner untuk menghindari bentrok sensor pembacaan ganda. Jika pemindaian gagal, silakan melapor ke meja administrasi.
                     </div>
                 </div>
             </div>
