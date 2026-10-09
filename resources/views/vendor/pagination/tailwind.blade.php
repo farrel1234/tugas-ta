@@ -63,35 +63,40 @@
 
                                         {{-- Pagination Elements --}}
                     @php
-                        // Custom Ultra-Compact Logic
                         $currentPage = $paginator->currentPage();
                         $lastPage = $paginator->lastPage();
                         $customElements = [];
                         
-                        // 1. Selalu tampilkan halaman 1
-                        $customElements[0][1] = $paginator->url(1);
-                        
-                        // 2. Jika current page jauh dari 1, kasih elipsis
-                        if ($currentPage > 3) {
-                            $customElements[1] = '...';
-                        }
-                        
-                        // 3. Tampilkan 1 halaman sebelum dan sesudah current
-                        $start = max(2, $currentPage - 1);
-                        $end = min($lastPage - 1, $currentPage + 1);
-                        
-                        for ($i = $start; $i <= $end; $i++) {
-                            $customElements[2][$i] = $paginator->url($i);
-                        }
-                        
-                        // 4. Jika current page jauh dari akhir, kasih elipsis
-                        if ($currentPage < $lastPage - 2) {
-                            $customElements[3] = '...';
-                        }
-                        
-                        // 5. Selalu tampilkan halaman terakhir
-                        if ($lastPage > 1) {
-                            $customElements[4][$lastPage] = $paginator->url($lastPage);
+                        if ($lastPage <= 6) {
+                            // Jika total halaman sedikit, tampilkan semua
+                            for ($i = 1; $i <= $lastPage; $i++) {
+                                $customElements[0][$i] = $paginator->url($i);
+                            }
+                        } else {
+                            if ($currentPage <= 5) {
+                                // Jika di awal (halaman 1-5), tampilkan 1 2 3 4 5 ... Last
+                                for ($i = 1; $i <= 5; $i++) {
+                                    $customElements[0][$i] = $paginator->url($i);
+                                }
+                                $customElements[1] = '...';
+                                $customElements[2][$lastPage] = $paginator->url($lastPage);
+                            } elseif ($currentPage >= $lastPage - 4) {
+                                // Jika di akhir, tampilkan 1 ... Last-4 Last-3 Last-2 Last-1 Last
+                                $customElements[0][1] = $paginator->url(1);
+                                $customElements[1] = '...';
+                                for ($i = $lastPage - 4; $i <= $lastPage; $i++) {
+                                    $customElements[2][$i] = $paginator->url($i);
+                                }
+                            } else {
+                                // Jika di tengah, tampilkan 1 ... Curr-1 Curr Curr+1 ... Last
+                                $customElements[0][1] = $paginator->url(1);
+                                $customElements[1] = '...';
+                                $customElements[2][$currentPage - 1] = $paginator->url($currentPage - 1);
+                                $customElements[2][$currentPage] = $paginator->url($currentPage);
+                                $customElements[2][$currentPage + 1] = $paginator->url($currentPage + 1);
+                                $customElements[3] = '...';
+                                $customElements[4][$lastPage] = $paginator->url($lastPage);
+                            }
                         }
                         
                         $elements = $customElements;
