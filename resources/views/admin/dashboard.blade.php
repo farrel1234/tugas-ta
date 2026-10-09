@@ -463,91 +463,6 @@
             </section>
 
             <!-- Bagian Riwayat Kunjungan Pengunjung (Visitor Logs) -->
-            <section class="bg-[#0B1E3F]/50 backdrop-blur-lg border border-blue-500/30 rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4">
-                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-blue-800/50 pb-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 flex-shrink-0">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                        </div>
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <h2 class="text-base sm:text-lg font-black text-white tracking-tight">Riwayat Scan Kunjungan Gerbang</h2>
-                                <span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $totalVisitorsToday ?? 0 }} Kunjungan Hari Ini</span>
-                            </div>
-                            <p class="text-xs text-blue-200/70">Catatan log pengunjung yang memindai kartu/NIM pada layar Kiosk secara real-time.</p>
-                        </div>
-                    </div>
-
-                    <div class="self-start sm:self-auto">
-                        <!-- Tombol Buka Modal Uji Scanner -->
-                        <button type="button" id="open-scanner-modal-btn" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-2 justify-center cursor-pointer border border-cyan-400/30" style="background: linear-gradient(135deg, #06b6d4, #2563eb); color: #ffffff;">
-                            <svg class="w-4 h-4 text-white animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
-                            <span>Uji Scanner</span>
-                        </button>
-                    </div>
-                </div>
-
-                @if(isset($recentLogs) && $recentLogs->count() > 0)
-                    <!-- Data Table Container with Max Height 520px (10 items) & Smooth Scroll -->
-                    <div id="visitor-logs-scroll" class="max-h-[520px] overflow-y-auto overflow-x-auto rounded-xl border border-blue-500/30 custom-table-scrollbar">
-                        <table class="w-full text-left text-xs text-blue-100 border-collapse">
-                            <thead class="bg-[#091731] uppercase text-[10px] tracking-wider text-cyan-300 border-b border-blue-500/40 sticky top-0 z-10 shadow-md">
-                                <tr>
-                                    <th class="p-3.5 bg-[#091731] rounded-tl-xl">Waktu Scan</th>
-                                    <th class="p-3.5 bg-[#091731]">Nama Pengunjung</th>
-                                    <th class="p-3.5 bg-[#091731]">Kode Kartu / NIM</th>
-                                    <th class="p-3.5 text-center bg-[#091731] rounded-tr-xl">Status Akses</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-blue-800/40">
-                                @foreach($recentLogs as $log)
-                                    <tr class="hover:bg-blue-900/30 transition">
-                                        <td class="p-3.5 text-blue-200/90 font-mono text-[11px]">
-                                            {{ $log->created_at ? $log->created_at->timezone('Asia/Jakarta')->format('d M Y, H:i:s') . ' WIB' : '-' }}
-                                            <span class="block text-[10px] text-blue-300/50">({{ $log->created_at ? $log->created_at->diffForHumans() : '' }})</span>
-                                        </td>
-                                        <td class="p-3.5 font-bold text-white">
-                                            {{ $log->user->name ?? 'Tidak Dikenal' }}
-                                        </td>
-                                        <td class="p-3.5 font-mono text-cyan-300 text-[11px]">
-                                            {{ $log->scanned_code ?? '-' }}
-                                        </td>
-                                        <td class="p-3.5 text-center">
-                                            @if($log->status === 'Bisa Masuk')
-                                                <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-3 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1.5">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-                                                    Bisa Masuk
-                                                </span>
-                                            @elseif($log->status === 'Ditolak (Cooldown)')
-                                                <span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 px-3 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1.5">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                                                    Cooldown
-                                                </span>
-                                            @elseif($log->status === 'Belum Perpanjang')
-                                                <span class="bg-slate-500/20 text-slate-300 border border-slate-500/40 px-3 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1.5">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                                                    Belum Perpanjang
-                                                </span>
-                                            @else
-                                                <span class="bg-rose-500/20 text-rose-300 border border-rose-500/40 px-3 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1.5">
-                                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
-                                                    Belum Daftar
-                                                </span>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="p-6 rounded-xl bg-blue-950/40 border border-blue-500/20 text-center text-xs text-blue-300/60">
-                        Belum ada data scan kunjungan hari ini. Silakan uji coba tap kartu pada halaman Kiosk.
-                    </div>
-                @endif
-            </section>
-
-            <!-- Live Gate Traffic Tank & Command Center Terminal Console -->
             <section id="live-traffic-section" class="bg-[#0B1E3F]/50 backdrop-blur-lg border border-blue-500/30 rounded-2xl p-5 sm:p-6 shadow-2xl space-y-5">
                 <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-blue-800/50 pb-4">
                     <div class="flex items-center gap-3">
@@ -769,6 +684,93 @@
 
                 </div>
             </section>
+
+            <section class="bg-[#0B1E3F]/50 backdrop-blur-lg border border-blue-500/30 rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4">
+                <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-blue-800/50 pb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 flex-shrink-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-base sm:text-lg font-black text-white tracking-tight">Riwayat Scan Kunjungan Gerbang</h2>
+                                <span class="bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full">{{ $totalVisitorsToday ?? 0 }} Kunjungan Hari Ini</span>
+                            </div>
+                            <p class="text-xs text-blue-200/70">Catatan log pengunjung yang memindai kartu/NIM pada layar Kiosk secara real-time.</p>
+                        </div>
+                    </div>
+
+                    <div class="self-start sm:self-auto">
+                        <!-- Tombol Buka Modal Uji Scanner -->
+                        <button type="button" id="open-scanner-modal-btn" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-2 justify-center cursor-pointer border border-cyan-400/30" style="background: linear-gradient(135deg, #06b6d4, #2563eb); color: #ffffff;">
+                            <svg class="w-4 h-4 text-white animate-pulse" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+                            <span>Uji Scanner</span>
+                        </button>
+                    </div>
+                </div>
+
+                @if(isset($recentLogs) && $recentLogs->count() > 0)
+                    <!-- Data Table Container with Max Height 520px (10 items) & Smooth Scroll -->
+                    <div id="visitor-logs-scroll" class="max-h-[520px] overflow-y-auto overflow-x-auto rounded-xl border border-blue-500/30 custom-table-scrollbar">
+                        <table class="w-full text-left text-xs text-blue-100 border-collapse">
+                            <thead class="bg-[#091731] uppercase text-[10px] tracking-wider text-cyan-300 border-b border-blue-500/40 sticky top-0 z-10 shadow-md">
+                                <tr>
+                                    <th class="p-3.5 bg-[#091731] rounded-tl-xl">Waktu Scan</th>
+                                    <th class="p-3.5 bg-[#091731]">Nama Pengunjung</th>
+                                    <th class="p-3.5 bg-[#091731]">Kode Kartu / NIM</th>
+                                    <th class="p-3.5 text-center bg-[#091731] rounded-tr-xl">Status Akses</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-blue-800/40">
+                                @foreach($recentLogs as $log)
+                                    <tr class="hover:bg-blue-900/30 transition">
+                                        <td class="p-3.5 text-blue-200/90 font-mono text-[11px]">
+                                            {{ $log->created_at ? $log->created_at->timezone('Asia/Jakarta')->format('d M Y, H:i:s') . ' WIB' : '-' }}
+                                            <span class="block text-[10px] text-blue-300/50">({{ $log->created_at ? $log->created_at->diffForHumans() : '' }})</span>
+                                        </td>
+                                        <td class="p-3.5 font-bold text-white">
+                                            {{ $log->user->name ?? 'Tidak Dikenal' }}
+                                        </td>
+                                        <td class="p-3.5 font-mono text-cyan-300 text-[11px]">
+                                            {{ $log->scanned_code ?? '-' }}
+                                        </td>
+                                        <td class="p-3.5 text-center">
+                                            @if($log->status === 'Bisa Masuk')
+                                                <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-3 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1.5">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                                    Bisa Masuk
+                                                </span>
+                                            @elseif($log->status === 'Ditolak (Cooldown)')
+                                                <span class="bg-amber-500/20 text-amber-300 border border-amber-500/40 px-3 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1.5">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                                                    Cooldown
+                                                </span>
+                                            @elseif($log->status === 'Belum Perpanjang')
+                                                <span class="bg-slate-500/20 text-slate-300 border border-slate-500/40 px-3 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1.5">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                                    Belum Perpanjang
+                                                </span>
+                                            @else
+                                                <span class="bg-rose-500/20 text-rose-300 border border-rose-500/40 px-3 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1.5">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                                                    Belum Daftar
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @else
+                    <div class="p-6 rounded-xl bg-blue-950/40 border border-blue-500/20 text-center text-xs text-blue-300/60">
+                        Belum ada data scan kunjungan hari ini. Silakan uji coba tap kartu pada halaman Kiosk.
+                    </div>
+                @endif
+            </section>
+
+            <!-- Live Gate Traffic Tank & Command Center Terminal Console -->
+
 
 
 
