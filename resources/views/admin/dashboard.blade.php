@@ -322,10 +322,10 @@
                         </div>
                         <p class="text-xs text-blue-200/70">Atur urutan menu dan gambar slide yang tampil di layar utama Kiosk.</p>
                     </div>
-                    <a href="#form-tambah-menu" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-2 justify-center cursor-pointer border border-cyan-400/30" style="background: linear-gradient(135deg, #06b6d4, #2563eb); color: #ffffff;">
+                    <button type="button" onclick="openTambahMenuModal()" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition shadow-lg shadow-cyan-500/20 flex items-center gap-2 justify-center cursor-pointer border border-cyan-400/30" style="background: linear-gradient(135deg, #06b6d4, #2563eb); color: #ffffff;">
                         <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                         Tambah Menu Baru
-                    </a>
+                    </button>
                 </div>
 
                 <!-- Data Table with Max Height 520px (10 items) & Smooth Scroll -->
@@ -770,78 +770,98 @@
                 </div>
             </section>
 
-            <!-- Form Tambah Menu & Upload Slide Pertama -->
-            <section id="form-tambah-menu" class="bg-[#0B1E3F]/50 backdrop-blur-lg border border-blue-500/30 rounded-2xl p-5 sm:p-6 shadow-2xl space-y-6">
-                <div class="border-b border-blue-800/50 pb-4">
-                    <h2 class="text-lg font-black text-white tracking-tight">Form Tambah Menu Signage Baru</h2>
-                    <p class="text-xs text-blue-200/70">Isi data di bawah ini untuk menambahkan menu baru dan opsional slide gambar pertamanya.</p>
-                </div>
 
-                <form action="{{ route('admin.menus.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
-                    @csrf
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Nomor Urut Menu *</label>
-                            <input type="text" name="num" value="{{ old('num') }}" required placeholder="Contoh: 10 atau 01" class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
-                        </div>
-
-                        <div class="sm:col-span-2">
-                            <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Judul Menu Layanan *</label>
-                            <input type="text" name="title" value="{{ old('title') }}" required placeholder="Masukkan judul menu layanan" class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Deskripsi Layanan</label>
-                        <textarea name="desc" rows="2" placeholder="Tuliskan penjelasan singkat mengenai layanan ini..." class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">{{ old('desc') }}</textarea>
-                    </div>
-
-                    <!-- Upload Gambar Slide Langkah Pertama dengan Live Preview -->
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider">Unggah Gambar Slide / Ilustrasi Pertama (Opsional)</label>
-
-                        <label for="menu-image-input" class="group flex flex-col items-center justify-center border-2 border-dashed border-cyan-500/40 hover:border-cyan-400 rounded-2xl p-5 text-center bg-blue-950/40 hover:bg-blue-900/20 transition cursor-pointer">
-                            <div id="menu-empty-prompt" class="flex flex-col items-center py-2">
-                                <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-2 group-hover:scale-110 transition">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                </div>
-                                <span class="text-xs font-bold text-white block">Klik di sini untuk memilih gambar slide pertama</span>
-                                <span class="text-[10px] text-blue-300/70 block mt-0.5">Format JPG/PNG/WEBP (Rasio landscape 16:9, Max 5MB)</span>
-                            </div>
-
-                            <!-- Live Image Preview Box -->
-                            <div id="menu-preview-wrapper" class="hidden w-full space-y-2">
-                                <div class="relative w-full h-48 bg-blue-950/80 rounded-xl overflow-hidden border border-cyan-500/50 flex items-center justify-center shadow-inner">
-                                    <img id="menu-image-preview" src="" alt="Pratinjau Gambar Pertama" class="max-w-full max-h-full object-contain">
-                                </div>
-                                <div class="flex items-center justify-between text-[11px] bg-blue-900/60 px-3 py-1.5 rounded-lg border border-blue-500/30">
-                                    <span id="menu-file-name" class="font-medium text-cyan-200 truncate max-w-[200px]">nama_file.png</span>
-                                    <span id="menu-file-size" class="text-blue-300/70 font-mono text-[10px]">0 KB</span>
-                                </div>
-                                <span class="text-[10px] text-cyan-400 font-semibold block text-center">✓ Gambar berhasil dipilih! Klik kembali jika ingin mengganti gambar.</span>
-                            </div>
-
-                            <input type="file" id="menu-image-input" name="image" accept="image/*" class="hidden">
-                        </label>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Teks Penjelasan Slide (Opsional)</label>
-                        <input type="text" name="text" value="{{ old('text') }}" placeholder="Teks instruksi langkah yang tampil di bawah gambar..." class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
-                    </div>
-
-                    <div class="flex justify-end gap-3 pt-4 border-t border-blue-800/50">
-                        <button type="reset" onclick="resetMenuPreview()" class="px-4 py-2.5 rounded-xl border border-blue-500/30 text-xs font-bold text-blue-200 hover:bg-blue-900/50 transition cursor-pointer">Batal</button>
-                        <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs transition shadow-lg shadow-cyan-500/20 border border-cyan-400/30 cursor-pointer flex items-center gap-2" style="background: linear-gradient(135deg, #06b6d4, #2563eb); color: #ffffff;">
-                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-                            Simpan Data Menu
-                        </button>
-                    </div>
-                </form>
-            </section>
 
         </main>
+    </div>
+</div>
+
+<!-- Modal Tambah Menu Baru -->
+<div id="tambahMenuModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 hidden">
+    <div class="bg-[#091731] border border-cyan-500/40 rounded-3xl w-full max-w-2xl overflow-hidden shadow-2xl shadow-cyan-950/50 flex flex-col transform transition-all my-auto max-h-[90vh]">
+        <!-- Modal Header -->
+        <div class="bg-gradient-to-r from-blue-900/80 to-[#0B1E3F] p-4 sm:p-5 border-b border-blue-500/30 flex items-center justify-between flex-shrink-0">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-cyan-500/20 border border-cyan-400/40 flex items-center justify-center text-cyan-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </div>
+                <div>
+                    <h3 class="text-sm sm:text-base font-black text-white uppercase tracking-wider">Tambah Menu Signage Baru</h3>
+                    <p class="text-[11px] text-cyan-300/80 font-normal">Isi formulir di bawah ini untuk menambahkan menu baru dan gambar slide pertamanya</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeTambahMenuModal()" class="w-8 h-8 rounded-xl bg-blue-950/70 hover:bg-rose-500/20 hover:text-rose-300 text-blue-300 border border-blue-500/30 flex items-center justify-center transition cursor-pointer text-lg font-bold">
+                &times;
+            </button>
+        </div>
+
+        <!-- Modal Body & Form -->
+        <form id="tambahMenuForm" action="{{ route('admin.menus.store') }}" method="POST" enctype="multipart/form-data" class="flex flex-col flex-1 overflow-hidden">
+            @csrf
+            <div class="p-5 sm:p-6 space-y-4 overflow-y-auto flex-1 custom-table-scrollbar">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Nomor Urut Menu *</label>
+                        <input type="text" name="num" id="menu-num-input" value="{{ old('num') }}" required placeholder="Contoh: 10 atau 01" class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+                    </div>
+
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Judul Menu Layanan *</label>
+                        <input type="text" name="title" id="menu-title-input" value="{{ old('title') }}" required placeholder="Masukkan judul menu layanan" class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Deskripsi Layanan</label>
+                    <textarea name="desc" id="menu-desc-input" rows="2" placeholder="Tuliskan penjelasan singkat mengenai layanan ini..." class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">{{ old('desc') }}</textarea>
+                </div>
+
+                <!-- Upload Gambar Slide Langkah Pertama dengan Live Preview -->
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider">Unggah Gambar Slide / Ilustrasi Pertama (Opsional)</label>
+
+                    <label for="menu-image-input" class="group flex flex-col items-center justify-center border-2 border-dashed border-cyan-500/40 hover:border-cyan-400 rounded-2xl p-5 text-center bg-blue-950/40 hover:bg-blue-900/20 transition cursor-pointer">
+                        <div id="menu-empty-prompt" class="flex flex-col items-center py-2">
+                            <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center mb-2 group-hover:scale-110 transition">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 002-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            </div>
+                            <span class="text-xs font-bold text-white block">Klik di sini untuk memilih gambar slide pertama</span>
+                            <span class="text-[10px] text-blue-300/70 block mt-0.5">Format JPG/PNG/WEBP (Rasio landscape 16:9, Max 5MB)</span>
+                        </div>
+
+                        <!-- Live Image Preview Box -->
+                        <div id="menu-preview-wrapper" class="hidden w-full space-y-2">
+                            <div class="relative w-full h-48 bg-blue-950/80 rounded-xl overflow-hidden border border-cyan-500/50 flex items-center justify-center shadow-inner">
+                                <img id="menu-image-preview" src="" alt="Pratinjau Gambar Pertama" class="max-w-full max-h-full object-contain">
+                            </div>
+                            <div class="flex items-center justify-between text-[11px] bg-blue-900/60 px-3 py-1.5 rounded-lg border border-blue-500/30">
+                                <span id="menu-file-name" class="font-medium text-cyan-200 truncate max-w-[200px]">nama_file.png</span>
+                                <span id="menu-file-size" class="text-blue-300/70 font-mono text-[10px]">0 KB</span>
+                            </div>
+                            <span class="text-[10px] text-cyan-400 font-semibold block text-center">✓ Gambar berhasil dipilih! Klik kembali jika ingin mengganti gambar.</span>
+                        </div>
+
+                        <input type="file" id="menu-image-input" name="image" accept="image/*" class="hidden">
+                    </label>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-cyan-300 uppercase tracking-wider mb-2">Teks Penjelasan Slide (Opsional)</label>
+                    <input type="text" name="text" id="menu-text-input" value="{{ old('text') }}" placeholder="Teks instruksi langkah yang tampil di bawah gambar..." class="w-full bg-blue-950/80 border border-blue-500/30 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="bg-blue-950/50 p-4 border-t border-blue-500/20 flex items-center justify-end gap-3 flex-shrink-0">
+                <button type="button" onclick="closeTambahMenuModal()" class="px-4 py-2.5 rounded-xl border border-blue-500/30 text-xs font-bold text-blue-200 hover:bg-blue-900/50 transition cursor-pointer">
+                    Batal
+                </button>
+                <button type="submit" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs transition shadow-lg shadow-cyan-500/20 border border-cyan-400/30 cursor-pointer flex items-center gap-2" style="background: linear-gradient(135deg, #06b6d4, #2563eb); color: #ffffff;">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                    Simpan Data Menu
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -1030,12 +1050,36 @@
         });
     }
 
-    function resetMenuPreview() {
-        if (menuImageInput) menuImageInput.value = '';
-        if (menuImagePreview) menuImagePreview.src = '';
-        if (menuEmptyPrompt) menuEmptyPrompt.classList.remove('hidden');
-        if (menuPreviewWrapper) menuPreviewWrapper.classList.add('hidden');
+    // Modal Tambah Menu Baru
+    const tambahMenuModal = document.getElementById('tambahMenuModal');
+    const tambahMenuForm = document.getElementById('tambahMenuForm');
+
+    function openTambahMenuModal() {
+        if (!tambahMenuModal) return;
+        tambahMenuModal.classList.remove('hidden');
+        const numInput = document.getElementById('menu-num-input');
+        if (numInput) setTimeout(() => numInput.focus(), 100);
     }
+
+    function closeTambahMenuModal() {
+        if (!tambahMenuModal) return;
+        tambahMenuModal.classList.add('hidden');
+    }
+
+    if (tambahMenuModal) {
+        tambahMenuModal.addEventListener('click', function(e) {
+            if (e.target === tambahMenuModal) {
+                closeTambahMenuModal();
+            }
+        });
+    }
+
+    // Jika terjadi error validasi dari server (old input ada), buka modal otomatis
+    @if($errors->any() && (old('num') || old('title') || old('desc') || old('text')))
+        document.addEventListener('DOMContentLoaded', function() {
+            openTambahMenuModal();
+        });
+    @endif
 
     // 2. Modal Uji Coba Scanner Gerbang (Admin)
     const scannerModal = document.getElementById('scannerTestModal');

@@ -242,7 +242,7 @@
         </aside>
 
         <!-- Main Workspace -->
-        <main class="flex-1 p-4 sm:p-8 overflow-y-auto space-y-6">
+        <main id="analytics-main-workspace" class="flex-1 p-4 sm:p-8 overflow-y-auto space-y-6">
     <!-- Header Filter -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-blue-950/40 p-5 rounded-2xl border border-blue-500/20 backdrop-blur-md shadow-xl gap-4">
         <div>
@@ -348,7 +348,7 @@
     </div>
 
     <!-- Data Table -->
-    <div class="bg-blue-950/40 p-5 rounded-2xl border border-blue-500/20 backdrop-blur-md shadow-xl overflow-hidden">
+    <div id="log-kunjungan-detail" class="bg-blue-950/40 p-5 rounded-2xl border border-blue-500/20 backdrop-blur-md shadow-xl overflow-hidden scroll-mt-6">
         <div class="flex items-center mb-4">
             <h3 class="text-sm font-bold text-cyan-300 uppercase tracking-widest">📋 Log Kunjungan Detail</h3>
         </div>
@@ -612,6 +612,27 @@
                 legend: { display: false },
                 tooltip: tooltipConfig,
                 glowPlugin: { color: 'rgba(16, 185, 129, 0.4)', blur: 10 }
+            }
+        }
+    });
+</script>
+
+<script>
+    // Pastikan posisi scroll langsung tetap di bagian Log Kunjungan Detail saat klik nomor halaman
+    document.addEventListener('DOMContentLoaded', function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const hasPage = urlParams.has('page');
+        const hasHash = window.location.hash === '#log-kunjungan-detail';
+
+        if (hasPage || hasHash) {
+            const tableSection = document.getElementById('log-kunjungan-detail');
+            const mainWorkspace = document.getElementById('analytics-main-workspace');
+
+            if (tableSection) {
+                // Berikan jeda kecil agar rendering chart dan layout selesai sempurna
+                setTimeout(() => {
+                    tableSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
             }
         }
     });

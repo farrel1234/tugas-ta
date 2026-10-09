@@ -245,7 +245,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 flex-grow min-h-0 overflow-hidden relative z-10 my-1 sm:my-2">
 
             <!-- Kolom Kiri: Panduan Layanan (Rotator Signage) -->
-            <main id="spotlight-rotator" class="lg:col-span-7 xl:col-span-7 flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-blue-950/30 backdrop-blur-lg border border-blue-500/25 shadow-2xl p-3 sm:p-5 overflow-hidden transition-all duration-700 h-full min-h-0">
+            <main id="spotlight-rotator" class="lg:col-span-8 xl:col-span-8 flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-blue-950/30 backdrop-blur-lg border border-blue-500/25 shadow-2xl p-3 sm:p-5 overflow-hidden transition-all duration-700 h-full min-h-0">
 
                 <!-- Title & Description Info -->
                 <div class="mb-2 border-b border-blue-800/50 pb-2 sm:pb-2.5 flex-shrink-0">
@@ -278,7 +278,7 @@
             </main>
 
             <!-- Kolom Kanan: Container Carousel Dinamis (Traffic Tank Silinder & Leaderboard Gamifikasi) -->
-            <section id="kiosk-traffic-tank" class="lg:col-span-5 xl:col-span-5 rounded-2xl sm:rounded-3xl bg-blue-950/40 backdrop-blur-lg border border-blue-500/30 shadow-2xl overflow-hidden h-full min-h-0 relative">
+            <section id="kiosk-traffic-tank" class="lg:col-span-4 xl:col-span-4 rounded-2xl sm:rounded-3xl bg-blue-950/40 backdrop-blur-lg border border-blue-500/30 shadow-2xl overflow-hidden h-full min-h-0 relative">
 
                 @php
                     $kioskTopList = collect($leaderboardData['top_visitors'] ?? []);
@@ -306,7 +306,7 @@
                     <!-- Area Tengah: Silinder 3D & HUD Total Kunjungan (Tepat di Tengah / Centered Vertikal) -->
                     <div class="flex-1 flex flex-col justify-center items-center my-auto py-2 sm:py-4 min-h-0 w-full">
                         <!-- 3D Database Cylinder Graphic -->
-                        <div class="relative w-[210px] sm:w-[240px] xl:w-[270px] h-[230px] sm:h-[260px] xl:h-[300px] db-cylinder-container mx-auto">
+                        <div class="relative w-[190px] sm:w-[210px] xl:w-[230px] h-[210px] sm:h-[230px] xl:h-[260px] db-cylinder-container mx-auto">
                             <!-- Cylinder Top Oval Cap -->
                             <div class="db-cylinder-cap"></div>
 

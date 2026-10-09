@@ -114,7 +114,7 @@ class AnalyticsController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 
-        $paginatedLogs->appends(['month' => $selectedMonth, 'year' => $selectedYear]);
+        $paginatedLogs->appends(['month' => $selectedMonth, 'year' => $selectedYear])->fragment('log-kunjungan-detail');
 
         return view('admin.analytics', compact(
             'selectedMonth',
