@@ -61,7 +61,41 @@
                         </a>
                     @endif
 
-                    {{-- Pagination Elements --}}
+                                        {{-- Pagination Elements --}}
+                    @php
+                        // Custom Ultra-Compact Logic
+                        $currentPage = $paginator->currentPage();
+                        $lastPage = $paginator->lastPage();
+                        $customElements = [];
+                        
+                        // 1. Selalu tampilkan halaman 1
+                        $customElements[0][1] = $paginator->url(1);
+                        
+                        // 2. Jika current page jauh dari 1, kasih elipsis
+                        if ($currentPage > 3) {
+                            $customElements[1] = '...';
+                        }
+                        
+                        // 3. Tampilkan 1 halaman sebelum dan sesudah current
+                        $start = max(2, $currentPage - 1);
+                        $end = min($lastPage - 1, $currentPage + 1);
+                        
+                        for ($i = $start; $i <= $end; $i++) {
+                            $customElements[2][$i] = $paginator->url($i);
+                        }
+                        
+                        // 4. Jika current page jauh dari akhir, kasih elipsis
+                        if ($currentPage < $lastPage - 2) {
+                            $customElements[3] = '...';
+                        }
+                        
+                        // 5. Selalu tampilkan halaman terakhir
+                        if ($lastPage > 1) {
+                            $customElements[4][$lastPage] = $paginator->url($lastPage);
+                        }
+                        
+                        $elements = $customElements;
+                    @endphp
                     @foreach ($elements as $element)
                         {{-- "Three Dots" Separator --}}
                         @if (is_string($element))
