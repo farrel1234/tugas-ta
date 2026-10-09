@@ -39,7 +39,7 @@ class MemberController extends Controller
             $page = 1;
         }
 
-        $members = $query->orderBy('name', 'asc')->paginate(15, ['*'], 'page', $page);
+        $members = $query->orderBy('name', 'asc')->paginate(15, ['*'], 'page', $page)->onEachSide(1);
         $members->appends($request->all());
 
         return view('admin.members', compact('members', 'search', 'totalMembers', 'activeMembers', 'expiredMembers'));
