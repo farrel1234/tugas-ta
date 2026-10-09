@@ -20,7 +20,13 @@
     <!-- Tailwind CSS CDN & Local Vite -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: url('/templating/img/image_427c3a.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
         .animate-fade-in {
             animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
         }
@@ -39,7 +45,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-[#071124] text-white font-sans antialiased min-h-full">
+<body class="text-white font-sans antialiased min-h-full">
     
     @yield('content')
 

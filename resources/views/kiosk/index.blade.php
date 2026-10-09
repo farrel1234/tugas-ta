@@ -1,4 +1,4 @@
-@extends('layouts.main')
+﻿﻿@extends('layouts.main')
 
 @section('title', 'Layar Digital Signage - UPA Perpustakaan Polibatam')
 
@@ -172,16 +172,16 @@
         pointer-events: auto;
     }
 </style>
-<div class="bg-[#071124] text-white antialiased select-none h-screen w-screen flex flex-col overflow-hidden">
+<div class="text-white antialiased select-none h-screen w-screen flex flex-col overflow-hidden">
 
-    <div class="w-full h-full flex flex-col justify-between p-3 sm:p-6 relative bg-gradient-to-br from-[#071124] via-[#0B1E3F] to-[#0D234A] overflow-hidden">
+    <div class="w-full h-full flex flex-col justify-between p-3 sm:p-6 relative overflow-hidden" style="background: rgba(20, 40, 100, 0.50);">
 
         <!-- Background Ornaments -->
         <div class="absolute top-0 left-1/4 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-blue-500/15 rounded-full blur-[120px] pointer-events-none"></div>
         <div class="absolute bottom-0 right-1/4 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-cyan-500/15 rounded-full blur-[120px] pointer-events-none"></div>
 
         <!-- Header -->
-        <header class="flex flex-col lg:flex-row justify-between items-center bg-blue-950/50 backdrop-blur-lg border border-blue-500/30 px-3 sm:px-8 py-2 sm:py-3 rounded-2xl sm:rounded-3xl shadow-2xl relative z-10 flex-shrink-0 gap-3 sm:gap-4">
+        <header class="flex flex-col lg:flex-row justify-between items-center border border-blue-500/30 px-3 sm:px-8 py-2 sm:py-3 rounded-2xl sm:rounded-3xl shadow-2xl relative z-10 flex-shrink-0 gap-3 sm:gap-4" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
             <div class="flex items-center gap-3 text-center lg:text-left flex-col sm:flex-row w-full lg:w-auto justify-center">
                 <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-900/60 rounded-xl sm:rounded-2xl border border-blue-500/30 flex items-center justify-center p-1.5 sm:p-2 shadow-inner flex-shrink-0">
                     <img src="{{ asset('templating/img/polibatam.png') }}" alt="Logo Polibatam" class="w-full h-full object-contain">
@@ -223,9 +223,9 @@
                 </header>
 
         <!-- FITUR 1: Animasi Running Text (Ticker) -->
-        <div class="w-full bg-[#060B19]/80 border-y border-slate-700/50 flex items-center relative z-10 my-2 overflow-hidden shadow-lg h-10 sm:h-12 flex-shrink-0">
+        <div class="w-full border-y border-slate-700/50 flex items-center relative z-10 my-2 overflow-hidden shadow-lg h-10 sm:h-12 flex-shrink-0" style="background: rgba(20, 35, 90, 0.80); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
             <!-- Ikon Toa Kiri (Statis) -->
-            <div class="h-full px-4 flex items-center justify-center bg-[#060B19] border-r border-slate-700/50 z-20 shadow-[10px_0_15px_-3px_rgba(0,0,0,0.5)]">
+            <div class="h-full px-4 flex items-center justify-center border-r border-slate-700/50 z-20 shadow-[10px_0_15px_-3px_rgba(0,0,0,0.5)]" style="background: rgba(20, 35, 90, 0.92);">
                 <span class="text-cyan-400 text-lg sm:text-xl">📢</span>
             </div>
             <!-- Area Teks Berjalan -->
@@ -245,7 +245,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 flex-grow min-h-0 overflow-hidden relative z-10 my-1 sm:my-2">
 
             <!-- Kolom Kiri: Panduan Layanan (Rotator Signage) -->
-            <main id="spotlight-rotator" class="lg:col-span-8 xl:col-span-8 flex flex-col justify-between rounded-2xl sm:rounded-3xl bg-blue-950/30 backdrop-blur-lg border border-blue-500/25 shadow-2xl p-3 sm:p-5 overflow-hidden transition-all duration-700 h-full min-h-0">
+            <main id="spotlight-rotator" class="lg:col-span-8 xl:col-span-8 flex flex-col justify-between rounded-2xl sm:rounded-3xl border border-blue-500/25 shadow-2xl p-3 sm:p-5 overflow-hidden transition-all duration-700 h-full min-h-0" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
 
                 <!-- Title & Description Info -->
                 <div class="mb-2 border-b border-blue-800/50 pb-2 sm:pb-2.5 flex-shrink-0">
@@ -278,7 +278,7 @@
             </main>
 
             <!-- Kolom Kanan: Container Carousel Dinamis (Traffic Tank Silinder & Leaderboard Gamifikasi) -->
-            <section id="kiosk-traffic-tank" class="lg:col-span-4 xl:col-span-4 rounded-2xl sm:rounded-3xl bg-blue-950/40 backdrop-blur-lg border border-blue-500/30 shadow-2xl overflow-hidden h-full min-h-0 relative">
+            <section id="kiosk-traffic-tank" class="lg:col-span-4 xl:col-span-4 rounded-2xl sm:rounded-3xl border border-blue-500/30 shadow-2xl overflow-hidden h-full min-h-0 relative" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
 
                 @php
                     $kioskTopList = collect($leaderboardData['top_visitors'] ?? []);
@@ -347,7 +347,7 @@
 
                         <!-- Total Kunjungan Display HUD (Di bawah silinder) -->
                         <div class="flex items-center justify-center mt-3 sm:mt-4 flex-shrink-0">
-                            <div class="bg-[#091731]/85 backdrop-blur-md border border-cyan-500/40 px-4 sm:px-5 py-1.5 rounded-xl shadow-xl flex items-center gap-3">
+                            <div class="bg-blue-700/70 backdrop-blur-md border border-cyan-500/40 px-4 sm:px-5 py-1.5 rounded-xl shadow-xl flex items-center gap-3">
                                 <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
                                 <span id="traffic-tank-count-hud" class="text-xs sm:text-sm font-bold text-white font-mono tracking-wide">
                                     {{ $trafficData['total'] ?? 0 }} Kunjungan
@@ -412,7 +412,7 @@
                     <div class="w-full flex items-center justify-between border-b border-indigo-500/30 pb-2.5 flex-shrink-0">
                         <div class="flex items-center gap-2 sm:gap-2.5">
                             <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-500 to-cyan-400 flex items-center justify-center text-white text-sm sm:text-base shadow-[0_0_15px_rgba(99,102,241,0.4)] flex-shrink-0">
-                                📊
+                                ðŸ“Š
                             </div>
                             <div>
                                 <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
@@ -432,8 +432,8 @@
                         <!-- Rasio Gender (Split Block Raksasa) -->
                         <div class="grid grid-cols-2 gap-3 h-[90px] sm:h-[110px]">
                             <!-- Laki-laki -->
-                            <div class="bg-blue-950/40 border border-blue-500/30 rounded-xl p-3 flex flex-col justify-center items-center relative overflow-hidden shadow-inner group">
-                                <div class="absolute -right-2 -bottom-2 sm:-right-4 sm:-bottom-4 text-blue-500/10 text-5xl sm:text-7xl font-black group-hover:scale-110 transition-transform duration-500">👨</div>
+                            <div class="bg-blue-800/50 border border-blue-500/30 rounded-xl p-3 flex flex-col justify-center items-center relative overflow-hidden shadow-inner group">
+                                <div class="absolute -right-2 -bottom-2 sm:-right-4 sm:-bottom-4 text-blue-500/10 text-5xl sm:text-7xl font-black group-hover:scale-110 transition-transform duration-500">ðŸ‘¨</div>
                                 <div class="flex flex-col items-center z-10 w-full">
                                     <div class="text-6xl sm:text-7xl font-black text-blue-400 font-mono tracking-tighter leading-none" id="gender-split-l-count">0</div>
                                     <div class="text-[8px] sm:text-[10px] text-blue-200/70 font-bold uppercase tracking-widest mt-2">Pengunjung Laki-laki</div>
@@ -441,7 +441,7 @@
                             </div>
                             <!-- Perempuan -->
                             <div class="bg-rose-950/40 border border-rose-500/30 rounded-xl p-3 flex flex-col justify-center items-center relative overflow-hidden shadow-inner group">
-                                <div class="absolute -right-2 -bottom-2 sm:-right-4 sm:-bottom-4 text-rose-500/10 text-5xl sm:text-7xl font-black group-hover:scale-110 transition-transform duration-500">👩</div>
+                                <div class="absolute -right-2 -bottom-2 sm:-right-4 sm:-bottom-4 text-rose-500/10 text-5xl sm:text-7xl font-black group-hover:scale-110 transition-transform duration-500">ðŸ‘©</div>
                                 <div class="flex flex-col items-center z-10 w-full">
                                     <div class="text-6xl sm:text-7xl font-black text-rose-400 font-mono tracking-tighter leading-none" id="gender-split-p-count">0</div>
                                     <div class="text-[8px] sm:text-[10px] text-rose-200/70 font-bold uppercase tracking-widest mt-2">Pengunjung Perempuan</div>
@@ -452,9 +452,9 @@
                         <!-- Grid Bawah: Umur & Wilayah -->
                         <div class="grid grid-cols-2 gap-3 flex-1 h-full min-h-0">
                             <!-- Top Umur (Horizontal Stat Bars) -->
-                            <div class="bg-[#091731]/80 border border-indigo-500/30 rounded-xl p-3 sm:p-4 shadow-inner flex flex-col overflow-hidden">
+                            <div class="bg-blue-800/70 border border-indigo-500/30 rounded-xl p-3 sm:p-4 shadow-inner flex flex-col overflow-hidden">
                                 <h4 class="text-[9px] sm:text-[10px] font-bold text-indigo-200 uppercase tracking-widest w-full text-center mb-4 border-b border-indigo-500/20 pb-2">
-                                    🎂 Top Umur
+                                    ðŸŽ‚ Top Umur
                                 </h4>
                                 <div id="box-age-groups" class="flex flex-col gap-5 sm:gap-6 w-full flex-1 justify-center">
                                     <!-- dynamic content -->
@@ -462,9 +462,9 @@
                             </div>
 
                             <!-- Top Wilayah (Tipografi Style) -->
-                            <div class="bg-[#091731]/80 border border-indigo-500/30 rounded-xl p-2.5 sm:p-3 shadow-inner flex flex-col overflow-hidden">
+                            <div class="bg-blue-800/70 border border-indigo-500/30 rounded-xl p-2.5 sm:p-3 shadow-inner flex flex-col overflow-hidden">
                                 <h4 class="text-[9px] sm:text-[10px] font-bold text-indigo-200 uppercase tracking-widest w-full text-center mb-2">
-                                    📍 Top Wilayah
+                                    ðŸ“ Top Wilayah
                                 </h4>
                                 <div id="box-regions" class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2 w-full">
                                 </div>
@@ -482,7 +482,7 @@
                 </div>
 
                 <!-- Floating Carousel Mini Navigator Dots -->
-                <div class="absolute bottom-2 right-3 sm:right-4 z-20 flex items-center gap-1.5 bg-blue-950/85 px-2 py-1 rounded-full border border-blue-500/30 backdrop-blur-md shadow-lg">
+                <div class="absolute bottom-2 right-3 sm:right-4 z-20 flex items-center gap-1.5 bg-blue-800/75 px-2 py-1 rounded-full border border-blue-500/30 backdrop-blur-md shadow-lg">
                     <button id="dot-widget-tank" type="button" class="w-2 h-2 rounded-full transition-all duration-300 bg-cyan-400 ring-2 ring-cyan-400/40 cursor-pointer" title="Traffic Tank Silinder"></button>
                     <button id="dot-widget-leaderboard" type="button" class="w-2 h-2 rounded-full transition-all duration-300 bg-slate-500 hover:bg-amber-400 cursor-pointer" title="Leaderboard Kunjungan"></button>
                 </div>
@@ -491,7 +491,7 @@
         </div>
 
         <!-- Footer & Controls -->
-        <footer class="flex items-center justify-between bg-blue-950/50 backdrop-blur-lg border border-blue-500/30 px-3 sm:px-8 py-2 sm:py-2.5 rounded-2xl sm:rounded-3xl shadow-lg relative z-10 flex-shrink-0 gap-2">
+        <footer class="flex items-center justify-between border border-blue-500/30 px-3 sm:px-8 py-2 sm:py-2.5 rounded-2xl sm:rounded-3xl shadow-lg relative z-10 flex-shrink-0 gap-2" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
             <div class="flex items-center gap-3">
                 <div class="hidden sm:block text-left">
                     <span class="text-[8px] sm:text-[9px] font-bold text-cyan-300 uppercase tracking-widest block">Polibatam</span>
@@ -504,7 +504,7 @@
                     <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
                 </button>
 
-                <div class="flex-grow sm:w-48 lg:w-72 h-2 sm:h-2.5 bg-blue-950/90 rounded-full overflow-hidden border border-blue-400/40 shadow-inner p-[1px]">
+                <div class="flex-grow sm:w-48 lg:w-72 h-2 sm:h-2.5 bg-blue-800/80 rounded-full overflow-hidden border border-blue-400/40 shadow-inner p-[1px]">
                     <div id="progress-bar" class="h-full bg-white rounded-full shadow-[0_0_10px_#ffffff,0_0_18px_rgba(255,255,255,0.95)]" style="width: 0%;"></div>
                 </div>
 
@@ -638,20 +638,20 @@
                 <div class="w-full h-full flex flex-col justify-center items-center py-1 sm:py-2 animate-fade-in gap-3 sm:gap-4">
 
                     <!-- Gambar Presentasi -->
-                    <div class="relative w-full max-w-5xl flex-1 min-h-[150px] bg-blue-900/40 rounded-2xl sm:rounded-3xl overflow-hidden border border-blue-500/30 flex items-center justify-center p-2 sm:p-4 shadow-[0_0_40px_rgba(59,130,246,0.15)] backdrop-blur-sm">
+                    <div class="relative w-full max-w-5xl flex-1 min-h-[150px] rounded-2xl sm:rounded-3xl overflow-hidden border border-blue-500/30 flex items-center justify-center p-2 sm:p-4 shadow-[0_0_40px_rgba(59,130,246,0.15)]" style="background: rgba(30, 58, 138, 0.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
 
                         <img src="${currentStepData.img}" alt="Ilustrasi Langkah ${stepIndex + 1}" class="w-full h-full object-contain drop-shadow-xl rounded-xl" onerror="this.onerror=null; this.src='{{ asset('templating/img/polibatam.png') }}';">
 
                         <!-- Indikator Langkah -->
                         ${showStepBadge ? `
-                        <div class="absolute top-2 right-2 sm:top-4 sm:right-4 bg-blue-950/80 border border-blue-500/50 text-cyan-300 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[10px] sm:text-sm font-bold shadow-lg backdrop-blur-md">
+                        <div class="absolute top-2 right-2 sm:top-4 sm:right-4 bg-blue-800/70 border border-blue-500/50 text-cyan-300 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[10px] sm:text-sm font-bold shadow-lg backdrop-blur-md">
                             Langkah ${stepIndex + 1} / ${stepsToRender.length}
                         </div>
                         ` : ''}
                     </div>
 
                     <!-- Teks Penjelasan -->
-                    <div class="w-full max-w-5xl bg-blue-950/60 border border-blue-500/20 p-3 sm:p-5 rounded-xl sm:rounded-2xl shadow-lg backdrop-blur-md animate-slide-up text-center flex-shrink-0">
+                    <div class="w-full max-w-5xl border border-blue-500/20 p-3 sm:p-5 rounded-xl sm:rounded-2xl shadow-lg animate-slide-up text-center flex-shrink-0" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
                         <p class="text-[11px] sm:text-base md:text-lg lg:text-xl text-blue-50 font-medium leading-relaxed">
                             ${currentStepData.text || ''}
                         </p>
@@ -1162,12 +1162,12 @@
                 
                 boxReg.innerHTML = data.regions.map((r, i) => {
                     const badge = (i === 0) 
-                        ? `<span class="bg-gradient-to-r from-red-500 to-orange-500 text-white text-[7px] px-1.5 py-0.5 rounded-full flex items-center gap-0.5 whitespace-nowrap">🔥 Terbanyak</span>` 
+                        ? `<span class="bg-gradient-to-r from-red-500 to-orange-500 text-white text-[7px] px-1.5 py-0.5 rounded-full flex items-center gap-0.5 whitespace-nowrap">ðŸ”¥ Terbanyak</span>` 
                         : '';
                     return `
                         <div class="flex items-center justify-between bg-slate-900/50 rounded-lg p-1.5 sm:p-2 border border-slate-700/50 hover:bg-slate-800/50 transition-colors">
                             <span class="text-[9px] sm:text-[10px] font-bold text-slate-200 truncate w-[45%]" title="${r.kecamatan_domisili}">
-                                ${i === 0 ? '🥇' : (i === 1 ? '🥈' : '🥉')} ${r.kecamatan_domisili}
+                                ${i === 0 ? 'ðŸ¥‡' : (i === 1 ? 'ðŸ¥ˆ' : 'ðŸ¥‰')} ${r.kecamatan_domisili}
                             </span>
                             <div class="text-right flex items-center gap-1.5 sm:gap-2 justify-end w-[55%]">
                                 ${badge}
@@ -1257,3 +1257,5 @@
     }
 </script>
 @endsection
+
+
