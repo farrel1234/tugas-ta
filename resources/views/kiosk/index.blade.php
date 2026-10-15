@@ -1,9 +1,29 @@
-﻿﻿@extends('layouts.main')
+@extends('layouts.main')
 
 @section('title', 'Layar Digital Signage - UPA Perpustakaan Polibatam')
 
+@section('body_class', 'h-screen w-full overflow-hidden m-0 p-0 select-none')
+
 @section('content')
 <style>
+    /* Hilangkan scrollbar sepenuhnya pada mode Digital Signage Kiosk */
+    html, body {
+        height: 100vh !important;
+        max-height: 100vh !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        scrollbar-width: none !important; /* Firefox */
+        -ms-overflow-style: none !important; /* IE dan Edge */
+    }
+    html::-webkit-scrollbar, body::-webkit-scrollbar, *::-webkit-scrollbar {
+        display: none !important;
+        width: 0px !important;
+        height: 0px !important;
+    }
+
     @keyframes marquee {
         0% { transform: translateX(0); }
         100% { transform: translateX(-50%); }
@@ -71,27 +91,29 @@
     /* Database Cylinder Styles & Animations */
     .db-cylinder-container {
         perspective: 900px;
+        padding-top: 14px;
+        box-sizing: content-box;
     }
     .db-cylinder-body {
         position: relative;
-        background: linear-gradient(180deg, rgba(6, 182, 212, 0.08) 0%, rgba(11, 30, 63, 0.6) 100%);
-        border-left: 2px solid rgba(6, 182, 212, 0.5);
-        border-right: 2px solid rgba(6, 182, 212, 0.5);
-        border-bottom: 2px solid rgba(6, 182, 212, 0.5);
-        border-radius: 0 0 36px 36px;
-        box-shadow: inset 0 0 25px rgba(6, 182, 212, 0.15), 0 10px 30px rgba(0, 0, 0, 0.5);
+        background: linear-gradient(180deg, rgba(6, 182, 212, 0.10) 0%, rgba(11, 30, 63, 0.70) 100%);
+        border-left: 2px solid rgba(6, 182, 212, 0.6);
+        border-right: 2px solid rgba(6, 182, 212, 0.6);
+        border-bottom: 2px solid rgba(6, 182, 212, 0.6);
+        border-radius: 0 0 32px 32px;
+        box-shadow: inset 0 0 25px rgba(6, 182, 212, 0.18), 0 10px 30px rgba(0, 0, 0, 0.5);
         overflow: hidden;
     }
     .db-cylinder-cap {
         position: absolute;
-        top: -14px;
+        top: 0;
         left: 0;
         right: 0;
         height: 28px;
         border-radius: 50%;
-        background: radial-gradient(ellipse at center, rgba(34, 211, 238, 0.35) 0%, rgba(6, 182, 212, 0.15) 60%, rgba(11, 30, 63, 0.95) 100%);
-        border: 2px solid rgba(6, 182, 212, 0.7);
-        box-shadow: 0 2px 12px rgba(6, 182, 212, 0.35), inset 0 0 8px rgba(34, 211, 238, 0.5);
+        background: radial-gradient(ellipse at center, rgba(34, 211, 238, 0.45) 0%, rgba(6, 182, 212, 0.25) 60%, rgba(11, 30, 63, 0.95) 100%);
+        border: 2px solid rgba(6, 182, 212, 0.85);
+        box-shadow: 0 2px 14px rgba(6, 182, 212, 0.5), inset 0 0 10px rgba(34, 211, 238, 0.6);
         z-index: 10;
     }
     .db-cylinder-rib {
@@ -172,16 +194,16 @@
         pointer-events: auto;
     }
 </style>
-<div class="text-white antialiased select-none h-screen w-screen flex flex-col overflow-hidden">
+<div class="text-white antialiased select-none h-screen max-h-screen w-full flex flex-col overflow-hidden box-border">
 
-    <div class="w-full h-full flex flex-col justify-between p-3 sm:p-6 relative overflow-hidden" style="background: rgba(20, 40, 100, 0.50);">
+    <div class="w-full h-full max-h-screen flex flex-col justify-between p-2.5 sm:p-4 lg:p-4 relative overflow-hidden box-border" style="background: rgba(20, 40, 100, 0.50);">
 
         <!-- Background Ornaments -->
         <div class="absolute top-0 left-1/4 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-blue-500/15 rounded-full blur-[120px] pointer-events-none"></div>
         <div class="absolute bottom-0 right-1/4 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-cyan-500/15 rounded-full blur-[120px] pointer-events-none"></div>
 
         <!-- Header -->
-        <header class="flex flex-col lg:flex-row justify-between items-center border border-blue-500/30 px-3 sm:px-8 py-2 sm:py-3 rounded-2xl sm:rounded-3xl shadow-2xl relative z-10 flex-shrink-0 gap-3 sm:gap-4" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+        <header class="flex flex-col lg:flex-row justify-between items-center border border-blue-500/30 px-3 sm:px-6 py-2 rounded-2xl shadow-2xl relative z-10 flex-shrink-0 gap-2 sm:gap-4" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
             <div class="flex items-center gap-3 text-center lg:text-left flex-col sm:flex-row w-full lg:w-auto justify-center">
                 <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-900/60 rounded-xl sm:rounded-2xl border border-blue-500/30 flex items-center justify-center p-1.5 sm:p-2 shadow-inner flex-shrink-0">
                     <img src="{{ asset('templating/img/polibatam.png') }}" alt="Logo Polibatam" class="w-full h-full object-contain">
@@ -210,39 +232,41 @@
                     </div>
                 </div>
 
-                <div id="live-clock" class="text-[10px] sm:text-xs font-bold text-cyan-200 bg-blue-900/70 px-3 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-blue-500/30 shadow-inner flex-shrink-0">
+                <div id="live-clock" class="text-[10px] sm:text-xs font-bold text-cyan-200 bg-blue-900/70 px-3 py-2 rounded-xl sm:rounded-2xl border border-blue-500/30 shadow-inner flex-shrink-0">
                     08:00 WIB
                 </div>
 
                 <!-- Akses Cepat ke Admin Panel -->
-                <a href="{{ route('admin.dashboard') }}" title="Masuk ke Panel Admin" class="text-[10px] sm:text-xs text-blue-200 hover:text-cyan-300 bg-blue-900/70 hover:bg-blue-900 px-3 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl border border-blue-500/30 shadow-inner flex items-center gap-1.5 transition flex-shrink-0 cursor-pointer">
+                <a href="{{ route('admin.dashboard') }}" title="Masuk ke Panel Admin" class="text-[10px] sm:text-xs text-blue-200 hover:text-cyan-300 bg-blue-900/70 hover:bg-blue-900 px-3 py-2 rounded-xl sm:rounded-2xl border border-blue-500/30 shadow-inner flex items-center gap-1.5 transition flex-shrink-0 cursor-pointer">
                     <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
                     <span class="hidden sm:inline font-bold">Admin</span>
                 </a>
             </div>
-                </header>
+        </header>
 
         <!-- FITUR 1: Animasi Running Text (Ticker) -->
-        <div class="w-full border-y border-slate-700/50 flex items-center relative z-10 my-2 overflow-hidden shadow-lg h-10 sm:h-12 flex-shrink-0" style="background: rgba(20, 35, 90, 0.80); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
-            <!-- Ikon Toa Kiri (Statis) -->
-            <div class="h-full px-4 flex items-center justify-center border-r border-slate-700/50 z-20 shadow-[10px_0_15px_-3px_rgba(0,0,0,0.5)]" style="background: rgba(20, 35, 90, 0.92);">
-                <span class="text-cyan-400 text-lg sm:text-xl">📢</span>
+        <div class="w-full border-y border-slate-700/50 flex items-center relative z-10 my-1 sm:my-1.5 overflow-hidden shadow-lg h-9 sm:h-10 flex-shrink-0" style="background: rgba(20, 35, 90, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+            <!-- Ikon Pengumuman Kiri (Statis) -->
+            <div class="h-full px-3.5 sm:px-4 flex items-center justify-center border-r border-slate-700/50 z-20 shadow-[10px_0_15px_-3px_rgba(0,0,0,0.5)] flex-shrink-0" style="background: rgba(20, 35, 90, 0.95);">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
+                </svg>
             </div>
             <!-- Area Teks Berjalan -->
             <div class="flex-1 overflow-hidden relative h-full flex items-center">
                 <div class="flex w-max animate-marquee text-cyan-200 font-semibold tracking-wide text-xs sm:text-sm">
                     <div class="px-8 whitespace-nowrap">
-                        Selamat datang di UPA Perpustakaan Politeknik Negeri Batam. 📢 Silakan tap KTP/KTM Anda pada Gate Scanner sebelum memasuki area perpustakaan. 🕒 Jam Layanan: Senin - Kamis (08.00 - 22.00 WIB) & Jumat (09.00 - 22.00 WIB). ⏸️ INFO JEDA LAYANAN (Pergantian Shift/Sholat): Pukul 17.00 - 18.30 WIB (Setiap Hari) & 11.30 - 13.30 WIB (Khusus Jumat). ⚙️ INFO AKSES GATE: Mohon keluarkan kartu KTP/KTM dari dompet sebelum di-tap pada scanner untuk menghindari bentrok sensor pembacaan ganda. Jika pemindaian gagal, silakan melapor ke meja administrasi.
+                        Selamat datang di UPA Perpustakaan Politeknik Negeri Batam. &nbsp;✦&nbsp; Silakan tap KTP/KTM Anda pada Gate Scanner sebelum memasuki area perpustakaan. &nbsp;✦&nbsp; <span class="text-white font-bold">Jam Layanan:</span> Senin - Kamis (08.00 - 22.00 WIB) &amp; Jumat (09.00 - 22.00 WIB). &nbsp;✦&nbsp; <span class="text-white font-bold">INFO JEDA LAYANAN (Shift/Sholat):</span> Pukul 17.00 - 18.30 WIB (Setiap Hari) &amp; 11.30 - 13.30 WIB (Khusus Jumat). &nbsp;✦&nbsp; <span class="text-white font-bold">INFO AKSES GATE:</span> Mohon keluarkan kartu KTP/KTM dari dompet sebelum di-tap pada scanner untuk menghindari bentrok sensor pembacaan ganda. Jika pemindaian gagal, silakan melapor ke meja administrasi.
                     </div>
                     <div class="px-8 whitespace-nowrap" aria-hidden="true">
-                        Selamat datang di UPA Perpustakaan Politeknik Negeri Batam. 📢 Silakan tap KTP/KTM Anda pada Gate Scanner sebelum memasuki area perpustakaan. 🕒 Jam Layanan: Senin - Kamis (08.00 - 22.00 WIB) & Jumat (09.00 - 22.00 WIB). ⏸️ INFO JEDA LAYANAN (Pergantian Shift/Sholat): Pukul 17.00 - 18.30 WIB (Setiap Hari) & 11.30 - 13.30 WIB (Khusus Jumat). ⚙️ INFO AKSES GATE: Mohon keluarkan kartu KTP/KTM dari dompet sebelum di-tap pada scanner untuk menghindari bentrok sensor pembacaan ganda. Jika pemindaian gagal, silakan melapor ke meja administrasi.
+                        Selamat datang di UPA Perpustakaan Politeknik Negeri Batam. &nbsp;✦&nbsp; Silakan tap KTP/KTM Anda pada Gate Scanner sebelum memasuki area perpustakaan. &nbsp;✦&nbsp; <span class="text-white font-bold">Jam Layanan:</span> Senin - Kamis (08.00 - 22.00 WIB) &amp; Jumat (09.00 - 22.00 WIB). &nbsp;✦&nbsp; <span class="text-white font-bold">INFO JEDA LAYANAN (Shift/Sholat):</span> Pukul 17.00 - 18.30 WIB (Setiap Hari) &amp; 11.30 - 13.30 WIB (Khusus Jumat). &nbsp;✦&nbsp; <span class="text-white font-bold">INFO AKSES GATE:</span> Mohon keluarkan kartu KTP/KTM dari dompet sebelum di-tap pada scanner untuk menghindari bentrok sensor pembacaan ganda. Jika pemindaian gagal, silakan melapor ke meja administrasi.
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Main Content Area: Bersebelahan Panduan Layanan & Traffic Tank Silinder -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 flex-grow min-h-0 overflow-hidden relative z-10 my-1 sm:my-2">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 flex-1 min-h-0 overflow-hidden relative z-10 my-1">
 
             <!-- Kolom Kiri: Panduan Layanan (Rotator Signage) -->
             <main id="spotlight-rotator" class="lg:col-span-8 xl:col-span-8 flex flex-col justify-between rounded-2xl sm:rounded-3xl border border-blue-500/25 shadow-2xl p-3 sm:p-5 overflow-hidden transition-all duration-700 h-full min-h-0" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
@@ -288,25 +312,37 @@
                 @endphp
 
                 <!-- WIDGET 1: Traffic Tank Silinder (Aktif Default) -->
-                <div id="widgetTank" class="dynamic-kiosk-widget active p-3.5 sm:p-5 flex flex-col justify-between">
+                <div id="widgetTank" class="dynamic-kiosk-widget active p-3 sm:p-4 flex flex-col justify-between h-full min-h-0 overflow-hidden">
                     <!-- Header Box Card Tangki (Atas) -->
-                    <div class="w-full flex items-center justify-between border-b border-blue-800/40 pb-2.5 flex-shrink-0">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
-                            <h3 class="text-xs sm:text-sm font-bold uppercase tracking-wider text-cyan-200">Traffic Tank Silinder</h3>
-                            <span id="tank-mode-badge" class="text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                                Live Hari Ini
+                    <div class="w-full flex items-center justify-between border-b border-blue-800/40 pb-2 flex-shrink-0">
+                        <div class="flex items-center gap-2 sm:gap-2.5">
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-500 to-indigo-600 flex items-center justify-center text-white shadow-[0_0_15px_rgba(6,182,212,0.4)] flex-shrink-0">
+                                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-cyan-200 flex items-center gap-1.5 leading-tight">
+                                    Traffic Silinder
+                                </h3>
+                                <span class="text-[8px] sm:text-[9px] text-cyan-300/70 font-medium block">Kapasitas Kunjungan Real-Time</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1.5 flex-shrink-0">
+                            <span id="tank-mode-badge" class="text-[8px] sm:text-[9px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                Live
+                            </span>
+                            <span id="tank-capacity-badge" class="text-[9px] sm:text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                                {{ $trafficData['capacity_percentage'] ?? 0 }}% Kapasitas
                             </span>
                         </div>
-                        <span id="tank-capacity-badge" class="text-[10px] sm:text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
-                            {{ $trafficData['capacity_percentage'] ?? 0 }}% Kapasitas
-                        </span>
                     </div>
 
                     <!-- Area Tengah: Silinder 3D & HUD Total Kunjungan (Tepat di Tengah / Centered Vertikal) -->
-                    <div class="flex-1 flex flex-col justify-center items-center my-auto py-2 sm:py-4 min-h-0 w-full">
+                    <div class="flex-1 w-full flex flex-col justify-center items-center my-auto min-h-0 py-1 overflow-visible">
                         <!-- 3D Database Cylinder Graphic -->
-                        <div class="relative w-[170px] sm:w-[190px] xl:w-[210px] h-[230px] sm:h-[260px] xl:h-[300px] db-cylinder-container mx-auto">
+                        <div class="relative w-[150px] sm:w-[165px] xl:w-[185px] h-[150px] sm:h-[175px] xl:h-[200px] db-cylinder-container mx-auto flex-shrink-0">
                             <!-- Cylinder Top Oval Cap -->
                             <div class="db-cylinder-cap"></div>
 
@@ -346,9 +382,9 @@
                         </div>
 
                         <!-- Total Kunjungan Display HUD (Di bawah silinder) -->
-                        <div class="flex items-center justify-center mt-3 sm:mt-4 flex-shrink-0">
-                            <div class="bg-blue-700/70 backdrop-blur-md border border-cyan-500/40 px-4 sm:px-5 py-1.5 rounded-xl shadow-xl flex items-center gap-3">
-                                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                        <div class="flex items-center justify-center mt-3 sm:mt-3.5 flex-shrink-0 z-10">
+                            <div class="bg-blue-900/90 backdrop-blur-md border border-cyan-500/40 px-4 sm:px-5 py-1.5 rounded-full shadow-xl flex items-center gap-2.5">
+                                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse flex-shrink-0"></span>
                                 <span id="traffic-tank-count-hud" class="text-xs sm:text-sm font-bold text-white font-mono tracking-wide">
                                     {{ $trafficData['total'] ?? 0 }} Kunjungan
                                 </span>
@@ -360,46 +396,46 @@
                         </div>
                     </div>
 
-                    <!-- Breakdown Status Pills Below Cylinder (Bawah) -->
-                    <div class="w-full grid grid-cols-3 gap-2 border-t border-blue-800/40 pt-1.5 sm:pt-2 flex-shrink-0 mt-1">
+                    <!-- Breakdown Status Cards Below Cylinder (Bawah) -->
+                    <div class="w-full grid grid-cols-3 gap-2 border-t border-blue-800/40 pt-2 flex-shrink-0 mt-2">
                         <!-- Green Stat -->
-                        <div class="bg-emerald-950/40 border border-emerald-500/30 rounded-lg py-1 px-1 sm:py-1.5 text-center">
-                            <div class="flex items-center justify-center gap-1 mb-0.5">
-                                <span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-emerald-400"></span>
-                                <span class="text-[8px] sm:text-[9px] font-bold text-emerald-300">Bisa Masuk</span>
+                        <div class="bg-emerald-950/50 border border-emerald-500/30 rounded-xl py-2 px-1 text-center flex flex-col justify-center items-center shadow-inner">
+                            <div class="flex items-center justify-center gap-1.5 mb-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span class="text-[8px] sm:text-[9px] font-bold text-emerald-300 uppercase tracking-wider">Bisa Masuk</span>
                             </div>
-                            <div id="stat-bisa-masuk-count" class="text-xs sm:text-sm font-black text-white font-mono leading-none">
+                            <div id="stat-bisa-masuk-count" class="text-sm sm:text-base font-black text-white font-mono leading-tight">
                                 {{ $trafficData['status_counts']['bisa_masuk'] ?? 0 }}
                             </div>
-                            <span id="stat-bisa-masuk-pct" class="text-[7px] sm:text-[8px] text-emerald-300/70 font-mono">
+                            <span id="stat-bisa-masuk-pct" class="text-[8px] sm:text-[9px] text-emerald-400/80 font-mono font-semibold mt-0.5">
                                 {{ $trafficData['status_percentages']['bisa_masuk'] ?? 0 }}%
                             </span>
                         </div>
 
                         <!-- Gray Stat -->
-                        <div class="bg-slate-900/50 border border-slate-500/30 rounded-lg py-1 px-1 sm:py-1.5 text-center">
-                            <div class="flex items-center justify-center gap-1 mb-0.5">
-                                <span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-slate-400"></span>
-                                <span class="text-[8px] sm:text-[9px] font-bold text-slate-300">Expired</span>
+                        <div class="bg-slate-900/60 border border-slate-500/30 rounded-xl py-2 px-1 text-center flex flex-col justify-center items-center shadow-inner">
+                            <div class="flex items-center justify-center gap-1.5 mb-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                <span class="text-[8px] sm:text-[9px] font-bold text-slate-300 uppercase tracking-wider">Expired</span>
                             </div>
-                            <div id="stat-belum-perpanjang-count" class="text-xs sm:text-sm font-black text-white font-mono leading-none">
+                            <div id="stat-belum-perpanjang-count" class="text-sm sm:text-base font-black text-white font-mono leading-tight">
                                 {{ $trafficData['status_counts']['belum_perpanjang'] ?? 0 }}
                             </div>
-                            <span id="stat-belum-perpanjang-pct" class="text-[7px] sm:text-[8px] text-slate-300/70 font-mono">
+                            <span id="stat-belum-perpanjang-pct" class="text-[8px] sm:text-[9px] text-slate-400 font-mono font-semibold mt-0.5">
                                 {{ $trafficData['status_percentages']['belum_perpanjang'] ?? 0 }}%
                             </span>
                         </div>
 
                         <!-- Red Stat -->
-                        <div class="bg-rose-950/40 border border-rose-500/30 rounded-lg py-1 px-1 sm:py-1.5 text-center">
-                            <div class="flex items-center justify-center gap-1 mb-0.5">
-                                <span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-rose-400"></span>
-                                <span class="text-[8px] sm:text-[9px] font-bold text-rose-300">Belum Daftar</span>
+                        <div class="bg-rose-950/50 border border-rose-500/30 rounded-xl py-2 px-1 text-center flex flex-col justify-center items-center shadow-inner">
+                            <div class="flex items-center justify-center gap-1.5 mb-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
+                                <span class="text-[8px] sm:text-[9px] font-bold text-rose-300 uppercase tracking-wider">Belum Daftar</span>
                             </div>
-                            <div id="stat-belum-daftar-count" class="text-xs sm:text-sm font-black text-white font-mono leading-none">
+                            <div id="stat-belum-daftar-count" class="text-sm sm:text-base font-black text-white font-mono leading-tight">
                                 {{ $trafficData['status_counts']['belum_daftar'] ?? 0 }}
                             </div>
-                            <span id="stat-belum-daftar-pct" class="text-[7px] sm:text-[8px] text-rose-300/70 font-mono">
+                            <span id="stat-belum-daftar-pct" class="text-[8px] sm:text-[9px] text-rose-400/80 font-mono font-semibold mt-0.5">
                                 {{ $trafficData['status_percentages']['belum_daftar'] ?? 0 }}%
                             </span>
                         </div>
@@ -407,12 +443,14 @@
                 </div>
 
                 <!-- WIDGET 2: Statistik Pemustaka Bulan Ini -->
-                <div id="widgetLeaderboard" class="dynamic-kiosk-widget p-3.5 sm:p-5 flex flex-col justify-between">
+                <div id="widgetLeaderboard" class="dynamic-kiosk-widget p-3 sm:p-4 flex flex-col justify-between h-full min-h-0 overflow-hidden">
                     <!-- Header -->
-                    <div class="w-full flex items-center justify-between border-b border-indigo-500/30 pb-2.5 flex-shrink-0">
+                    <div class="w-full flex items-center justify-between border-b border-indigo-500/30 pb-2 flex-shrink-0">
                         <div class="flex items-center gap-2 sm:gap-2.5">
-                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-500 to-cyan-400 flex items-center justify-center text-white text-sm sm:text-base shadow-[0_0_15px_rgba(99,102,241,0.4)] flex-shrink-0">
-                                ðŸ“Š
+                            <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-gradient-to-tr from-indigo-600 via-blue-500 to-cyan-400 flex items-center justify-center text-white shadow-[0_0_15px_rgba(99,102,241,0.4)] flex-shrink-0">
+                                <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                                </svg>
                             </div>
                             <div>
                                 <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
@@ -427,54 +465,66 @@
                     </div>
 
                     <!-- Area Tengah: Konten Demografi -->
-                    <div class="flex-1 w-full flex flex-col gap-3 mt-3 relative z-10 overflow-hidden">
+                    <div class="flex-1 w-full flex flex-col gap-2.5 my-2 relative z-10 min-h-0 overflow-hidden justify-between">
                         
-                        <!-- Rasio Gender (Split Block Raksasa) -->
-                        <div class="grid grid-cols-2 gap-3 h-[90px] sm:h-[110px]">
+                        <!-- Rasio Gender (Split Block) -->
+                        <div class="grid grid-cols-2 gap-2.5 h-[80px] sm:h-[95px] flex-shrink-0">
                             <!-- Laki-laki -->
-                            <div class="bg-blue-800/50 border border-blue-500/30 rounded-xl p-3 flex flex-col justify-center items-center relative overflow-hidden shadow-inner group">
-                                <div class="absolute -right-2 -bottom-2 sm:-right-4 sm:-bottom-4 text-blue-500/10 text-5xl sm:text-7xl font-black group-hover:scale-110 transition-transform duration-500">ðŸ‘¨</div>
+                            <div class="bg-blue-800/50 border border-blue-500/30 rounded-xl p-2.5 flex flex-col justify-center items-center relative overflow-hidden shadow-inner group">
+                                <div class="absolute -right-2 -bottom-2 sm:-right-3 sm:-bottom-3 text-blue-400/10 group-hover:scale-110 transition-transform duration-500 pointer-events-none">
+                                    <svg class="w-16 h-16 sm:w-20 sm:h-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                                </div>
                                 <div class="flex flex-col items-center z-10 w-full">
-                                    <div class="text-6xl sm:text-7xl font-black text-blue-400 font-mono tracking-tighter leading-none" id="gender-split-l-count">0</div>
-                                    <div class="text-[8px] sm:text-[10px] text-blue-200/70 font-bold uppercase tracking-widest mt-2">Pengunjung Laki-laki</div>
+                                    <div class="text-5xl sm:text-6xl font-black text-blue-400 font-mono tracking-tighter leading-none" id="gender-split-l-count">0</div>
+                                    <div class="text-[8px] sm:text-[10px] text-blue-200/70 font-bold uppercase tracking-widest mt-1.5">Pengunjung Laki-laki</div>
                                 </div>
                             </div>
                             <!-- Perempuan -->
-                            <div class="bg-rose-950/40 border border-rose-500/30 rounded-xl p-3 flex flex-col justify-center items-center relative overflow-hidden shadow-inner group">
-                                <div class="absolute -right-2 -bottom-2 sm:-right-4 sm:-bottom-4 text-rose-500/10 text-5xl sm:text-7xl font-black group-hover:scale-110 transition-transform duration-500">ðŸ‘©</div>
+                            <div class="bg-rose-950/40 border border-rose-500/30 rounded-xl p-2.5 flex flex-col justify-center items-center relative overflow-hidden shadow-inner group">
+                                <div class="absolute -right-2 -bottom-2 sm:-right-3 sm:-bottom-3 text-rose-400/10 group-hover:scale-110 transition-transform duration-500 pointer-events-none">
+                                    <svg class="w-16 h-16 sm:w-20 sm:h-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                                </div>
                                 <div class="flex flex-col items-center z-10 w-full">
-                                    <div class="text-6xl sm:text-7xl font-black text-rose-400 font-mono tracking-tighter leading-none" id="gender-split-p-count">0</div>
-                                    <div class="text-[8px] sm:text-[10px] text-rose-200/70 font-bold uppercase tracking-widest mt-2">Pengunjung Perempuan</div>
+                                    <div class="text-5xl sm:text-6xl font-black text-rose-400 font-mono tracking-tighter leading-none" id="gender-split-p-count">0</div>
+                                    <div class="text-[8px] sm:text-[10px] text-rose-200/70 font-bold uppercase tracking-widest mt-1.5">Pengunjung Perempuan</div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Grid Bawah: Umur & Wilayah -->
-                        <div class="grid grid-cols-2 gap-3 flex-1 h-full min-h-0">
-                            <!-- Top Umur (Horizontal Stat Bars) -->
-                            <div class="bg-blue-800/70 border border-indigo-500/30 rounded-xl p-3 sm:p-4 shadow-inner flex flex-col overflow-hidden">
-                                <h4 class="text-[9px] sm:text-[10px] font-bold text-indigo-200 uppercase tracking-widest w-full text-center mb-4 border-b border-indigo-500/20 pb-2">
-                                    ðŸŽ‚ Top Umur
+                        <div class="grid grid-cols-2 gap-2.5 flex-1 min-h-0">
+                            <!-- Top Umur -->
+                            <div class="bg-blue-800/70 border border-indigo-500/30 rounded-xl p-2 sm:p-2.5 shadow-inner flex flex-col overflow-hidden min-h-0">
+                                <h4 class="text-[9px] sm:text-[10px] font-bold text-indigo-200 uppercase tracking-widest w-full flex items-center justify-center gap-1.5 mb-2 border-b border-indigo-500/20 pb-1.5 flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    <span>Top Umur</span>
                                 </h4>
-                                <div id="box-age-groups" class="flex flex-col gap-5 sm:gap-6 w-full flex-1 justify-center">
+                                <div id="box-age-groups" class="flex flex-col gap-2 sm:gap-2.5 w-full flex-1 justify-center min-h-0">
                                     <!-- dynamic content -->
                                 </div>
                             </div>
 
-                            <!-- Top Wilayah (Tipografi Style) -->
-                            <div class="bg-blue-800/70 border border-indigo-500/30 rounded-xl p-2.5 sm:p-3 shadow-inner flex flex-col overflow-hidden">
-                                <h4 class="text-[9px] sm:text-[10px] font-bold text-indigo-200 uppercase tracking-widest w-full text-center mb-2">
-                                    ðŸ“ Top Wilayah
+                            <!-- Top Wilayah -->
+                            <div class="bg-blue-800/70 border border-indigo-500/30 rounded-xl p-2 sm:p-2.5 shadow-inner flex flex-col overflow-hidden min-h-0">
+                                <h4 class="text-[9px] sm:text-[10px] font-bold text-indigo-200 uppercase tracking-widest w-full flex items-center justify-center gap-1.5 mb-2 border-b border-indigo-500/20 pb-1.5 flex-shrink-0">
+                                    <svg class="w-3.5 h-3.5 text-rose-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    <span>Top Wilayah</span>
                                 </h4>
-                                <div id="box-regions" class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2 w-full">
+                                <div id="box-regions" class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2 w-full min-h-0">
+                                    <!-- dynamic content -->
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Footer -->
-                    <div class="w-full border-t border-indigo-500/30 pt-2 sm:pt-2.5 flex items-center justify-between gap-2 flex-shrink-0 mt-3">
-                        <div class="flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] text-indigo-200/80">
+                    <div class="w-full border-t border-indigo-500/30 pt-1.5 sm:pt-2 flex items-center justify-between gap-2 flex-shrink-0 mt-2">
+                        <div class="flex items-center gap-1.5 sm:gap-2 text-[8px] sm:text-[9px] text-indigo-200/80">
                             <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse flex-shrink-0"></span>
                             <span class="font-medium truncate">Data diperbarui secara real-time berdasarkan kunjungan.</span>
                         </div>
@@ -491,7 +541,7 @@
         </div>
 
         <!-- Footer & Controls -->
-        <footer class="flex items-center justify-between border border-blue-500/30 px-3 sm:px-8 py-2 sm:py-2.5 rounded-2xl sm:rounded-3xl shadow-lg relative z-10 flex-shrink-0 gap-2" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+        <footer class="flex items-center justify-between border border-blue-500/30 px-3 sm:px-6 py-1.5 sm:py-2 rounded-2xl shadow-lg relative z-10 flex-shrink-0 gap-2" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
             <div class="flex items-center gap-3">
                 <div class="hidden sm:block text-left">
                     <span class="text-[8px] sm:text-[9px] font-bold text-cyan-300 uppercase tracking-widest block">Polibatam</span>
@@ -635,24 +685,24 @@
             const showStepBadge = stepsToRender.length > 1;
 
             stepsContainer.innerHTML = `
-                <div class="w-full h-full flex flex-col justify-center items-center py-1 sm:py-2 animate-fade-in gap-3 sm:gap-4">
+                <div class="w-full h-full flex flex-col justify-between items-center py-0.5 sm:py-1 animate-fade-in gap-2 min-h-0 overflow-hidden">
 
                     <!-- Gambar Presentasi -->
-                    <div class="relative w-full max-w-5xl flex-1 min-h-[150px] rounded-2xl sm:rounded-3xl overflow-hidden border border-blue-500/30 flex items-center justify-center p-2 sm:p-4 shadow-[0_0_40px_rgba(59,130,246,0.15)]" style="background: rgba(30, 58, 138, 0.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                    <div class="relative w-full max-w-5xl flex-1 min-h-0 rounded-2xl overflow-hidden border border-blue-500/30 flex items-center justify-center p-2 sm:p-3 shadow-[0_0_40px_rgba(59,130,246,0.15)]" style="background: rgba(30, 58, 138, 0.72); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
 
-                        <img src="${currentStepData.img}" alt="Ilustrasi Langkah ${stepIndex + 1}" class="w-full h-full object-contain drop-shadow-xl rounded-xl" onerror="this.onerror=null; this.src='{{ asset('templating/img/polibatam.png') }}';">
+                        <img src="${currentStepData.img}" alt="Ilustrasi Langkah ${stepIndex + 1}" class="w-full h-full max-h-full object-contain drop-shadow-xl rounded-xl" onerror="this.onerror=null; this.src='{{ asset('templating/img/polibatam.png') }}';">
 
                         <!-- Indikator Langkah -->
                         ${showStepBadge ? `
-                        <div class="absolute top-2 right-2 sm:top-4 sm:right-4 bg-blue-800/70 border border-blue-500/50 text-cyan-300 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full text-[10px] sm:text-sm font-bold shadow-lg backdrop-blur-md">
+                        <div class="absolute top-2 right-2 sm:top-3 sm:right-3 bg-blue-800/80 border border-blue-500/50 text-cyan-300 px-3 py-1 rounded-full text-xs sm:text-sm font-bold shadow-lg backdrop-blur-md">
                             Langkah ${stepIndex + 1} / ${stepsToRender.length}
                         </div>
                         ` : ''}
                     </div>
 
                     <!-- Teks Penjelasan -->
-                    <div class="w-full max-w-5xl border border-blue-500/20 p-3 sm:p-5 rounded-xl sm:rounded-2xl shadow-lg animate-slide-up text-center flex-shrink-0" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
-                        <p class="text-[11px] sm:text-base md:text-lg lg:text-xl text-blue-50 font-medium leading-relaxed">
+                    <div class="w-full max-w-5xl border border-blue-500/20 px-3 py-2 sm:px-4 sm:py-3 rounded-xl shadow-lg animate-slide-up text-center flex-shrink-0" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                        <p class="text-xs sm:text-base md:text-lg lg:text-xl text-blue-50 font-medium leading-relaxed">
                             ${currentStepData.text || ''}
                         </p>
                     </div>
@@ -1132,53 +1182,63 @@
                     if (t > maxVal) maxVal = t;
                 });
                 
-                const colorClasses = ['bg-cyan-500', 'bg-purple-500', 'bg-yellow-500'];
+                const colorClasses = [
+                    'bg-gradient-to-r from-cyan-400 to-blue-500',
+                    'bg-gradient-to-r from-purple-400 to-indigo-500',
+                    'bg-gradient-to-r from-amber-400 to-orange-500'
+                ];
 
                 boxAge.innerHTML = data.age_groups.map((ag, i) => {
-                    const pct = maxVal > 0 ? (Number(ag.total) / maxVal) * 100 : 0;
-                    const c = colorClasses[i] || 'bg-slate-500';
+                    const pct = maxVal > 0 ? Math.max(14, Math.round((Number(ag.total) / maxVal) * 100)) : 0;
+                    const c = colorClasses[i] || 'bg-cyan-500';
                     return `
-                        <div class="flex items-center justify-between w-full">
-                            <div class="w-[30%] flex-shrink-0 text-left">
-                                <span class="text-xs sm:text-sm text-gray-300 font-medium whitespace-nowrap">${ag.group}</span>
+                        <div class="w-full flex flex-col justify-center">
+                            <div class="flex items-center justify-between text-xs mb-1">
+                                <span class="text-slate-200 font-semibold text-[10px] sm:text-xs tracking-tight">${ag.group}</span>
+                                <div class="flex items-baseline gap-1">
+                                    <span class="font-black text-white font-mono text-xs sm:text-sm leading-none">${ag.total}</span>
+                                    <span class="text-[8px] sm:text-[9px] text-slate-400">Orang</span>
+                                </div>
                             </div>
-                            <div class="flex-1 mx-2 sm:mx-3 bg-slate-700/50 rounded-full h-2 overflow-hidden flex items-center">
-                                <div class="${c} rounded-full h-2 transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(255,255,255,0.1)]" style="width: ${pct}%;"></div>
-                            </div>
-                            <div class="w-[20%] flex-shrink-0 text-right flex flex-col items-end leading-none">
-                                <span class="text-2xl sm:text-3xl font-bold text-white font-mono">${ag.total}</span>
-                                <span class="text-[9px] sm:text-xs text-gray-500 mt-1 block">Orang</span>
+                            <div class="w-full bg-slate-900/60 rounded-full h-1.5 sm:h-2 overflow-hidden p-[1px] border border-slate-700/40">
+                                <div class="${c} rounded-full h-full transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(34,211,238,0.3)]" style="width: ${pct}%;"></div>
                             </div>
                         </div>
                     `;
-                }).join('') || '<div class="text-xs text-slate-400 text-center">Belum ada data</div>';
+                }).join('') || '<div class="text-xs text-slate-400 text-center py-2">Belum ada data</div>';
             }
         }
 
         if (data.regions) {
             const boxReg = document.getElementById('box-regions');
             if (boxReg) {
-                const colorClasses = ['text-emerald-400', 'text-amber-400', 'text-rose-400'];
+                const rankConfigs = [
+                    { bg: 'bg-amber-400/20 text-amber-300 border-amber-400/40', countColor: 'text-amber-300' },
+                    { bg: 'bg-slate-300/20 text-slate-200 border-slate-300/30', countColor: 'text-cyan-300' },
+                    { bg: 'bg-orange-500/20 text-orange-300 border-orange-500/30', countColor: 'text-rose-300' }
+                ];
                 
                 boxReg.innerHTML = data.regions.map((r, i) => {
-                    const badge = (i === 0) 
-                        ? `<span class="bg-gradient-to-r from-red-500 to-orange-500 text-white text-[7px] px-1.5 py-0.5 rounded-full flex items-center gap-0.5 whitespace-nowrap">ðŸ”¥ Terbanyak</span>` 
-                        : '';
+                    const cfg = rankConfigs[i] || rankConfigs[2];
                     return `
-                        <div class="flex items-center justify-between bg-slate-900/50 rounded-lg p-1.5 sm:p-2 border border-slate-700/50 hover:bg-slate-800/50 transition-colors">
-                            <span class="text-[9px] sm:text-[10px] font-bold text-slate-200 truncate w-[45%]" title="${r.kecamatan_domisili}">
-                                ${i === 0 ? 'ðŸ¥‡' : (i === 1 ? 'ðŸ¥ˆ' : 'ðŸ¥‰')} ${r.kecamatan_domisili}
-                            </span>
-                            <div class="text-right flex items-center gap-1.5 sm:gap-2 justify-end w-[55%]">
-                                ${badge}
-                                <div class="flex flex-col items-end leading-none">
-                                    <span class="font-black text-sm sm:text-base ${colorClasses[i]} font-mono">${r.total}</span>
-                                    <span class="text-[7px] sm:text-[8px] text-slate-400 opacity-70 mt-0.5">Kunjungan</span>
+                        <div class="flex items-center justify-between bg-slate-900/60 rounded-lg p-1.5 sm:p-2 border border-indigo-500/20 hover:bg-slate-800/60 transition-colors gap-2">
+                            <div class="flex items-center gap-1.5 min-w-0 flex-1">
+                                <span class="w-4 h-4 rounded flex items-center justify-center font-bold text-[9px] ${cfg.bg} border flex-shrink-0 font-mono">
+                                    ${i + 1}
+                                </span>
+                                <span class="text-[10px] sm:text-xs font-semibold text-slate-200 truncate" title="${r.kecamatan_domisili}">
+                                    ${r.kecamatan_domisili}
+                                </span>
+                            </div>
+                            <div class="text-right flex-shrink-0 leading-none">
+                                <div class="flex items-baseline justify-end gap-1">
+                                    <span class="font-black text-xs sm:text-sm ${cfg.countColor} font-mono">${r.total}</span>
+                                    <span class="text-[7px] sm:text-[8px] text-slate-400">Kunj.</span>
                                 </div>
                             </div>
                         </div>
                     `;
-                }).join('') || '<div class="text-xs text-slate-400 text-center">Belum ada data</div>';
+                }).join('') || '<div class="text-xs text-slate-400 text-center py-2">Belum ada data</div>';
             }
         }
     }
@@ -1259,3 +1319,4 @@
 @endsection
 
 
+ 

@@ -44,8 +44,9 @@
     </style>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @yield('head_extra')
 </head>
-<body class="text-white font-sans antialiased min-h-full">
+<body class="text-white font-sans antialiased @yield('body_class', 'min-h-full')">
     
     @yield('content')
 
