@@ -30,11 +30,12 @@ class DatabaseSeeder extends Seeder
         // 1.1 Data Anggota untuk Uji Coba Scanner Gerbang:
         // Anggota 1: Farrel Ariq Nadhil (Aktif - Hijau - Bisa Masuk)
         User::updateOrCreate(
-            ['email' => 'farrelariq3@gmail.com'],
+            ['nim' => '4342301035'],
             [
                 'name' => 'Farrel Ariq Nadhil',
                 'role' => 'mahasiswa',
                 'nim' => '4342301035',
+                'email' => 'farrelariq3@gmail.com',
                 'kode_kartu' => '058945125E9200',
                 'expired_at' => Carbon::now()->addYears(2),
                 'password' => Hash::make('password123'),

@@ -75,7 +75,7 @@ class AnggotaSeeder extends Seeder
                     'tanggal_lahir' => $tanggalLahir,
                     'kecamatan_domisili' => $wilayah,
                     'expired_at' => $expiredAt,
-                    'kode_kartu' => $nim, // Gunakan NIM sebagai kode kartu sementara
+                    'kode_kartu' => $nim === '4342301035' ? '058945125E9200' : $nim,
                     'role' => 'mahasiswa', // Role default
                     'email' => $nim . '@student.polibatam.ac.id',
                     'password' => Hash::make('password123') // Default password
