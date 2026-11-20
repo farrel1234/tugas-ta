@@ -244,7 +244,6 @@
             </div>
         </header>
 
-        <!-- FITUR 1: Animasi Running Text (Ticker) -->
         <div class="w-full border-y border-slate-700/50 flex items-center relative z-10 my-1 sm:my-1.5 overflow-hidden shadow-lg h-9 sm:h-10 flex-shrink-0" style="background: rgba(20, 35, 90, 0.85); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
             <!-- Ikon Pengumuman Kiri (Statis) -->
             <div class="h-full px-3.5 sm:px-4 flex items-center justify-center border-r border-slate-700/50 z-20 shadow-[10px_0_15px_-3px_rgba(0,0,0,0.5)] flex-shrink-0" style="background: rgba(20, 35, 90, 0.95);">
@@ -304,14 +303,7 @@
             <!-- Kolom Kanan: Container Carousel Dinamis (Traffic Tank Silinder & Leaderboard Gamifikasi) -->
             <section id="kiosk-traffic-tank" class="lg:col-span-4 xl:col-span-4 rounded-2xl sm:rounded-3xl border border-blue-500/30 shadow-2xl overflow-hidden h-full min-h-0 relative" style="background: rgba(30, 58, 138, 0.82); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
 
-                @php
-                    $kioskTopList = collect($leaderboardData['top_visitors'] ?? []);
-                    $top1 = $kioskTopList->firstWhere('rank', 1);
-                    $top2 = $kioskTopList->firstWhere('rank', 2);
-                    $top3 = $kioskTopList->firstWhere('rank', 3);
-                @endphp
 
-                <!-- WIDGET 1: Traffic Tank Silinder (Aktif Default) -->
                 <div id="widgetTank" class="dynamic-kiosk-widget active p-3 sm:p-4 flex flex-col justify-between h-full min-h-0 overflow-hidden">
                     <!-- Header Box Card Tangki (Atas) -->
                     <div class="w-full flex items-center justify-between border-b border-blue-800/40 pb-2 flex-shrink-0">
@@ -442,7 +434,6 @@
                     </div>
                 </div>
 
-                <!-- WIDGET 2: Statistik Pemustaka Bulan Ini -->
                 <div id="widgetLeaderboard" class="dynamic-kiosk-widget p-3 sm:p-4 flex flex-col justify-between h-full min-h-0 overflow-hidden">
                     <!-- Header -->
                     <div class="w-full flex items-center justify-between border-b border-indigo-500/30 pb-2 flex-shrink-0">
@@ -456,11 +447,11 @@
                                 <h3 class="text-xs sm:text-sm font-black uppercase tracking-wider text-indigo-300 flex items-center gap-1.5">
                                     Statistik Pemustaka
                                 </h3>
-                                <span class="text-[8px] sm:text-[9px] text-indigo-200/70 font-medium block">Analitik Demografi Pengunjung</span>
+                                <span class="text-[8px] sm:text-[9px] text-indigo-200/70 font-medium block">Demografi Pengunjung Hari Ini</span>
                             </div>
                         </div>
                         <span id="demographic-month-badge" class="text-[9px] sm:text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
-                            Memuat...
+                            {{ $demographicData['badge'] ?? 'Live Hari Ini' }}
                         </span>
                     </div>
 
@@ -475,7 +466,7 @@
                                     <svg class="w-16 h-16 sm:w-20 sm:h-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                                 </div>
                                 <div class="flex flex-col items-center z-10 w-full">
-                                    <div class="text-5xl sm:text-6xl font-black text-blue-400 font-mono tracking-tighter leading-none" id="gender-split-l-count">0</div>
+                                    <div class="text-5xl sm:text-6xl font-black text-blue-400 font-mono tracking-tighter leading-none" id="gender-split-l-count">{{ $demographicData['gender']['L'] ?? 0 }}</div>
                                     <div class="text-[8px] sm:text-[10px] text-blue-200/70 font-bold uppercase tracking-widest mt-1.5">Pengunjung Laki-laki</div>
                                 </div>
                             </div>
@@ -485,7 +476,7 @@
                                     <svg class="w-16 h-16 sm:w-20 sm:h-20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                                 </div>
                                 <div class="flex flex-col items-center z-10 w-full">
-                                    <div class="text-5xl sm:text-6xl font-black text-rose-400 font-mono tracking-tighter leading-none" id="gender-split-p-count">0</div>
+                                    <div class="text-5xl sm:text-6xl font-black text-rose-400 font-mono tracking-tighter leading-none" id="gender-split-p-count">{{ $demographicData['gender']['P'] ?? 0 }}</div>
                                     <div class="text-[8px] sm:text-[10px] text-rose-200/70 font-bold uppercase tracking-widest mt-1.5">Pengunjung Perempuan</div>
                                 </div>
                             </div>
@@ -502,7 +493,34 @@
                                     <span>Top Umur</span>
                                 </h4>
                                 <div id="box-age-groups" class="flex flex-col gap-2 sm:gap-2.5 w-full flex-1 justify-center min-h-0">
-                                    <!-- dynamic content -->
+                                    @php
+                                        $maxAge = !empty($demographicData['age_groups']) ? collect($demographicData['age_groups'])->max('total') : 0;
+                                        $colorClasses = [
+                                            'bg-gradient-to-r from-cyan-400 to-blue-500',
+                                            'bg-gradient-to-r from-purple-400 to-indigo-500',
+                                            'bg-gradient-to-r from-amber-400 to-orange-500'
+                                        ];
+                                    @endphp
+                                    @forelse($demographicData['age_groups'] ?? [] as $i => $ag)
+                                        @php
+                                            $pct = $maxAge > 0 ? max(14, round(($ag['total'] / $maxAge) * 100)) : 0;
+                                            $c = $colorClasses[$i] ?? 'bg-cyan-500';
+                                        @endphp
+                                        <div class="w-full flex flex-col justify-center">
+                                            <div class="flex items-center justify-between text-xs mb-1">
+                                                <span class="text-slate-200 font-semibold text-[10px] sm:text-xs tracking-tight">{{ $ag['group'] }}</span>
+                                                <div class="flex items-baseline gap-1">
+                                                    <span class="font-black text-white font-mono text-xs sm:text-sm leading-none">{{ $ag['total'] }}</span>
+                                                    <span class="text-[8px] sm:text-[9px] text-slate-400">Orang</span>
+                                                </div>
+                                            </div>
+                                            <div class="w-full bg-slate-900/60 rounded-full h-1.5 sm:h-2 overflow-hidden p-[1px] border border-slate-700/40">
+                                                <div class="{{ $c }} rounded-full h-full transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(34,211,238,0.3)]" style="width: {{ $pct }}%;"></div>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="text-xs text-slate-400 text-center py-2">Belum ada kunjungan hari ini</div>
+                                    @endforelse
                                 </div>
                             </div>
 
@@ -516,7 +534,38 @@
                                     <span>Top Wilayah</span>
                                 </h4>
                                 <div id="box-regions" class="flex-1 flex flex-col justify-center gap-1.5 sm:gap-2 w-full min-h-0">
-                                    <!-- dynamic content -->
+                                    @php
+                                        $rankConfigs = [
+                                            ['bg' => 'bg-amber-400/20 text-amber-300 border-amber-400/40', 'countColor' => 'text-amber-300'],
+                                            ['bg' => 'bg-slate-300/20 text-slate-200 border-slate-300/30', 'countColor' => 'text-cyan-300'],
+                                            ['bg' => 'bg-orange-500/20 text-orange-300 border-orange-500/30', 'countColor' => 'text-rose-300'],
+                                        ];
+                                    @endphp
+                                    @forelse($demographicData['regions'] ?? [] as $i => $r)
+                                        @php
+                                            $cfg = $rankConfigs[$i] ?? $rankConfigs[2];
+                                            $regName = is_array($r) ? ($r['kecamatan_domisili'] ?? '-') : ($r->kecamatan_domisili ?? '-');
+                                            $regTotal = is_array($r) ? ($r['total'] ?? 0) : ($r->total ?? 0);
+                                        @endphp
+                                        <div class="flex items-center justify-between bg-slate-900/60 rounded-lg p-1.5 sm:p-2 border border-indigo-500/20 hover:bg-slate-800/60 transition-colors gap-2">
+                                            <div class="flex items-center gap-1.5 min-w-0 flex-1">
+                                                <span class="w-4 h-4 rounded flex items-center justify-center font-bold text-[9px] {{ $cfg['bg'] }} border flex-shrink-0 font-mono">
+                                                    {{ $i + 1 }}
+                                                </span>
+                                                <span class="text-[10px] sm:text-xs font-semibold text-slate-200 truncate" title="{{ $regName }}">
+                                                    {{ $regName }}
+                                                </span>
+                                            </div>
+                                            <div class="text-right flex-shrink-0 leading-none">
+                                                <div class="flex items-baseline justify-end gap-1">
+                                                    <span class="font-black text-xs sm:text-sm {{ $cfg['countColor'] }} font-mono">{{ $regTotal }}</span>
+                                                    <span class="text-[7px] sm:text-[8px] text-slate-400">Orang</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="text-xs text-slate-400 text-center py-2">Belum ada kunjungan hari ini</div>
+                                    @endforelse
                                 </div>
                             </div>
                         </div>
@@ -526,7 +575,7 @@
                     <div class="w-full border-t border-indigo-500/30 pt-1.5 sm:pt-2 flex items-center justify-between gap-2 flex-shrink-0 mt-2">
                         <div class="flex items-center gap-1.5 sm:gap-2 text-[8px] sm:text-[9px] text-indigo-200/80">
                             <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse flex-shrink-0"></span>
-                            <span class="font-medium truncate">Data diperbarui secara real-time berdasarkan kunjungan.</span>
+                            <span class="font-medium truncate">Data pengunjung unik diperbarui otomatis dari tap gerbang hari ini.</span>
                         </div>
                     </div>
                 </div>
@@ -564,9 +613,6 @@
             </div>
         </footer>
 
-        <!-- ============================================================== -->
-        <!-- POPUP SCANNER AKSES PENGUNJUNG (HIJAU / ABU-ABU / MERAH)         -->
-        <!-- ============================================================== -->
         <div id="scanPopup" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/85 backdrop-blur-[2px] p-4 transition-opacity duration-200" style="opacity: 0;">
             <div id="popupCardAnimWrapper" class="w-full max-w-md flex items-center justify-center">
                 <div id="popupCard" class="w-full rounded-3xl p-6 sm:p-8 text-center shadow-2xl border-2 relative overflow-hidden">
@@ -772,9 +818,6 @@
         runSignageLoop();
     }
 
-    // =========================================================================
-    // LOGIKA SCANNER AKSES PENGUNJUNG GERBANG (GATE ACCESS SCANNER)
-    // =========================================================================
     let popupTimer = null;
     let scanAbortController = null;
 
@@ -950,6 +993,7 @@
             showAccessPopup(data, cleanCode);
             // Refresh data tangki segera setelah scan berhasil tercatat
             setTimeout(fetchKioskLiveTraffic, 400);
+            setTimeout(fetchKioskDemographics, 500);
         })
         .catch(err => {
             if (err.name === 'AbortError') return;
@@ -993,7 +1037,6 @@
         }
     });
 
-    // 4. Engine Live Traffic Tank Silinder di Kiosk
     const tankModeBadge = document.getElementById('tank-mode-badge');
     const tankCapacityBadge = document.getElementById('tank-capacity-badge');
     const trafficTankLiquid = document.getElementById('traffic-tank-liquid');
@@ -1118,7 +1161,6 @@
         });
     }
 
-    // 5. Engine Leaderboard Gamifikasi ("Leaderboard Kunjungan") & Carousel Panel Kanan
     let kioskCarouselTimer = null;
     const KIOSK_CAROUSEL_INTERVAL = 180000; // 3 Menit (180.000 ms)
 
@@ -1233,7 +1275,7 @@
                             <div class="text-right flex-shrink-0 leading-none">
                                 <div class="flex items-baseline justify-end gap-1">
                                     <span class="font-black text-xs sm:text-sm ${cfg.countColor} font-mono">${r.total}</span>
-                                    <span class="text-[7px] sm:text-[8px] text-slate-400">Kunj.</span>
+                                    <span class="text-[7px] sm:text-[8px] text-slate-400">Orang</span>
                                 </div>
                             </div>
                         </div>

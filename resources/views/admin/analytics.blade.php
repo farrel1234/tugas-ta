@@ -424,7 +424,6 @@
         displayColors: false,
     };
 
-    // --- 1. TREN KUNJUNGAN HARIAN ---
     const dailyCtx = document.getElementById('dailyChart');
     const dailyCtx2D = dailyCtx.getContext('2d');
     
@@ -464,7 +463,6 @@
         }
     });
 
-    // --- 2. GENDER ---
     const genderCtx = document.getElementById('genderChart');
     const genderCtx2D = genderCtx.getContext('2d');
     
@@ -531,7 +529,6 @@
         plugins: [centerTextPlugin]
     });
 
-    // --- 3. UMUR ---
     const ageCtx = document.getElementById('ageChart');
     const ageCtx2D = ageCtx.getContext('2d');
     
@@ -578,7 +575,6 @@
         }
     });
 
-    // --- 4. WILAYAH ---
     const regionCtx = document.getElementById('regionChart');
     const regionCtx2D = regionCtx.getContext('2d');
     

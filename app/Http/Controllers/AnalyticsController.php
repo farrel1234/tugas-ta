@@ -131,8 +131,6 @@ class AnalyticsController extends Controller
         ));
     }
 
-    // --- FITUR EXPORT (Excel & PDF Log Kunjungan Detail) ---
-
     public function export(Request $request)
     {
         $type        = $request->input('type');

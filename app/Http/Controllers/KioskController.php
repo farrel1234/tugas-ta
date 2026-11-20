@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\VisitorLog;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -77,111 +78,101 @@ class KioskController extends Controller
             ],
         ];
 
-        // Data Top 3 Pengunjung Bulan Ini (Leaderboard Gamifikasi "Pahlawan Literasi")
-        $currentMonth = Carbon::now('Asia/Jakarta');
-        $topVisitors = VisitorLog::select('user_id', DB::raw('count(*) as total_kunjungan'))
-            ->whereNotNull('user_id')
-            ->whereMonth('created_at', $currentMonth->month)
-            ->whereYear('created_at', $currentMonth->year)
-            ->where('status', 'Bisa Masuk')
-            ->groupBy('user_id')
-            ->orderByDesc('total_kunjungan')
-            ->take(3)
-            ->with('user:id,name,nim')
-            ->get()
-            ->map(function ($log, $idx) {
-                return [
-                    'rank' => $idx + 1,
-                    'user_id' => $log->user_id,
-                    'name' => $log->user ? $log->user->name : 'Mahasiswa',
-                    'nim' => $log->user ? ($log->user->nim ?? '-') : '-',
-                    'total' => (int) $log->total_kunjungan,
-                ];
-            });
+        // Data Demografi Pemustaka dari Database Lokal (tabel users)
+        $demographicData = $this->getDemographicDataArray();
 
-        $leaderboardData = [
-            'month_name' => $currentMonth->translatedFormat('F Y'),
-            'top_visitors' => $topVisitors,
-        ];
-
-        return view('kiosk.index', compact('libraryData', 'trafficData', 'leaderboardData'));
+        return view('kiosk.index', compact('libraryData', 'trafficData', 'demographicData'));
     }
-    
+
+    /**
+     * Mengambil data analitik demografi pemustaka dari database lokal.
+     */
     public function getDemographicStats()
     {
-        $currentMonth = Carbon::now('Asia/Jakarta');
+        return response()->json($this->getDemographicDataArray());
+    }
 
-        // Base query for this month's visitors
-        $baseQuery = VisitorLog::whereMonth('visitor_logs.created_at', $currentMonth->month)
-            ->whereYear('visitor_logs.created_at', $currentMonth->year)
-            ->where('visitor_logs.status', 'Bisa Masuk')
-            ->whereNotNull('visitor_logs.user_id');
+    /**
+     * Membangun payload statistik demografi pengunjung unik gerbang hari ini (Opsi B).
+     */
+    private function getDemographicDataArray(): array
+    {
+        $today = Carbon::today('Asia/Jakarta');
 
-        // 1. Gender Ratio
-        $genderData = (clone $baseQuery)
-            ->join('users', 'visitor_logs.user_id', '=', 'users.id')
-            ->select('users.gender', DB::raw('count(*) as total'))
-            ->whereNotNull('users.gender')
-            ->groupBy('users.gender')
-            ->pluck('total', 'gender');
-            
-        $totalGender = $genderData->sum();
-        $male = $genderData->get('L', 0);
-        $female = $genderData->get('P', 0);
+        // Ambil ID pengguna unik dari orang yang berhasil scan/tap gerbang hari ini
+        $uniqueUserIds = VisitorLog::whereDate('created_at', $today)
+            ->where('status', 'Bisa Masuk')
+            ->whereNotNull('user_id')
+            ->distinct()
+            ->pluck('user_id');
+
+        $totalUniqueVisitors = $uniqueUserIds->count();
+
+        // Ambil data profil pengunjung unik dari database
+        $visitors = User::whereIn('id', $uniqueUserIds)->get();
+
+        // 1. Rasio Gender Hari Ini (Pengunjung Unik)
+        $maleCount = $visitors->where('gender', 'L')->count();
+        $femaleCount = $visitors->where('gender', 'P')->count();
+        $malePct = $totalUniqueVisitors > 0 ? round(($maleCount / $totalUniqueVisitors) * 100, 1) : 0;
+        $femalePct = $totalUniqueVisitors > 0 ? round(($femaleCount / $totalUniqueVisitors) * 100, 1) : 0;
 
         $genderRatio = [
-            'L' => $male,
-            'P' => $female,
-            'L_pct' => $totalGender > 0 ? round(($male / $totalGender) * 100, 1) : 0,
-            'P_pct' => $totalGender > 0 ? round(($female / $totalGender) * 100, 1) : 0,
+            'L' => $maleCount,
+            'P' => $femaleCount,
+            'L_pct' => $malePct,
+            'P_pct' => $femalePct,
+            'total' => $totalUniqueVisitors,
         ];
 
-        // 2. Age Groups
-        $ages = (clone $baseQuery)
-            ->join('users', 'visitor_logs.user_id', '=', 'users.id')
-            ->select('users.tanggal_lahir')
-            ->whereNotNull('users.tanggal_lahir')
-            ->get()
-            ->map(function ($log) {
-                return Carbon::parse($log->tanggal_lahir)->age;
-            });
-
+        // 2. Kelompok Umur Hari Ini
         $ageGroupsCount = [
-            '17-19 Tahun' => 0,
             '20-22 Tahun' => 0,
+            '17-19 Tahun' => 0,
             '23+ Tahun' => 0,
         ];
 
-        foreach ($ages as $age) {
-            if ($age >= 17 && $age <= 19) {
-                $ageGroupsCount['17-19 Tahun']++;
-            } elseif ($age >= 20 && $age <= 22) {
-                $ageGroupsCount['20-22 Tahun']++;
-            } elseif ($age >= 23) {
-                $ageGroupsCount['23+ Tahun']++;
+        foreach ($visitors as $v) {
+            if ($v->tanggal_lahir) {
+                $age = Carbon::parse($v->tanggal_lahir)->age;
+                if ($age >= 17 && $age <= 19) {
+                    $ageGroupsCount['17-19 Tahun']++;
+                } elseif ($age >= 20 && $age <= 22) {
+                    $ageGroupsCount['20-22 Tahun']++;
+                } elseif ($age >= 23) {
+                    $ageGroupsCount['23+ Tahun']++;
+                }
             }
         }
 
         arsort($ageGroupsCount);
         $topAgeGroups = collect($ageGroupsCount)->take(3)->map(function ($val, $key) {
             return ['group' => $key, 'total' => $val];
-        })->values();
+        })->values()->all();
 
-        // 3. Top 3 Region (Kecamatan)
-        $topRegions = (clone $baseQuery)
-            ->join('users', 'visitor_logs.user_id', '=', 'users.id')
-            ->select('users.kecamatan_domisili', DB::raw('count(*) as total'))
-            ->whereNotNull('users.kecamatan_domisili')
-            ->groupBy('users.kecamatan_domisili')
-            ->orderByDesc('total')
+        // 3. Top 3 Wilayah Asal Pengunjung Hari Ini
+        $topRegions = $visitors->whereNotNull('kecamatan_domisili')
+            ->groupBy('kecamatan_domisili')
+            ->map(function ($group, $kecamatan) {
+                return [
+                    'kecamatan_domisili' => $kecamatan,
+                    'total' => $group->count(),
+                ];
+            })
+            ->sortByDesc('total')
             ->take(3)
-            ->get();
+            ->values()
+            ->all();
 
-        return response()->json([
-            'month_name' => $currentMonth->translatedFormat('F Y'),
+        $badgeText = $totalUniqueVisitors > 0 ? $totalUniqueVisitors . ' Pengunjung' : 'Live Hari Ini';
+
+        return [
+            'month_name' => $badgeText,
+            'badge' => $badgeText,
+            'total_members' => $totalUniqueVisitors,
             'gender' => $genderRatio,
             'age_groups' => $topAgeGroups,
             'regions' => $topRegions,
-        ]);
+        ];
     }
 }

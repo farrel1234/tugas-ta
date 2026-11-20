@@ -16,7 +16,6 @@ class AnggotaSeeder extends Seeder
     {
         $data = [
             ['4342301035', 'Farrel Ariq Nadhil', 'Laki-laki', 21, 'Batam Kota', 'Aktif', '2028-08-10'],
-            ['4342301088', 'Shakira Maharani', 'Perempuan', 20, 'Bengkong', 'Aktif', '2027-09-12'],
             ['3312001099', 'Reza Pratama', 'Laki-laki', 22, 'Sekupang', 'Kadaluarsa', '2026-05-01'],
             ['4112501055', 'Nabila Ayu', 'Perempuan', 19, 'Nongsa', 'Aktif', '2029-02-25'],
             ['4342301102', 'Kevin Julius', 'Laki-laki', 21, 'Lubuk Baja', 'Aktif', '2027-11-30'],

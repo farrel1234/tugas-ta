@@ -1027,7 +1027,6 @@
 </div>
 
 <script>
-    // 1. Image Preview untuk Upload Slide Menu Baru
     const menuImageInput = document.getElementById('menu-image-input');
     const menuEmptyPrompt = document.getElementById('menu-empty-prompt');
     const menuPreviewWrapper = document.getElementById('menu-preview-wrapper');
@@ -1083,7 +1082,6 @@
         });
     @endif
 
-    // 2. Modal Uji Coba Scanner Gerbang (Admin)
     const scannerModal = document.getElementById('scannerTestModal');
     const openScannerModalBtn = document.getElementById('open-scanner-modal-btn');
     const closeScannerModalBtn = document.getElementById('close-scanner-modal-btn');
@@ -1211,7 +1209,6 @@
         }
     }
 
-    // 3. Engine Live Traffic Tank & Command Center Terminal Console
     let liveTrafficPollingTimer = null;
     let autoScrollEnabled = true;
     let isUserInteractingScroll = false;
