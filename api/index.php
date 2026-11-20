@@ -1,12 +1,17 @@
 <?php
 
+// Fix SCRIPT_NAME on Vercel so Laravel does not treat /api as the base URL
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+
 // Target database in writable /tmp directory on Vercel
 $sourceDb = __DIR__ . '/../database/database.sqlite';
 $targetDb = '/tmp/database.sqlite';
 
-if (file_exists($sourceDb) && (!file_exists($targetDb) || filesize($targetDb) === 0)) {
-    copy($sourceDb, $targetDb);
-    chmod($targetDb, 0666);
+if (file_exists($sourceDb)) {
+    if (!file_exists($targetDb) || filesize($targetDb) === 0 || filemtime($sourceDb) > filemtime($targetDb)) {
+        copy($sourceDb, $targetDb);
+        chmod($targetDb, 0666);
+    }
 }
 
 // Ensure storage directories exist in /tmp
