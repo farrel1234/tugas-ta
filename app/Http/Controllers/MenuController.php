@@ -35,8 +35,8 @@ class MenuController extends Controller
      */
     public function index()
     {
-        $menus = Menu::with('steps')->orderByRaw('CAST(num AS UNSIGNED) ASC, num ASC')->get();
-        $trashedMenus = Menu::onlyTrashed()->with('steps')->orderByRaw('CAST(num AS UNSIGNED) ASC, num ASC')->get();
+        $menus = Menu::with('steps')->orderByNaturalNum()->get();
+        $trashedMenus = Menu::onlyTrashed()->with('steps')->orderByNaturalNum()->get();
         $totalMenus = $menus->count();
         $totalSteps = Step::whereHas('menu')->count();
         $recentLogs = VisitorLog::with('user')->latest()->take(100)->get();

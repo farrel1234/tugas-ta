@@ -27,4 +27,16 @@ class Menu extends Model
     {
         return $this->hasMany(Step::class)->orderBy('step_order', 'asc');
     }
+
+    /**
+     * Urutkan nomor menu secara numerik alami, kompatibel dengan MySQL, SQLite, dan PostgreSQL.
+     */
+    public function scopeOrderByNaturalNum($query)
+    {
+        if ($query->getConnection()->getDriverName() === 'pgsql') {
+            return $query->orderByRaw("CASE WHEN num ~ '^[0-9]+$' THEN CAST(num AS INTEGER) ELSE 999999 END ASC, num ASC");
+        }
+
+        return $query->orderByRaw('CAST(num AS UNSIGNED) ASC, num ASC');
+    }
 }

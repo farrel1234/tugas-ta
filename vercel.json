@@ -28,8 +28,6 @@
   "env": {
     "APP_ENV": "production",
     "APP_DEBUG": "true",
-    "DB_CONNECTION": "sqlite",
-    "DB_DATABASE": "/tmp/database.sqlite",
     "LOG_CHANNEL": "stderr",
     "CACHE_STORE": "array",
     "SESSION_DRIVER": "cookie",

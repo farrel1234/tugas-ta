@@ -16,7 +16,7 @@ class KioskController extends Controller
     public function index()
     {
         $menus = Menu::with(['steps' => fn($q) => $q->orderBy('step_order', 'asc')])
-            ->orderByRaw('CAST(num AS UNSIGNED) ASC, num ASC')
+            ->orderByNaturalNum()
             ->get();
 
         $libraryData = $menus->map(function ($menu) {
